@@ -43,15 +43,15 @@ $ mountWinPE.bat /v a:/disk.vhd [/m 0|1|2|3] [/l V] [/d "c:\WinPE\mount"] [/u co
 * /u The unmount mode. 
 
 Since you don't know the drive letter in advance, the workflow would be:
-1.  `$ %prog_name% /v a:/disk.vhd /m 2 [/l V] [/d "c:\WinPE\mount"]`
+1.  `$ mountWinPE.bat /v a:/disk.vhd /m 2 [/l V] [/d "c:\WinPE\mount"]`
 2.  :: Get the drive letter, i.e. "V".
-3.  `$ %prog_name% /v a:/disk.vhd /m 1 /l V /d "c:\WinPE\mount"`
+3.  `$ mountWinPE.bat /v a:/disk.vhd /m 1 /l V /d "c:\WinPE\mount"`
 4.  :: Make the changes
-5.  `$ %prog_name% /v a:/disk.vhd /m 0 /l V /d "c:\WinPE\mount"`
+5.  `$ mountWinPE.bat /v a:/disk.vhd /m 0 /l V /d "c:\WinPE\mount"`
 
 When unmounting, the default is to use `/u commit`. 
-But if an error message occurs, close all explorers and possibly open files of the mount and run again with `/u discard`. 
-Sometimes even unrelated Windows and CMDs have to be closed to make it work without errors.
+If an error message occurs, close all explorers and possibly open files of the mount and run again with `/u discard`. 
+Sometimes even unrelated windows and CMDs have to be closed to make it work without errors.
 
 
 
@@ -67,7 +67,7 @@ $ initWinPE.bat /md path [/bg path] [/u username] [/startScript path] [/scripts 
 ```
 
 **Options:**
-* /md Direcotry where WinPE is mounted.
+* /md Directory where WinPE is mounted.
 * /bg Add desktop background image of <path>. (icacls not fully working yet!)
 * /ss Copy start script into the right location.
 * /sd Copy scripts located in dir to mount\bin.
@@ -75,3 +75,6 @@ $ initWinPE.bat /md path [/bg path] [/u username] [/startScript path] [/scripts 
 * /ps Add PowerShell support.
 * /u The current username, needed for /bg.
 * /vsr Copy msvc**.dll and vc**.dll runtime.dlls form host C:\Windows\System32 (or C:\Windows\SysWOW64 ) to WinPE System32.
+
+**Remarks**  
+The `/vsr` only works, if the runtime libs are present on the host system. This may be changed soon.

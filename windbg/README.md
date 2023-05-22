@@ -10,7 +10,7 @@ Last updated: 28.01.2023
 
 
 ## setNetKd
-Set guest system up for net kd.
+Set guest system up for net kd. `BcdEdit` wrapper.
 
 ### Usage
 ```bash
@@ -42,7 +42,7 @@ $ startComKDbg.bat [/a x86|x64] [/n pipename]
 
 
 ## startEDbg
-Starts WinDbg session with a program cmd line.
+Starts usermode WinDbg session with a program cmd line.
 
 ### Usage
 ```bash
@@ -65,7 +65,7 @@ Starts kernel WinDbg session over network.
 $ startNetKDbg.bat [/a <arch>] [/p <port>] [/k <key>] [/bml] [/loc] [/v] [/h]
 ```
 **Options:**
-* /a The arch: x86^|x64. Default: x64.
+* /a The arch: x86|x64. Default: x64.
 * /p The Port. Min: 49152, Max: 65535.
 * /k The network key. Default: 1.2.3.4. 
 * /bml Break on module load.
@@ -82,7 +82,7 @@ Starts kernel WinDbg session over usb connection.
 $ startUsbKDbg.bat [/a <arch>] [/n <name>] [/bml] [/loc] [/v] [/h]
 ```
 **Options:**
-* /a The arch: x86^|x64. Default: x64.
+* /a The arch: x86|x64. Default: x64.
 * /n The usb debugging target name.
 * /bml Break on module load.
 * /loc Starts a local kernel debugging session (on the same machine as the debugger).

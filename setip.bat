@@ -44,13 +44,15 @@ GOTO :ParseParams
         SHIFT
         goto reParseParams
     )
-    IF /i "%~1"=="/v" (
-        SET /a verbose=1
-        goto reParseParams
-    )
     IF /i "%~1"=="/l" (
         SET /a list_interfaces=1
         goto reParseParams
+    )
+    IF /i "%~1"=="/v" (
+        SET /a verbose=1
+        goto reParseParams
+    ) ELSE (
+        echo Unknown option : "%~1"
     )
     
     :reParseParams
@@ -65,17 +67,17 @@ GOTO :ParseParams
     set /a c=0
     if not [%ip%] == [] set /a c=1
     if not [%gw%] == [""] set /a c=1
-    if [%list_interfaces%] == [1] set /a c=1
-    if [%c%] == [0] goto usage
+    if %list_interfaces% == 1 set /a c=1
+    if %c% == 0 goto usage
 
-    if [%verbose%]==[1] (
+    if %verbose% == 1 (
         echo name=%iname%
         echo ip=%ip%
         echo nwm=%nwm%
         echo gw=%gw%
     )
 
-    if [%list_interfaces%]==[1] (
+    if %list_interfaces% == 1 (
         echo List interfaces:
         netsh interface %ipv% show interfaces
         echo.
@@ -83,10 +85,9 @@ GOTO :ParseParams
     )
     
     :checkPermissions
-    :: echo checking Admin permissions...
     net session >nul 2>&1
     if NOT %errorlevel% == 0 (
-        echo Please run as Admin!
+        echo [e] Admin privileges required!
         exit /B 1
     )
 
@@ -95,7 +96,9 @@ GOTO :ParseParams
     ) else (
         set command=netsh interface %ipv% set address name=%iname% static %ip% %nwm% %gw%
     )
-    echo %command%
+    if %verbose% == 1 (
+        echo %command%
+    )
     %command%
 
     endlocal

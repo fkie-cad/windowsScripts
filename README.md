@@ -317,7 +317,6 @@ Options:
 * /l List interfaces.
 * /v Verbose mode
 
-
 ## setIp
 Set ip, mask and gateway of a network device.
 
@@ -330,7 +329,6 @@ Options:
 * /g Gateway
 * /m Network mask. Default: 255.255.240.0
 * /n The interface name. Default: "Ethernet". If name does not work (Element not found), try replacing the name with the index found with /l.
-* /w Call "WpeUtil InitializeNetwork /NoWait" first. (WinPE only)
 * /l List interfaces
 * /v Verbose mode
 

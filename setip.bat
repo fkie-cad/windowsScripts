@@ -1,12 +1,13 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
 
-set iname="Ethernet"
+set iname=
 set ip=
 set gw=
 set nwm=255.255.240.0
 set ipv=ipv4
 set /a list_interfaces=0
+set /a check=0
 
 set prog_name=%~n0%~x0
 set user_dir="%~dp0"
@@ -24,13 +25,12 @@ GOTO :ParseParams
     if /i [%1]==[/h] goto help
     if /i [%1]==[/help] goto help
 
-    IF /i "%~1"=="/n" (
-        SET iname=%2
-        SHIFT
+    IF /i "%~1"=="/c" (
+        SET /a check=1
         goto reParseParams
     )
-    IF /i "%~1"=="/m" (
-        SET nwm=%~2
+    IF /i "%~1"=="/g" (
+        SET gw=%~2
         SHIFT
         goto reParseParams
     )
@@ -39,13 +39,18 @@ GOTO :ParseParams
         SHIFT
         goto reParseParams
     )
-    IF /i "%~1"=="/g" (
-        SET gw=%~2
+    IF /i "%~1"=="/l" (
+        SET /a list_interfaces=1
+        goto reParseParams
+    )
+    IF /i "%~1"=="/m" (
+        SET nwm=%~2
         SHIFT
         goto reParseParams
     )
-    IF /i "%~1"=="/l" (
-        SET /a list_interfaces=1
+    IF /i "%~1"=="/n" (
+        SET iname="%~2"
+        SHIFT
         goto reParseParams
     )
     IF /i "%~1"=="/v" (
@@ -81,7 +86,22 @@ GOTO :ParseParams
         echo List interfaces:
         netsh interface %ipv% show interfaces
         echo.
-        exit /B %errorlevel%
+        goto mainend
+    )
+    
+    if %check% == 1 (
+        set nameParam=
+        if [%iname%] NEQ [] (
+            if [%iname%] NEQ [""] (
+                set "nameParam=name=%iname%"
+            )
+        )
+        set command=netsh interface %ipv% show config !nameParam!
+        if %verbose% == 1 (
+            echo !command!
+        )
+        !command!
+        goto mainend
     )
     
     :checkPermissions
@@ -91,16 +111,20 @@ GOTO :ParseParams
         exit /B 1
     )
 
-    if [%ip%] == [auto] (
-        set command=netsh interface %ipv% set address name=%iname% dhcp
-    ) else (
-        set command=netsh interface %ipv% set address name=%iname% static %ip% %nwm% %gw%
-    )
-    if %verbose% == 1 (
-        echo %command%
-    )
-    %command%
-
+    if [%ip%] NEQ [] (
+    if [%iname%] NEQ [] (
+        if [%ip%] == [auto] (
+            set command=netsh interface %ipv% set address name=%iname% dhcp
+        ) else (
+            set command=netsh interface %ipv% set address name=%iname% static %ip% %nwm% %gw%
+        )
+        if %verbose% == 1 (
+            echo !command!
+        )
+        !command!
+    ))
+    
+    :mainend
     endlocal
     exit /B %errorlevel%
 
@@ -116,7 +140,8 @@ GOTO :ParseParams
     echo /i IP as dotted string. Or 'auto' to automatically obtain ip address (dhcp). 
     echo /g Gateway ip as dotted string.
     echo /m Network mask as dotted string. Default: 255.255.240.0
-    echo /n The interface name. Default: "Ethernet". If name does not work ("Element not found"), try replacing the name with the index found with the /l option.
+    echo /n The interface name. If name does not work ("Element not found"), try replacing the name with the index found with the /l option.
     echo /l List interfaces
+    echo /l Check interface configuration
     echo /v Verbose mode
     exit /B 0

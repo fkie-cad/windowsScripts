@@ -4,6 +4,7 @@ setlocal
 :main
 
     call :updateRegistry
+    call :disableTasks
     REM call :disableServices
     REM call :blockIps
     REM call :updateHosts
@@ -13,6 +14,7 @@ setlocal
 
 :updateRegistry
 setlocal
+    echo updateRegistry
     REM 0: Security (Enterprise only), 1: Basic, 2: Enhanced, 3: Full
     
     REM     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Diagnostics\DiagTrack
@@ -42,6 +44,7 @@ endlocal
 
 :updateHosts
 setlocal
+    echo updateHosts
     set "file=%windir%\system32\drivers\etc\hosts"
     
     echo 0.0.0.0 geo.settings-win.data.microsoft.com.akadns.net >> "%file%"
@@ -63,11 +66,22 @@ endlocal
     exit /b %errorlevel%
 
 
+:disableTasks
+setlocal
+    echo disableTasks
+    schtasks /Change /TN "\Microsoft\Windows\WindowsUpdate\RUXIM\PLUGScheduler" /Disable
+endlocal
+    exit /b %errorlevel%
+    
+
 :disableServices
+setlocal
+    echo disableServices
     REM ServiceName: DiagTrack
     REM DisplayName: Connected User Experiences and Telemetry
     call :disableService DiagTrack
     
+endlocal
     exit /b %errorlevel%
 
 
@@ -83,6 +97,7 @@ endlocal
 
 :blockIps
 setlocal
+    echo blockIps
     set list=40.77.226.249 40.77.226.250 13.92.194.212 52.178.38.151 52.229.39.152 52.183.114.173 13.78.232.226
     (for %%ip in (%list%) do ( 
         call :blockIp %%ip

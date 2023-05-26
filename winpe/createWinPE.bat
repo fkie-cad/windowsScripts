@@ -6,8 +6,8 @@
 :: Last changed: 02.11.2021
 ::
 
-
 @echo off
+setlocal enabledelayedexpansion
 
 
 set image=""
@@ -33,7 +33,6 @@ GOTO :ParseParams
 
 :ParseParams
 
-    REM IF "%~1"=="" GOTO Main
     if [%1]==[/?] goto help
     if [%1]==[/h] goto help
     if [%1]==[/help] goto help
@@ -99,20 +98,19 @@ GOTO :ParseParams
             echo "valid"
             goto start
         ) else (
-            echo Please run as Admin!
-            exit /B 1
+            echo [e] Admin privileges required!
+            goto mainend
         )
         
         
     :start
 
     if [%vdisk%]==[""] (
-        echo ERROR: No disk path set. Set with /v ^<path^>.
+        echo [e] No disk path set. Set with /v ^<path^>.
         goto usage
     )
-    REM if [%image%]==[""] goto usage
     if [%vletter%]==[""] (
-        echo ERROR: No driver letter set. Set with /l ^<Letter^>.
+        echo [e] No driver letter set. Set with /l ^<Letter^>.
         goto usage
     )
 
@@ -121,11 +119,11 @@ GOTO :ParseParams
     if [%wpeArch%] EQU [x86] set /a "s=%s%+1"
     if [%wpeArch%] EQU [arm] set /a "s=%s%+1"
     if not %s% == 1 (
-        echo ERROR: Unknown architecture.
+        echo [e] Unknown architecture.
         goto usage
     )
 
-    if [%verbose%]==[1] (
+    if %verbose% == 1 (
         echo wpeArch=%wpeArch%
         echo image=%image%
         echo vdisk=%vdisk%
@@ -141,15 +139,15 @@ GOTO :ParseParams
 
     if %detach% EQU 1 (
         call :detachVHD %vdisk%
-        REM if not %errorlevel% == 0 exit /B %errorlevel%
+        :: if not !errorlevel! == 0 goto mainend
         call :clean
-        exit /B %errorlevel%
+        goto mainend
     )
 
     if not exist %image% (
         echo ----copype
         call :createWinPeImage %image% %wpeArch%
-        REM if not %errorlevel% == 0 exit /B %errorlevel%
+        :: if not !errorlevel! == 0 goto mainend
         echo ----
     ) else (
         echo Using existing %image%.
@@ -157,20 +155,25 @@ GOTO :ParseParams
 
     if %wpeType% == 1 (
         call :createVHD %vdisk% %vhdType% %size% %label% %vletter%
-        REM if not %errorlevel% == 0 exit /B %errorlevel%
+        :: if not !errorlevel! == 0 goto mainend
     )
 
     echo ----MakeWinPEMedia
     call :prepareDrive %image% %vletter%
-    REM if not %errorlevel% == 0 exit /B %errorlevel%
+    :: if not !errorlevel! == 0 goto mainend
     echo ----
 
     call :detachVHD %vdisk%
-    REM if not %errorlevel% == 0 exit /B %errorlevel%
+    :: if not !errorlevel! == 0 goto mainend
 
+
+:mainend
     call :clean
-
+    
+    endlocal
     exit /B %errorlevel%
+
+
 
 :createWinPeImage
     echo ----createWinPeImage
@@ -182,6 +185,8 @@ GOTO :ParseParams
     echo ----
 
     exit /B %errorlevel%
+
+
 
 :createVHD
     echo ----createVHD
@@ -207,6 +212,8 @@ GOTO :ParseParams
     
     exit /B %errorlevel%
     
+    
+    
 :prepareDrive
     echo ----prepareDrive
     setlocal
@@ -215,6 +222,8 @@ GOTO :ParseParams
         cmd /k "%devenvbat% & MakeWinPEMedia /UFD %image% %driveLetter%: & exit"
     endlocal
     echo ----
+
+
 
 :detachVHD
     setlocal
@@ -232,15 +241,23 @@ GOTO :ParseParams
     
     exit /B %errorlevel%
     
+    
+    
 :clean
     echo ----clean
-    del %dp_file%
+    if exist %dp_file% (
+        del %dp_file%
+    )
     exit /B %errorlevel%
     echo ----
+    
+    
     
 :usage
     echo Usage: %prog_name% /i c:\winpe /v c:\disk.vhdx [/a amd64^|x86^|arm] [/d] [/l V] [/s 1000] [/t fixed^|expandable] [/lbl "WinPE drive"]
     exit /B %errorlevel%
+
+
 
 :help
     call :usage

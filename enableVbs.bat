@@ -131,6 +131,7 @@ GOTO :ParseParams
     if %check% EQU 1 (
         reg query %deviceGuard%
         reg query %hypervisorEnforcedCodeIntegrity%
+        reg query %credentialGuard%
     )
     
     if %reboot% EQU 1 (

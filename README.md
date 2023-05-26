@@ -322,14 +322,15 @@ Set ip, mask and gateway of a network device.
 
 ### Usage
 ```bash
-$ setIp.bat /i <ip> /g <gateway> [/m <mask>] [/n <name>] [/w] [/l] [/v]
+$ setIp.bat /i <ip> /g <gateway> [/m <mask>] [/n <name>] [/c] [/l] [/v]
 ```
 Options:
 * /i IP
 * /g Gateway
 * /m Network mask. Default: 255.255.240.0
-* /n The interface name. Default: "Ethernet". If name does not work (Element not found), try replacing the name with the index found with /l.
+* /n The interface name. If name does not work (Element not found), try replacing the name with the index found with /l.
 * /l List interfaces
+* /c List interface configuration
 * /v Verbose mode
 
 

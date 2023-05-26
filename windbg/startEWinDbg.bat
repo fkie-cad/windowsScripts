@@ -106,7 +106,7 @@ GOTO :ParseParams
         set srcopt=-srcpath "%srcpath%"
     )
     
-    set "command="C:\Program Files (x86)\Windows Kits\10\Debuggers\%arch%\windbg" %dbgchild% "%cmdline%" %yopt% %srcopt%"
+    set "command="C:\Program Files (x86)\Windows Kits\10\Debuggers\%arch%\windbg" %dbgchild% %yopt% %srcopt% %cmdline%"
     if %verbose% == 1 (
         echo command: %command%
     )

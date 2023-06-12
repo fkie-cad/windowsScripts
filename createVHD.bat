@@ -90,7 +90,7 @@ GOTO :ParseParams
         net session >nul 2>&1
         if %errorlevel% NEQ 0 (
             echo [e] Admin privileges required!
-            set /a %errorlevel% 1
+            call
             goto mainend
         )
 

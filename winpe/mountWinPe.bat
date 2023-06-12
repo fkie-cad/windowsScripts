@@ -7,18 +7,7 @@
 
 @echo off
 setlocal
-
-:checkPermissions
-    ::echo checking Admin permissions...
-    net session >nul 2>&1
-    if %errorlevel% == 0 (
-        goto start
-    ) else (
-        echo Please run as Admin!
-        exit /B 1
-    )
     
-:start
     
 set mode=2
 set vdisk=""
@@ -96,6 +85,15 @@ GOTO :ParseParams
         echo umount_mode=%umount_mode%
     )
 
+
+    if [%verbose%]==[1] echo checking Admin permissions...
+    net session >nul 2>&1
+    if %errorlevel% NEQ 0 (
+        echo Please run as Admin!
+        endlocal
+        exit /B 1
+    )
+    
     if [%mode%]==[0] call :unmount
     if [%mode%]==[1] call :mount
     if [%mode%]==[2] call :attachVDisk

@@ -125,6 +125,7 @@ GOTO :ParseParams
     ))
     
     :mainend
+    if %verbose% == 1 echo exit status : %errorlevel%
     endlocal
     exit /B %errorlevel%
 

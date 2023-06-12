@@ -87,17 +87,19 @@ GOTO :ParseParams
     net session >nul 2>&1
     if NOT %errorlevel% == 0 (
         echo [e] Please run as Admin!
-        exit /B 1
+        call
+        goto mainend
     )
 
     call :set
-    call :clean
     
+:mainend
     endlocal
     exit /B %errorlevel%
 
 
 :set
+setlocal
     netsh interface %ipv% set dns name=%name% static %dns% validate=%validate%
     
     if not [%alt%] == [] (
@@ -106,6 +108,7 @@ GOTO :ParseParams
     if [%verbose%]==[1] (
         netsh interface %ipv% show dns name=%name%
     )
+endlocal
     exit /B %errorlevel%
     
 
@@ -125,14 +128,4 @@ GOTO :ParseParams
     echo /6 Set ip version to ipv6.
     echo /l List interfaces.
     echo /v Verbose mode
-    exit /B 0
-    
-:clean
-    set name=
-    set dns=
-    set alt=
-    set ipv=
-    set validate=
-    set list_interfaces=
-    
     exit /B 0

@@ -1,15 +1,11 @@
 setlocal
 
 :check_Permissions
-    echo Administrative permissions required. Detecting permissions...
-
     net session >nul 2>&1
-    if %errorLevel% == 0 (
-        echo Success: Administrative permissions confirmed.
-    ) else (
+    if %errorLevel% NEQ 0 (
         echo Failure: Administrative permissions required.
-        pause >nul
-        exit /B 0
+        endlocal
+        exit /B %errorlevel%
     )
     
 :: clear defender event log
@@ -26,3 +22,4 @@ del /s /q "C:\ProgramData\Microsoft\Windows Defender\Quarantine\*"
 Powershell -command "Get-MpThreat"
 
 endlocal
+exit /B %errorlevel%

@@ -88,19 +88,19 @@ GOTO :ParseParams
         ) else (
         if %type% == 2 (
             echo local kernel debugger
-        )
-        )
-        )
+        )))
     )
 
     call :checkPermissions
     if not %errorlevel% == 0 (
         echo [e] Admin rights required!
-        exit /b %errorlevel%
+        call
+        goto mainend
     )
     
     call :startNetDbg
     
+    :mainend
     endlocal
     exit /b %errorlevel%
 
@@ -157,8 +157,7 @@ GOTO :ParseParams
 ::
 :: The targetname string must not contain “debug” anywhere in the <name> in any combination of upper or lower case. 
 :: 
-:: Busparams have to be set, if multiple network adapters are available on the target. 
-:: Otherwise it may work without setting it, especially if the "location" value does not provide sufficient values.
+:: Busparams have to be set, if multiple usb adapters are available on the target. 
 :: $ bcdedit /set "{dbgsettings}" busparams b.d.f
 :: To get the bus parameters, 
 :: a) use usbview.exe and read from its output, or

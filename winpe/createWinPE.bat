@@ -22,7 +22,9 @@ set wpeArch=amd64
 set /a detach=0
 
 set prog_name=%~n0
-set user_dir="%~dp0"
+set my_dir="%~dp0"
+set "my_dir=%my_dir:~1,-2%"
+
 set dp_file="%tmp%\createvhd.txt"
 
 set devenvbat="C:\Program Files (x86)\Windows Kits\10\Assessment and Deployment Kit\Deployment Tools\DandISetEnv.bat"
@@ -94,17 +96,12 @@ GOTO :ParseParams
     :checkPermissions
         echo checking Admin permissions...
         net session >nul 2>&1
-        if %errorlevel% == 0 (
-            echo "valid"
-            goto start
-        ) else (
+        if %errorlevel% NEQ 0 (
             echo [e] Admin privileges required!
+            call
             goto mainend
         )
         
-        
-    :start
-
     if [%vdisk%]==[""] (
         echo [e] No disk path set. Set with /v ^<path^>.
         goto usage
@@ -133,7 +130,7 @@ GOTO :ParseParams
         echo label=%label%
         echo vletter=%vletter%
         echo dp_file=%dp_file%
-        echo user_dir=%user_dir%
+        echo my_dir=%my_dir%
         echo prog_name=%prog_name%
     )
 

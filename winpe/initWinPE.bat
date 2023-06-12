@@ -117,10 +117,9 @@ GOTO :ParseParams
 :checkPermissions
     ::echo checking Admin permissions...
     net session >nul 2>&1
-    if %errorlevel% == 0 (
-        goto start
-    ) else (
+    if %errorlevel% NEQ 0 (
         echo Please run as Admin!
+        endlocal
         exit /B 1
     )
 

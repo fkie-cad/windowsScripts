@@ -101,7 +101,7 @@ GOTO :ParseParams
     :: Admin check
     fltmc >nul 2>&1 || (
         echo [e] Administrator privileges required.
-        set /a %errorlevel% 1
+        call
         goto mainend
     )
 

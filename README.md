@@ -18,6 +18,7 @@ For questions and bug reports feel free to open an issue.
 
 ## Contents
 - [blitzDingser/](#blitzdingser)
+- [crypto/](#crypto)
 - [explorer/](#explorer)
 - [hyper-v/](#hyper-v)
 - [pdb/](#pdb)
@@ -28,6 +29,9 @@ For questions and bug reports feel free to open an issue.
 - [Windows Features/](#windows-features)
 - [createVHD](#createvhd)
 - [disableErrorReporting](#disableerrorreporting)
+- [disableIpV6](#disableipv6)
+    - [bat](#bat)
+    - [ps1](#ps1)
 - [disableSearchSuggestions](#disableSearchSuggestions)
 - [disableSuperFetch](#disablesuperfetch)
 - [disableTelemetry](#disabletelemetry)
@@ -44,7 +48,6 @@ For questions and bug reports feel free to open an issue.
 - [reboot](#reboot)
 - [setDNS](#setdns)
 - [setIp](#setip)
-- [sha256sum](#sha256sum)
 - [startNtProg](#startntprog)
 - [copyright, credits & contact](#copyright,-credits-&-contact)
 
@@ -54,6 +57,10 @@ For questions and bug reports feel free to open an issue.
 ## blitzDingser/
 Some useful blintzDings scripts to clean up log entries or other stuff.  
 [blitzdingser/README.md](blitzdingser/README.md)
+
+## crypto/
+Some crypto related scripts.  
+[crypto/README.md](crypto/README.md)
 
 ## explorer/
 Set useful explorer settings.  
@@ -110,6 +117,19 @@ Options:
 Disable Windows error reporting by adding a "Disabled" key to the registry.
 ```bash
 $ disableErrorReporting.bat
+```
+
+
+## disableIpV6
+### bat
+Disable IpV6 support globally
+```bash
+$ disableIpv6.bat
+```
+### ps1
+Disable IpV6 support on all adapters
+```bash
+ps> disableIpv6.ps1
 ```
 
 
@@ -332,20 +352,6 @@ Options:
 * /l List interfaces
 * /c List interface configuration
 * /v Verbose mode
-
-
-
-## sha256sum
-Calculate sha256 of file.  
-Wrapper for `certutil -hashfile <filename> sha256`
-
-### Usage
-```bash
-$ sha256sum.bat file [/h]
-```
-Options:
-* file The file path to sha256.
-* /h Print help info.
 
 
 

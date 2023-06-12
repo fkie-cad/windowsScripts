@@ -21,7 +21,7 @@ set /a ucfg=0
 
 set tcmd=/Disable
 
-set vs_base="%ProgramFiles% (x86)\Microsoft Visual Studio"
+set vs_base="%ProgramFiles(x86)%\Microsoft Visual Studio"
 set vs_edition=Professional
 set vs_year=2019
 
@@ -91,7 +91,7 @@ GOTO :ParseParams
     :: Admin check
     fltmc >nul 2>&1 || (
         echo [e] Administrator privileges required.
-        set /a %errorlevel% 1
+        call
         goto mainend
     )
 

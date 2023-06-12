@@ -7,10 +7,11 @@
 
 
 @echo off
-setlocal 
+setlocal enabledelayedexpansion
 
-set prog_name=%~n0%~x0
-set user_dir="%~dp0"
+set prog_name=%~n0
+set my_dir="%~dp0"
+set "my_dir=%my_dir:~1,-2%"
 
 set /a chk=0
 set /a kll=0

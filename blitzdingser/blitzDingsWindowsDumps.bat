@@ -90,10 +90,9 @@ GOTO :ParseParams
         echo Administrative permissions required. Detecting permissions...
 
         net session >nul 2>&1
-        if %errorLevel% == 0 (
-            echo Success: Administrative permissions confirmed.
-        ) else (
+        if %errorLevel% NEQ 0 (
             echo Failure: Current permissions inadequate.
+            endlocal
             exit /B 0
         )
     )

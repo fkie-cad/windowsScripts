@@ -1,6 +1,10 @@
 @echo off
 setlocal enabledelayedexpansion
 
+set prog_name=%~n0%~x0
+set user_dir="%~dp0"
+set /a verbose=0
+
 set iname=
 set ip=
 set gw=
@@ -8,10 +12,6 @@ set nwm=255.255.240.0
 set ipv=ipv4
 set /a list_interfaces=0
 set /a check=0
-
-set prog_name=%~n0%~x0
-set user_dir="%~dp0"
-set /a verbose=0
 
 
 if [%~1] == [] goto usage
@@ -49,7 +49,7 @@ GOTO :ParseParams
         goto reParseParams
     )
     IF /i "%~1"=="/n" (
-        SET iname="%~2"
+        SET "iname=%~2"
         SHIFT
         goto reParseParams
     )
@@ -91,9 +91,9 @@ GOTO :ParseParams
     
     if %check% == 1 (
         set nameParam=
-        if [%iname%] NEQ [] (
-            if [%iname%] NEQ [""] (
-                set "nameParam=name=%iname%"
+        if ["%iname%"] NEQ [] (
+            if ["%iname%"] NEQ [""] (
+                set nameParam=name="%iname%"
             )
         )
         set command=netsh interface %ipv% show config !nameParam!

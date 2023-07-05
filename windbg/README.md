@@ -21,7 +21,7 @@ $ setNetKd.bat [/i <ip>] [/p <port>] [/k <key>] [/b <param>] [/r] [/v] [/h]
 * /p The connection port. Default: 50000.
 * /k The connection key. If not set, a random key will be generated.
 * /b The bus param. Open the property page for the network adapter :: details > Location information. Usually works without setting it.
-* /r Reboot system after 5 s.
+* /r: Reboot system with confirmation prompt.
 * /v Verbose mode
 * /h Print this
 

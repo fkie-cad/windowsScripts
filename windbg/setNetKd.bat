@@ -1,3 +1,10 @@
+::::::::::::::::::::::::::::::
+:: set up network debugging ::
+::                          ::
+:: vs 1.0.1                 ::
+:: changed: 03.07.2023      ::
+::::::::::::::::::::::::::::::
+
 @echo off
 SETLOCAL enabledelayedexpansion
 
@@ -5,11 +12,12 @@ set ip=
 set /a port=50000
 set key=
 set bus=
+set /a dhcp=0
 set /a reboot=0
 
 set prog_name=%~n0%~x0
 set user_dir="%~dp0"
-set verbose=0
+set /a verbose=0
 
 
 
@@ -39,6 +47,14 @@ GOTO :ParseParams
     IF /i "%~1"=="/p" (
         SET /a port=%~2
         SHIFT
+        goto reParseParams
+    )
+    IF /i "%~1"=="/d" (
+        SET /a dhcp=1
+        goto reParseParams
+    )
+    IF /i "%~1"=="/dhcp" (
+        SET /a dhcp=1
         goto reParseParams
     )
     IF /i "%~1"=="/r" (
@@ -79,6 +95,7 @@ GOTO :ParseParams
         echo port=%port%
         echo key=%key%
         echo busparams=%busparams%
+        echo dhcp=%dhcp%
         echo reboot=%reboot%
     )
 
@@ -90,9 +107,12 @@ GOTO :ParseParams
     
     call :edit
     
-    if %errorlevel% == 0 (
-    if %reboot% == 1 (
-        shutdown /r /t 5
+    if %errorlevel% EQU 0 (
+    if %reboot% EQU 1 (
+        SET /P confirm="[?] Reboot now? (Y/[N])?"
+        IF /I "!confirm!" EQU "Y" (
+            shutdown /r /t 0
+        )
     ))
 
     :mainend
@@ -102,18 +122,24 @@ GOTO :ParseParams
 
 :edit
     if NOT [%ip%] EQU [] (
+        set dhcp_v=
+        if %dhcp% EQU 0 (
+            set dhcp_v=nodhcp
+        ) 
         set key_kv=
         if not [%key%] EQU [] (
             set key_kv=key:%key%
         ) else (
             set key_kv=newkey
         )
-        bcdedit /dbgsettings net hostip:%ip% port:%port% !key_kv! nodhcp
+        set "cmd=bcdedit /dbgsettings net hostip:%ip% port:%port% !key_kv! !dhcp_v!"
     ) else (
         if NOT [%bus%] EQU [] (
-            bcdedit /set "{dbgsettings}" busparams %bus%
+            set "cmd=bcdedit /set "{dbgsettings}" busparams %bus%"
         )
     )
+    if %verbose% EQU 1 echo !cmd!
+    !cmd!
     exit /B %errorlevel%
 
 
@@ -123,7 +149,7 @@ GOTO :ParseParams
 
 
 :usage
-    echo Usage: %prog_name% [/i ^<ip^>] [/p ^<port^>] [/k ^<key^>] [/b ^<param^>] [/r] [/v] [/h]
+    echo Usage: %prog_name% [/i ^<ip^>] [/p ^<port^>] [/k ^<key^>] [/b ^<param^>] [/dhcp] [/r] [/v] [/h]
     exit /B 0
     
 :help
@@ -134,7 +160,8 @@ GOTO :ParseParams
     echo /p The connection port. Default: 50000.
     echo /k The connection key. If not set, a random key will be generated.
     echo /b The bus param of the network device. Usually works without setting it. If not: Open the property page for the network adapter :: details ^> Location information. 
-    echo /r Reboot system after 5 s.
+    echo /dhcp For DHCP.
+    echo /r Reboot system with prompt.
     echo /v Verbose mode
     echo /h Print this
 

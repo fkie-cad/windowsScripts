@@ -45,13 +45,15 @@ GOTO :ParseParams
         SET ipv=ipv6
         goto reParseParams
     )
-    IF /i "%~1"=="/v" (
-        SET verbose=1
-        goto reParseParams
-    )
     IF /i "%~1"=="/l" (
         SET /a list_interfaces=1
         goto reParseParams
+    )
+    IF /i "%~1"=="/v" (
+        SET /a verbose=1
+        goto reParseParams
+    ) ELSE (
+        echo Unknown option : "%~1"
     )
     
     :reParseParams
@@ -63,12 +65,13 @@ GOTO :ParseParams
 
 :main
 
-    if [%dns%] == [] goto usage
-    if [%dns%] == [""] goto usage
-    REM if [%alt%] == [] goto usage
-    REM if [%alt%] == [""] goto usage
-
-    if [%verbose%]==[1] (
+    set /a c=0
+    if not [%dns%] == [] set /a c=1
+    if not [%dns%] == [""] set /a c=1
+    if %list_interfaces% == 1 set /a c=1
+    if %c% == 0 goto usage
+    
+    if %verbose% == 1  (
         echo name=%name%
         echo dns=%dns%
         echo alt=%alt%
@@ -76,10 +79,11 @@ GOTO :ParseParams
         echo validate=%validate%
     )
 
-    if [%list_interfaces%]==[1] (
+    if %list_interfaces% == 1 (
         echo List interfaces:
         netsh interface %ipv% show interfaces
-        echo .
+        echo.
+        goto mainend
     )
     
     :checkPermissions

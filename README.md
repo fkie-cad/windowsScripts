@@ -29,9 +29,6 @@ For questions and bug reports feel free to open an issue.
 - [Windows Features/](#windows-features)
 - [createVHD](#createvhd)
 - [disableErrorReporting](#disableerrorreporting)
-- [disableIpV6](#disableipv6)
-    - [bat](#bat)
-    - [ps1](#ps1)
 - [disableSearchSuggestions](#disableSearchSuggestions)
 - [disableSuperFetch](#disablesuperfetch)
 - [disableTelemetry](#disabletelemetry)
@@ -120,18 +117,6 @@ $ disableErrorReporting.bat
 ```
 
 
-## disableIpV6
-### bat
-Disable IpV6 support globally
-```bash
-$ disableIpv6.bat
-```
-### ps1
-Disable IpV6 support on all adapters
-```bash
-ps> disableIpv6.ps1
-```
-
 
 ## disableSearchSuggestions
 Disable Windows search suggestions in start menu search.
@@ -201,7 +186,7 @@ Enable VBS: HVCI, CFG.
 
 ### Usage
 ```bash
-$ enableVBS.bat [/d] [/e] [/l] [/u] [/c] [/r]
+$ enableVBS.bat [/e] [/d] [/l] [/u] [/f] [/c] [/r] [/v] [/h]
 ```
 
 **Options:**
@@ -210,9 +195,16 @@ $ enableVBS.bat [/d] [/e] [/l] [/u] [/c] [/r]
 - /l: Lock protection settings: DeviceGuard, HypervisorEnforcedCodeIntegrity.
 - /u: Unlock protection settings: DeviceGuard, HypervisorEnforcedCodeIntegrity.
 
+**Modifiers:**
+- /f: Required Platform Security features flags: 
+       1=Secure Boot, 2=DMA.  
+       Default: 1.  
+       Core Isolation will only work, if the required features are active.  
+       The flags can be added/or'ed together.
+    
 **Other:**
 - /c: Check current registry values.
-- /r: Reboot system after 5 seconds.
+- /r: Reboot system with confirmation prompt.
 - /h: Print this.
 - /v: verbose mode.
     

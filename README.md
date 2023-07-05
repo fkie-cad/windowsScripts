@@ -29,12 +29,15 @@ For questions and bug reports feel free to open an issue.
 - [Windows Features/](#windows-features)
 - [createVHD](#createvhd)
 - [disableErrorReporting](#disableerrorreporting)
+- [disableIpV6](#disableipv6)
+    - [bat](#bat)
+    - [ps1](#ps1)
 - [disableSearchSuggestions](#disableSearchSuggestions)
 - [disableSuperFetch](#disablesuperfetch)
 - [disableTelemetry](#disabletelemetry)
 - [enableDbgPrint](#enabledbgprint)
 - [enableNumLock](#enablenumlock)
-- [enablePpl](#enableppl)
+- [enableLsaPpl](#enablelsappl)
 - [enableVBS](#enableVBS)
 - [enableWinUpdateOptions](#enableWinUpdateOptions)
 - [Get Windows product key](#get-windows-product-key)
@@ -117,6 +120,19 @@ $ disableErrorReporting.bat
 ```
 
 
+## disableIpV6
+
+### bat
+Disable IpV6 support globally
+```bash
+$ disableIpv6.bat
+```
+### ps1
+Disable IpV6 support on all adapters
+```bash
+ps> disableIpv6.ps1
+```
+
 
 ## disableSearchSuggestions
 Disable Windows search suggestions in start menu search.
@@ -164,13 +180,12 @@ $ enableNumLock.bat
 
 
 
-## enablePpl
-Enable LSA protection running as PPL.
+## enableLsaPpl
+Enable LSA (Local Security Authority) protection running as PPL (Protected Process Light).
 
 ### Usage
 ```bash
 $ enablePpl.bat
-$ shutdown -r -t 0
 ```
 
 **Remarks:**  
@@ -179,10 +194,12 @@ In this case, the value is stored in an NVRAM variable and the registry key beco
 Therefore, this complicated steps have to be followed:  
 https://www.microsoft.com/en-us/download/details.aspx?id=40897
 
+### Links
+https://learn.microsoft.com/en-us/windows-server/security/credentials-protection-and-management/credentials-protection-and-management  
 
 
 ## enableVBS
-Enable VBS: HVCI, CFG.
+Enable Virtualization-based Security (VBS).
 
 ### Usage
 ```bash
@@ -196,11 +213,10 @@ $ enableVBS.bat [/e] [/d] [/l] [/u] [/f] [/c] [/r] [/v] [/h]
 - /u: Unlock protection settings: DeviceGuard, HypervisorEnforcedCodeIntegrity.
 
 **Modifiers:**
-- /f: Required Platform Security features flags: 
-       1=Secure Boot, 2=DMA.  
-       Default: 1.  
-       Core Isolation will only work, if the required features are active.  
-       The flags can be added/or'ed together.
+- /f: Required Platform Security features flags:  
+       1=Secure Boot, 2=DMA. Default: 1.  
+       The flags can be added/or'ed together.  
+       Core Isolation will only work, if the required features are active.
     
 **Other:**
 - /c: Check current registry values.
@@ -208,6 +224,11 @@ $ enableVBS.bat [/e] [/d] [/l] [/u] [/f] [/c] [/r] [/v] [/h]
 - /h: Print this.
 - /v: verbose mode.
     
+
+### Links
+https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-vbs  
+https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-hvci-enablement  
+https://learn.microsoft.com/en-us/windows/security/threat-protection/device-guard/enable-virtualization-based-protection-of-code-integrity  
 
 
 

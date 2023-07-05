@@ -193,7 +193,9 @@ GOTO :ParseParams
     echo /u: Unlock protection settings: DeviceGuard, HypervisorEnforcedCodeIntegrity.
     echo.
     echo Modifiers:
-    echo /f: Required Platform Security features flags: 1=Secure Boot, 2=DMA. Default: 1. Core Isolation will only work, if the required features are active. The flags can be added/or'ed together.
+    echo /f: Required Platform Security features flags: 1=Secure Boot, 2=DMA. Default: 1. 
+    echo     The flags can be added/or'ed together.
+    echo     Core Isolation will only work, if the required features are active.
     echo.
     echo Other:
     echo /c: Check current registry values.

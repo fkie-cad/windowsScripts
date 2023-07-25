@@ -94,8 +94,8 @@ GOTO :ParseParams
         call
         goto mainend
     )
-
-    call :set
+ 
+    call :set %ipv% %name% %dns% %validate% %alt% 
     
 :mainend
     endlocal
@@ -104,7 +104,21 @@ GOTO :ParseParams
 
 :set
 setlocal
-    netsh interface %ipv% set dns name=%name% static %dns% validate=%validate%
+    set ipv=%1
+    set name=%2
+    set dns=%3
+    set validate=%4
+    set alt=%5
+    
+    if [%dns%] == [auto] (
+        set command=netsh interface %ipv% set dns name=%name% dhcp validate=%validate%
+    ) else (
+        set command=netsh interface %ipv% set dns name=%name% static %dns% validate=%validate%
+    )
+    if %verbose% == 1 (
+        echo %command%
+    )
+    %command%
     
     if not [%alt%] == [] (
         netsh interface %ipv% add dns name=%name% %alt% index=2 validate=%validate%
@@ -112,6 +126,7 @@ setlocal
     if [%verbose%]==[1] (
         netsh interface %ipv% show dns name=%name%
     )
+    
 endlocal
     exit /B %errorlevel%
     
@@ -125,9 +140,9 @@ endlocal
     call :usage
     echo.
     echo Options:
-    echo /d The preferred DNS server ip address as dotted string.
+    echo /d The preferred DNS server ip address as dotted string. Or 'auto' to automatically obtain dns server (dhcp). 
     echo /a The alternative DNS server ip address as dotted string. 
-    echo /n The interface name. Default: "Ethernet". If name does not work (Element not found), try replacing the name with the index found with /l.
+    echo /n The interface name. Default: "Ethernet". If name does not work (Element not found), try replacing the name with the index found by listing (/l) the interfaces.
     echo /c Validate the settings.
     echo /6 Set ip version to ipv6.
     echo /l List interfaces.

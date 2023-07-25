@@ -175,7 +175,7 @@ GOTO :ParseParams
     :: endlocal
 
 :usage
-    echo Usage: %prog_name% [/d ^<path^>] [/c ^<command^>] [/a1 ^<args^>] [/a2 ^<args^>] [/r] [/s] [/v]
+    echo Usage: %prog_name% [/d ^<path^>] [/c ^<command^>] [/a1 ^<args1^>] [/a2 ^<args2^>] [/r] [/s] [/v]
     exit /B 0
     
 :help
@@ -183,9 +183,9 @@ GOTO :ParseParams
     echo.
     echo Options:
     echo /d: The directory to iterate. Default ".\"
-    echo /c: An optional command to execute. Will be executed as "command args1 file args2".
-    echo /a1: Optional arguments to command. Will be executed as "command args1 file args2".
-    echo /a2: Optional arguments to command. Will be executed as "command args1 file args2".
+    echo /c: An optional command to execute. Will be executed as "command args1 %%file%% args2".
+    echo /a1: Optional arguments to command. Will be executed as "command args1 %%file%% args2".
+    echo /a2: Optional arguments to command. Will be executed as "command args1 %%file%% args2".
     echo /r: Recursive iteration flag.
     echo /s: Stepping mode. Requires confirmation before processing a file.
     echo.

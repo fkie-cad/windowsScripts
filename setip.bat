@@ -141,7 +141,7 @@ GOTO :ParseParams
     echo /i IP as dotted string. Or 'auto' to automatically obtain ip address (dhcp). 
     echo /g Gateway ip as dotted string.
     echo /m Network mask as dotted string. Default: 255.255.240.0
-    echo /n The interface name. If name does not work ("Element not found"), try replacing the name with the index found with the /l option.
+    echo /n The interface name. If name does not work ("Element not found"), try replacing the name with the index found by listing (/l) the interfaces.
     echo /l List interfaces
     echo /l Check interface configuration
     echo /v Verbose mode

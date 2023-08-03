@@ -185,7 +185,7 @@ Enable LSA (Local Security Authority) protection running as PPL (Protected Proce
 
 ### Usage
 ```bash
-$ enablePpl.bat
+$ enableLsaPpl.bat
 ```
 
 **Remarks:**  
@@ -214,9 +214,11 @@ $ enableVBS.bat [/e] [/d] [/l] [/u] [/f] [/c] [/r] [/v] [/h]
 
 **Modifiers:**
 - /f: Required Platform Security features flags:  
-       1=Secure Boot, 2=DMA. Default: 1.  
+       1=Secure Boot (default),  
+       2=DMA.  
        The flags can be added/or'ed together.  
        Core Isolation will only work, if the required features are active.
+       So if `/f 1` is set, but secure boot is not enabled (Bios settings), core isolation won't be activated.
     
 **Other:**
 - /c: Check current registry values.
@@ -242,9 +244,9 @@ $ enableWinUpdateOptions.bat
 
 Change value inside script
 - 2 – To notify for download and notify for install
-- 3  – To auto download and notify for install
-- 4  – To auto download and schedule the install
-- 5  – To allow local admin to choose setting
+- 3 – To auto download and notify for install
+- 4 – To auto download and schedule the install
+- 5 – To allow local admin to choose setting
 
 
 
@@ -262,15 +264,17 @@ Iterate files in a directory and execute a command with optional parameters.
 
 ### Usage
 ```bash
-$ iterate.bat [/d path] [/cmd command] [/r] [/v]
+$ iterate.bat [/d path] [/c command] [/a1 args1] [/a2 args2] [/r] [/s] [/v]
 ```
-Options:
+**Options:**
 - /d: The directory to iterate. Default ".\"
-- /r: Recursive iteration flag.
-- /c: An optional command to execute. Will be executed as "command args1 file args2".
-- /a1: Optional arguments to command. Will be executed as "command args1 file args2".
-- /a2: Optional arguments to command. Will be executed as "command args1 file args2".
+- /c: An optional command to execute. Will be executed as "command args1 %file% args2".
+- /a1: Optional arguments to command. Will be executed as "command args1 %file% args2".
+- /a2: Optional arguments to command. Will be executed as "command args1 %file% args2".
+- /r: Iterate directories recursively.
 - /s: Stepping mode. Requires confirmation before processing a file.
+
+**Other:**
 - /h: Print this.
 - /v: verbose mode.
 

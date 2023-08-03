@@ -186,7 +186,7 @@ GOTO :ParseParams
     echo /c: An optional command to execute. Will be executed as "command args1 %%file%% args2".
     echo /a1: Optional arguments to command. Will be executed as "command args1 %%file%% args2".
     echo /a2: Optional arguments to command. Will be executed as "command args1 %%file%% args2".
-    echo /r: Recursive iteration flag.
+    echo /r: Iterate directories recursively.
     echo /s: Stepping mode. Requires confirmation before processing a file.
     echo.
     echo Other:

@@ -43,6 +43,7 @@ For questions and bug reports feel free to open an issue.
 - [Get Windows product key](#get-windows-product-key)
 - [iterate](#iterate)
 - [killProcess](#killprocess)
+- [listFilesGt](#listFilesGt)
 - [makeiso](#makeiso)
 - [poweroff](#poweroff)
 - [reboot](#reboot)
@@ -294,6 +295,22 @@ Options:
 - /k: Kill provided `<pid>` or `<name>`. 
 - /d: Delete and kill the target `<name>`.
 - /h: Print this.
+
+
+
+## listFileGt
+PowerShell  
+List files in a directory greater than a value.
+
+### Usage
+```bash
+ps> listFilesGt.ps1 <Path> <MinSize> [<Unit>] [<Recursive>]
+```
+Options:
+- -Path: Directory path to list.
+- -MinSize: Minimum Size to list.
+- -Unit: Optional Unit: Bytes (B) [default], KiloBytes (K), MegaBytes (M), GigaBytes (G)
+- -Recursive: Iterate given directory Path recursively. (Optional)
 
 
 

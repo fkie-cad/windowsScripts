@@ -28,6 +28,7 @@ For questions and bug reports feel free to open an issue.
 - [WinPE/](#winpe)
 - [Windows Features/](#windows-features)
 - [createVHD](#createvhd)
+- [deleteFilesLT](#deletefileslt)
 - [disableErrorReporting](#disableerrorreporting)
 - [disableIpV6](#disableipv6)
     - [bat](#bat)
@@ -113,6 +114,24 @@ Options:
 * /l The letter of the volume of the (mounted) vhd. Defaults to V.
 
 
+
+## deleteFilesLT
+Delete all files in a directory with file size less than a minimum.
+
+### Usage
+```bash
+$ deleteFilesLT /d <targetPath> /m <minSize> /t <fileType> [/r] [/v] [/h]
+```
+Options:
+ * /d Target directory.
+ * /m Minimum file size in bytes. All files below the minimum file size will be deleted.
+ * /t File type filter. I.e. "log"
+ * /r Iterate dir recursively.
+ * /c Checking mode. Don't delete files, just print, what would be deleted, if this flag would not have been set.
+ * /v Verbose mode.
+
+
+
 
 ## disableErrorReporting
 Disable Windows error reporting by adding a "Disabled" key to the registry.

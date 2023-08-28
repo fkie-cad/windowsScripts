@@ -102,23 +102,24 @@ GOTO :ParseParams
         echo lock : %locked%
         echo check : %check%
     )
-    
-    :checkPermissions
-        :: echo checking Admin permissions...
-        net session >nul 2>&1
-        if %errorlevel% NEQ 0 (
-            echo [e] Admin permission required!
-            endlocal
-            exit /B 1
-        )
 
     if %enabled% EQU 0 (
         set /a rpsf=0
     )
 
     set /a "s=%enabled%+%disabled%+%locked%+%unlocked%"
+        
     if not %s% == 0 (
-
+    
+        :checkPermissions
+            :: echo checking Admin permissions...
+            net session >nul 2>&1
+            if %errorlevel% NEQ 0 (
+                echo [e] Admin permission required!
+                endlocal
+                exit /B 1
+            )
+        
         REM 1: HVCI and Credential Guard can be configured
         reg add "%deviceGuard%" /v "EnableVirtualizationBasedSecurity" /t REG_DWORD /d %enabled% /f
 
@@ -168,6 +169,7 @@ GOTO :ParseParams
     
     :: if %errorlevel% EQU 0 (
     if %reboot% EQU 1 (
+        echo.
         SET /P confirm="[?] Reboot now? (Y/[N])?"
         IF /I "!confirm!" EQU "Y" (
             shutdown /r /t 0

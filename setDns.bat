@@ -95,14 +95,14 @@ GOTO :ParseParams
         goto mainend
     )
  
-    call :set %ipv% %name% %dns% %validate% %alt% 
+    call :setDns %ipv% %name% %dns% %validate% %alt% 
     
 :mainend
     endlocal
     exit /B %errorlevel%
 
 
-:set
+:setDns
 setlocal
     set ipv=%1
     set name=%2

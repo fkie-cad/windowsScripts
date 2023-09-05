@@ -41,6 +41,7 @@ For questions and bug reports feel free to open an issue.
 - [enableLsaPpl](#enablelsappl)
 - [enableVBS](#enableVBS)
 - [enableWinUpdateOptions](#enableWinUpdateOptions)
+- [filesize](#filesize)
 - [Get Windows product key](#get-windows-product-key)
 - [iterate](#iterate)
 - [killProcess](#killprocess)
@@ -267,6 +268,16 @@ Change value inside script
 - 3 – To auto download and notify for install
 - 4 – To auto download and schedule the install
 - 5 – To allow local admin to choose setting
+
+
+
+## Filesize
+Print file size of one or more files
+
+### Usage
+```bash
+$ filesize.bat <file> ...
+```
 
 
 

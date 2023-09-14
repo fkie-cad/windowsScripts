@@ -1,10 +1,17 @@
-::::::::::::::::::::::::::
-:: enable vbs           ::
-:: Windows >=10 vs 1607 ::
-::                      ::
-:: vs: 1.0.1            ::
-:: changed: 05.07.2023  ::
-::::::::::::::::::::::::::
+:::::::::::::::::::::::::::::::::::::::::::
+:: enable vbs                            ::
+:: Windows >=10 vs 1607                  ::
+::                                       ::
+:: Enables/Disables                      ::
+:: CoreIsolation (HVCI), CredentialGuard ::
+:: Locks or unlocks it                   ::
+::                                       ::
+:: CredentialGuard is only "licensed"    ::
+:: in Windows Enterprise or Education    ::
+::                                       ::
+:: vs: 1.0.2                             ::
+:: changed: 14.09.2023                   ::
+:::::::::::::::::::::::::::::::::::::::::::
 
 
 @echo off
@@ -25,6 +32,7 @@ set "deviceGuard=HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard"
 set "scenarios=%deviceGuard%\Scenarios"
 set "hypervisorEnforcedCodeIntegrity=%scenarios%\HypervisorEnforcedCodeIntegrity"
 set "credentialGuard=%scenarios%\CredentialGuard"
+set "lsa=HKLM\SYSTEM\CurrentControlSet\Control\Lsa"
 
 
 GOTO :ParseParams
@@ -159,12 +167,23 @@ GOTO :ParseParams
             REM set errorlevel to 0
             call 
         )
+        
+        if %enabled% EQU 1 (
+            if %locked% EQU 1 (
+                reg add "%lsa%" /v "LsaCfgFlags" /t REG_DWORD /d 1 /f
+            ) else (
+                reg add "%lsa%" /v "LsaCfgFlags" /t REG_DWORD /d 2 /f
+            )
+        ) else (
+            reg add "%lsa%" /v "LsaCfgFlags" /t REG_DWORD /d 0 /f
+        )
     )
 
     if %check% EQU 1 (
         reg query %deviceGuard%
         reg query %hypervisorEnforcedCodeIntegrity%
         reg query %credentialGuard%
+        reg query %lsa% /v LsaCfgFlags
     )
     
     :: if %errorlevel% EQU 0 (
@@ -189,8 +208,8 @@ GOTO :ParseParams
     call :usage
     echo.
     echo Options:
-    echo /d: Disable protection: enabledVirtualizationBasedSecurity, RequirePlatformSecurityFeatures, HypervisorEnforcedCodeIntegrity.
-    echo /e: Enable protection: enabledVirtualizationBasedSecurity, RequirePlatformSecurityFeatures, HypervisorEnforcedCodeIntegrity.
+    echo /d: Disable protection: enabledVirtualizationBasedSecurity, RequirePlatformSecurityFeatures, HypervisorEnforcedCodeIntegrity, CredentialGuard.
+    echo /e: Enable protection: enabledVirtualizationBasedSecurity, RequirePlatformSecurityFeatures, HypervisorEnforcedCodeIntegrity, CredentialGuard.
     echo /l: Lock protection settings: DeviceGuard, HypervisorEnforcedCodeIntegrity.
     echo /u: Unlock protection settings: DeviceGuard, HypervisorEnforcedCodeIntegrity.
     echo.

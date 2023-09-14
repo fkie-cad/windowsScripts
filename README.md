@@ -1,5 +1,5 @@
 # Some useful (batch) scripts
-Last updated: 16.05.2023  
+Last updated: 14.09.2023  
 
 Most of the scripts are used in daily work and well tested. 
 Some of them are less tested.
@@ -228,8 +228,8 @@ $ enableVBS.bat [/e] [/d] [/l] [/u] [/f] [/c] [/r] [/v] [/h]
 ```
 
 **Options:**
-- /d: Disable protection: enabledVirtualizationBasedSecurity, RequirePlatformSecurityFeatures, HypervisorEnforcedCodeIntegrity.
-- /e: Enable protection: enabledVirtualizationBasedSecurity, RequirePlatformSecurityFeatures, HypervisorEnforcedCodeIntegrity.
+- /d: Disable protection: enabledVirtualizationBasedSecurity, RequirePlatformSecurityFeatures, HypervisorEnforcedCodeIntegrity, CredentialGuard.
+- /e: Enable protection: enabledVirtualizationBasedSecurity, RequirePlatformSecurityFeatures, HypervisorEnforcedCodeIntegrity, CredentialGuard.
 - /l: Lock protection settings: DeviceGuard, HypervisorEnforcedCodeIntegrity.
 - /u: Unlock protection settings: DeviceGuard, HypervisorEnforcedCodeIntegrity.
 
@@ -247,6 +247,11 @@ $ enableVBS.bat [/e] [/d] [/l] [/u] [/f] [/c] [/r] [/v] [/h]
 - /h: Print this.
 - /v: verbose mode.
     
+**Info**  
+CredentialGuard will only be "licensed" in Windows Enterprise or Windows Education Editions.
+Otherwise it will start with a "WinInit" Event 13: "Credential Guard was started and will protect LSA credentials."
+But after that there occurs a "Lsa (LsaSrv)" warning 6147: "Credential Guard is configured to run, but is not licensed. Credential Guard was not started."
+Even though it is shown as running in the registry and msinfo32 app.
 
 ### Links
 https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-vbs  

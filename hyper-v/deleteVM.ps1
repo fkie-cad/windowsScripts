@@ -9,10 +9,10 @@ Write-Output ("Stopping VM " + $VmName)
 $Vm | Stop-VM -Force -WarningAction Ignore
 
 $Obj = Get-VM $VmName | Select-Object -ExpandProperty HardDrives
-$HDPath=$A.Path
+$HDPath=$Obj.Path
 
 Write-Output ("Removing HD " + $HDPath)
-Remove-Item -Path "$B"
+Remove-Item -Path "$HDPath"
 
 Write-Output ("Removing VM " + $VmName)
 Remove-VM $Vm -Force -WarningAction Ignore

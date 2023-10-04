@@ -242,7 +242,7 @@ $ enableVBS.bat [/e] [/d] [/l] [/u] [/f] [/c] [/r] [/v] [/h]
        So if `/f 1` is set, but secure boot is not enabled (Bios settings), core isolation won't be activated.
     
 **Other:**
-- /c: Check current registry values.
+- /c: Check current registry values and event log.
 - /r: Reboot system with confirmation prompt.
 - /h: Print this.
 - /v: verbose mode.

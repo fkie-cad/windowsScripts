@@ -184,6 +184,9 @@ GOTO :ParseParams
         reg query %hypervisorEnforcedCodeIntegrity%
         reg query %credentialGuard%
         reg query %lsa% /v LsaCfgFlags
+        
+        wevtutil qe System /c:3 /f:Text "/q:*[System[Provider[@Name='Microsoft-Windows-Wininit']]]" /rd:true
+        wevtutil qe System /c:1 /f:Text "/q:*[System[Provider[@Name='LsaSrv']]]" /rd:true
     )
     
     :: if %errorlevel% EQU 0 (

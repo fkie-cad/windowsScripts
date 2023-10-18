@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-set name="Ethernet"
+set iname=
 set dns=
 set alt=
 set ipv=ipv4
@@ -33,7 +33,7 @@ GOTO :ParseParams
         goto reParseParams
     )
     IF /i "%~1"=="/n" (
-        SET name=%2
+        SET iname=%2
         SHIFT
         goto reParseParams
     )
@@ -66,13 +66,14 @@ GOTO :ParseParams
 :main
 
     set /a c=0
-    if not [%dns%] == [] set /a c=1
-    if not [%dns%] == [""] set /a c=1
-    if %list_interfaces% == 1 set /a c=1
-    if %c% == 0 goto usage
+    :: if not [%iname%] == [] set /a c=1
+    :: if not [%dns%] == [] set /a c=1
+    :: if not [%dns%] == [""] set /a c=1
+    :: if %list_interfaces% == 1 set /a c=1
+    if %c% == 1 goto usage
     
     if %verbose% == 1  (
-        echo name=%name%
+        echo name=%iname%
         echo dns=%dns%
         echo alt=%alt%
         echo ipv=%ipv%
@@ -95,7 +96,11 @@ GOTO :ParseParams
         goto mainend
     )
  
-    call :setDns %ipv% %name% %dns% %validate% %alt% 
+    if not [%dns%] == [] (
+        call :setDns %ipv% %iname% %dns% %validate% %alt% 
+    ) else (
+        call :checkDns %ipv% %iname%
+    )
     
 :mainend
     endlocal
@@ -105,15 +110,20 @@ GOTO :ParseParams
 :setDns
 setlocal
     set ipv=%1
-    set name=%2
+    set iname=%2
     set dns=%3
     set validate=%4
     set alt=%5
     
+    if [%iname%] == [] (
+        echo [e] No interface name or id set!
+        exit /b 1
+    )
+    
     if [%dns%] == [auto] (
-        set command=netsh interface %ipv% set dns name=%name% dhcp validate=%validate%
+        set command=netsh interface %ipv% set dns name=%iname% dhcp validate=%validate%
     ) else (
-        set command=netsh interface %ipv% set dns name=%name% static %dns% validate=%validate%
+        set command=netsh interface %ipv% set dns name=%iname% static %dns% validate=%validate%
     )
     if %verbose% == 1 (
         echo %command%
@@ -121,16 +131,29 @@ setlocal
     %command%
     
     if not [%alt%] == [] (
-        netsh interface %ipv% add dns name=%name% %alt% index=2 validate=%validate%
+        netsh interface %ipv% add dns name=%iname% %alt% index=2 validate=%validate%
     )
     if [%verbose%]==[1] (
-        netsh interface %ipv% show dns name=%name%
+        call :checkDns %ipv% %iname%
     )
     
 endlocal
     exit /B %errorlevel%
     
 
+:checkDns
+setlocal
+    set ipv=%1
+    set iname=%2
+    
+    if [%iname%] == [] (
+        netsh interface %ipv% show dns
+    ) else (
+        netsh interface %ipv% show dns name=%iname%
+    )
+    
+endlocal
+    exit /B %errorlevel%
     
 :usage
     echo Usage: %prog_name% /d ^<dnsIp^> [/n ^<name^>] [/a ^<altIp^>] [/6] [/c] [/l] [/v] [/h]
@@ -142,7 +165,7 @@ endlocal
     echo Options:
     echo /d The preferred DNS server ip address as dotted string. Or 'auto' to automatically obtain dns server (dhcp). 
     echo /a The alternative DNS server ip address as dotted string. 
-    echo /n The interface name. Default: "Ethernet". If name does not work (Element not found), try replacing the name with the index found by listing (/l) the interfaces.
+    echo /n The interface name. If name does not work (Element not found), try replacing the name with the index found by listing (/l) the interfaces.
     echo /c Validate the settings.
     echo /6 Set ip version to ipv6.
     echo /l List interfaces.

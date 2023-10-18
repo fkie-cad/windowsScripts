@@ -132,7 +132,7 @@ Options:
  * /v Verbose mode.
 
 
-
+
 
 ## disableErrorReporting
 Disable Windows error reporting by adding a "Disabled" key to the registry.
@@ -249,8 +249,10 @@ $ enableVBS.bat [/e] [/d] [/l] [/u] [/f] [/c] [/r] [/v] [/h]
     
 **Info**  
 CredentialGuard will only be "licensed" in Windows Enterprise or Windows Education Editions.
-Otherwise it will start with a "WinInit" Event 13: "Credential Guard was started and will protect LSA credentials."
-But after that there occurs a "Lsa (LsaSrv)" warning 6147: "Credential Guard is configured to run, but is not licensed. Credential Guard was not started."
+Otherwise it will start with a "WinInit" Event 13: 
+"Credential Guard was started and will protect LSA credentials."
+But after that there occurs a "Lsa (LsaSrv)" warning 6147: 
+"Credential Guard is configured to run, but is not licensed. Credential Guard was not started."
 Even though it is shown as running in the registry and msinfo32 app.
 
 ### Links

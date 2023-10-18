@@ -1,3 +1,4 @@
+@echo off
 setlocal
 
 :check_Permissions
@@ -7,7 +8,8 @@ setlocal
         endlocal
         exit /B %errorlevel%
     )
-    
+
+
 :: clear defender event log
 wevtutil cl "Microsoft-Windows-Windows Defender/Operational"
 wevtutil cl "Microsoft-Windows-Windows Defender/WHC"

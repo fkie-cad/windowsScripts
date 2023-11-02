@@ -206,7 +206,7 @@ Enable LSA (Local Security Authority) protection running as PPL (Protected Proce
 
 ### Usage
 ```bash
-$ enableLsaPpl.bat
+$ enableLsaPpl.bat [/d|/e] [/p <path>]
 ```
 
 **Remarks:**  
@@ -214,6 +214,10 @@ Disabling it is not as easy as deleting the registry key (if secure boot is enab
 In this case, the value is stored in an NVRAM variable and the registry key becomes meaningless after the reboot.
 Therefore, this complicated steps have to be followed:  
 https://www.microsoft.com/en-us/download/details.aspx?id=40897
+
+The script tries to do it automatically with the `/d` option.
+Nonetheless the required [Local Security Authority (LSA) Protected Process Opt-out tool](https://www.microsoft.com/en-us/download/details.aspx?id=40897)  has to be downloaded first.
+
 
 ### Links
 https://learn.microsoft.com/en-us/windows-server/security/credentials-protection-and-management/credentials-protection-and-management  

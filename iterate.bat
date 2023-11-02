@@ -2,8 +2,8 @@
 :: iterate diretory of files and execute an optional command as
 :: "command file"
 ::
-:: version: 1.0.1
-:: last changed: 10.10.2022
+:: version: 1.0.2
+:: last changed: 02.11.2023
 ::
 
 @echo off
@@ -19,6 +19,7 @@ set args1=
 set args2=
 set /a r=0
 set /a mode=0
+set mask="*"
 
 set /a verbose=0
 
@@ -77,6 +78,18 @@ GOTO :ParseParams
         goto reParseParams
     )
     
+
+    IF /i "%~1"=="/m" (
+        SET mask="%~2"
+        SHIFT
+        goto reParseParams
+    )
+    IF /i "%~1"=="/mask" (
+        SET mask="%~2"
+        SHIFT
+        goto reParseParams
+    )
+    
     IF /i "%~1"=="/r" (
         SET /a r=1
         goto reParseParams
@@ -122,7 +135,7 @@ GOTO :ParseParams
     )
 
     if %r% == 0 (
-        for %%p in (%dir%\*) do (
+        for %%p in (%dir%\%mask%) do (
             
             if %mode% == %STEPPING_MODE% (
                 pause
@@ -139,7 +152,7 @@ GOTO :ParseParams
             echo.
         )
     ) else (
-        for /r %dir% %%p in (*) do (
+        for /r %dir% %%p in (%mask%) do (
             
             if %mode% == %STEPPING_MODE% (
                 pause
@@ -175,7 +188,7 @@ GOTO :ParseParams
     :: endlocal
 
 :usage
-    echo Usage: %prog_name% [/d ^<path^>] [/c ^<command^>] [/a1 ^<args1^>] [/a2 ^<args2^>] [/r] [/s] [/v]
+    echo Usage: %prog_name% [/d ^<path^>] [/c ^<command^>] [/a1 ^<args1^>] [/a2 ^<args2^>] [/m ^<mask^>] [/r] [/s] [/v]
     exit /B 0
     
 :help
@@ -188,6 +201,7 @@ GOTO :ParseParams
     echo /a2: Optional arguments to command. Will be executed as "command args1 %%file%% args2".
     echo /r: Iterate directories recursively.
     echo /s: Stepping mode. Requires confirmation before processing a file.
+    echo /m: Search mask. I.e. "/m *.exe" to only list exe files.
     echo.
     echo Other:
     echo /h: Print this.

@@ -29,17 +29,26 @@ $ blitzDingsDefender.bat
 
 **Windows 10 - 10.0.19045.**  
 - Manually disable "Tamper Protection" in Windows Security > Virus & Thread Protection > Virus & Thread Protection Settings > Manage Settings  
-  (So far no cmd way is know for that.)
+  (So far no cmd way is known for that.)
 - Manually disable "Real Time Protection" in Windows Security > Virus & Thread Protection > Virus & Thread Protection Settings > Manage Settings  
-  There is a cmd way, but the setting window is already open anyway.
-- Add a registry key `reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 0x00000001 /f`
-  This prevents automatic restarting of WindowsDefender after a reboot. 
+  There is a cmd way, but the settings window is already open anyway.
+- Add a registry key  
+  `reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 0x01 /f`  
+  `reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiVirus /t REG_DWORD /d 0x01 /f`  
+  `reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v ServiceStartStates /t REG_DWORD /d 0x00 /f`  
+  This prevents automatic restarting of WindowsDefender after a reboot.  
+  Just the first key may be sufficient.
 - Reboot
 - Run `blitzDingsDefender.bat`
-- Remove registry key `reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /f`  
-- Reboot
+- (Optional)  
+    Delete added keys:  
+  `reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /f`  
+  `reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiVirus /f`  
+  `reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v ServiceStartStates /f`  
+  They will be changed to non "tampered" values anyway, if not deleted, after resetting "Tamper Protection".
 - Manually enable "Tamper Protection" in Windows Security > Virus & Thread Protection > Virus & Thread Protection Settings > Manage Settings
 - If not already automatically enabled, manually enable "Real Time Protection" in Windows Security > Virus & Thread Protection > Virus & Thread Protection Settings > Manage Settings
+- Reboot
 
 **Windows 11 steps**  
 Found in https://www.alitajran.com/turn-off-windows-defender-windows-11-permanently/  

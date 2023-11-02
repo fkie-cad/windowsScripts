@@ -111,18 +111,27 @@ GOTO :ParseParams
         exit /B 1
     )
 
-    if [%ip%] NEQ [] (
-    if [%iname%] NEQ [] (
-        if [%ip%] == [auto] (
-            set command=netsh interface %ipv% set address name=%iname% dhcp
-        ) else (
-            set command=netsh interface %ipv% set address name=%iname% static %ip% %nwm% %gw%
-        )
-        if %verbose% == 1 (
-            echo !command!
-        )
-        !command!
-    ))
+    :: error checks
+    if [%ip%] EQU [] (
+        echo [e] No ip given!
+        exit /B 1
+    )
+    if [%iname%] EQU [] (
+        echo [e] No interface name or id given!
+        exit /B 1
+    )
+    
+    
+    
+    if [%ip%] == [auto] (
+        set command=netsh interface %ipv% set address name=%iname% dhcp
+    ) else (
+        set command=netsh interface %ipv% set address name=%iname% static %ip% %nwm% %gw%
+    )
+    if %verbose% == 1 (
+        echo !command!
+    )
+    !command!
     
     :mainend
     if %verbose% == 1 echo exit status : %errorlevel%

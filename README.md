@@ -19,6 +19,7 @@ For questions and bug reports feel free to open an issue.
 ## Contents
 - [blitzDingser/](#blitzdingser)
 - [crypto/](#crypto)
+- [edge/](#edge)
 - [explorer/](#explorer)
 - [hyper-v/](#hyper-v)
 - [pdb/](#pdb)
@@ -203,6 +204,7 @@ $ enableNumLock.bat
 
 ## enableLsaPpl
 Enable LSA (Local Security Authority) protection running as PPL (Protected Process Light).
+Protects from dumping passwords (hashes) with Mimikatz for example.
 
 ### Usage
 ```bash

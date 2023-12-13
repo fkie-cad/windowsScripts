@@ -33,7 +33,8 @@ set "scenarios=%deviceGuard%\Scenarios"
 set "hypervisorEnforcedCodeIntegrity=%scenarios%\HypervisorEnforcedCodeIntegrity"
 set "credentialGuard=%scenarios%\CredentialGuard"
 set "lsa=HKLM\SYSTEM\CurrentControlSet\Control\Lsa"
-
+set "vdbl=HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config"
+:: VulnerableDriverBlocklistEnable 
 
 GOTO :ParseParams
 
@@ -120,7 +121,6 @@ GOTO :ParseParams
     if not %s% == 0 (
     
         :checkPermissions
-            :: echo checking Admin permissions...
             net session >nul 2>&1
             if %errorlevel% NEQ 0 (
                 echo [e] Admin permission required!

@@ -19,6 +19,7 @@ set args1=
 set args2=
 set /a r=0
 set /a mode=0
+set /a execute=0
 set mask="*"
 
 set /a verbose=0
@@ -107,6 +108,15 @@ GOTO :ParseParams
         SET /a mode=STEPPING_MODE
         goto reParseParams
     )
+    
+    IF /i "%~1"=="/x" (
+        SET /a execute=1
+        goto reParseParams
+    )
+    IF /i "%~1"=="/execute" (
+        SET /a execute=1
+        goto reParseParams
+    )
 
     IF /i "%~1"=="/v" (
         SET /a verbose=1
@@ -124,6 +134,7 @@ GOTO :ParseParams
     if %verbose% == 1 (
         echo dir = %dir%
         echo cmd = %cmd%
+        echo execute = %execute%
         echo r = %r%
         echo mode = %mode%
         echo.
@@ -141,14 +152,15 @@ GOTO :ParseParams
                 pause
             )
             
-            :: call :printSep "%%p"
             echo ---------------------------
             echo %%p
-            :: call :printSep "%%p"
             echo ---------------------------
-            if not [%cmd%] == [] (
+            if [%cmd%] NEQ [] (
                 %cmd:~1,-1% %args1% "%%p" %args2%
-            )
+            ) else (
+            if %execute% EQU 1 (
+                "%%p"
+            ))
             echo.
         )
     ) else (
@@ -158,14 +170,15 @@ GOTO :ParseParams
                 pause
             )
             
-            :: call :printSep "%%p"
             echo ---------------------------
             echo %%p
-            :: call :printSep "%%p"
             echo ---------------------------
-            if not [%cmd%] == [] (
+            if [%cmd%] NEQ [] (
                 %cmd:~1,-1% %args1% "%%p" %args2%
-            )
+            ) else (
+            if %execute% EQU 1 (
+                "%%p"
+            ))
             echo.
         )
     )

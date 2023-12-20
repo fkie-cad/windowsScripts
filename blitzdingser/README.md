@@ -68,11 +68,11 @@ Found in https://www.alitajran.com/turn-off-windows-defender-windows-11-permanen
   - Goto "boot", select "Safe Boot, minimal" 
   - Restart
 - Two options
-    a) Open autoruns and deselect "WinDefend" service.
+    a. Open autoruns and deselect "WinDefend" service.
         - Select "Services" tab
         - Uncheck "Options > Hide Windows Entries"
         - Uncheck "WinDefend"
-    b) Change registry entry of Windows Defender
+    b. Change registry entry of Windows Defender
         - `reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WinDefend" /v Start /t REG_DWORD /d 4 /f`  
             4 means disabled, normally it's 2 = Auto Start.
 - Boot into normal mode
@@ -83,6 +83,7 @@ Found in https://www.alitajran.com/turn-off-windows-defender-windows-11-permanen
 - Run `$ blitzDingsDefender.bat`
 - If not working, try the steps above a second time and don't wait too long after the reboot into normal mode.
 - To undo the changes just reenable "Tamper Protection" and "Real Time Protection" and reboot.
+    Confirm that `reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WinDefend" /v start` is set to `2`.
 - If not working yet, undo the service changes done with autorun or in the registry by again booting into "safe mode".
 
 Another way is found here, but seems to not work:  

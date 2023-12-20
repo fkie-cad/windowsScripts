@@ -33,8 +33,10 @@ set "scenarios=%deviceGuard%\Scenarios"
 set "hypervisorEnforcedCodeIntegrity=%scenarios%\HypervisorEnforcedCodeIntegrity"
 set "credentialGuard=%scenarios%\CredentialGuard"
 set "lsa=HKLM\SYSTEM\CurrentControlSet\Control\Lsa"
-set "vdbl=HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config"
-:: VulnerableDriverBlocklistEnable 
+:: set "vdbl=HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config"
+:: VulnerableDriverBlocklistEnable = 1
+:: set "vdbl=HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\State"
+:: HVCIEnabled = 1 
 
 GOTO :ParseParams
 
@@ -192,7 +194,7 @@ GOTO :ParseParams
     :: if %errorlevel% EQU 0 (
     if %reboot% EQU 1 (
         echo.
-        SET /P confirm="[?] Reboot now? (Y/[N])?"
+        SET /P confirm="[?] Reboot now? (Y/[N])"
         IF /I "!confirm!" EQU "Y" (
             shutdown /r /t 0
         )

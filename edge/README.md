@@ -22,3 +22,9 @@ Some interesting settings are still missing.
 ```bash
 $ baselinesettings.bat
 ```
+
+### Warnings
+`BrowserCodeIntegritySetting` set to `2` might break some browser plugins.
+["This policy controls the use of code integrity guard in the browser process, which only allows Microsoft signed binaries to load."](https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#browsercodeintegritysetting)
+If so, setting it to `0` will solve the issue. 
+(`1` is obsolete as of version 110.)

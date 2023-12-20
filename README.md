@@ -1,15 +1,15 @@
 # Some useful (batch) scripts
-Last updated: 14.09.2023  
+Last updated: 20.12.2023  
 
-Most of the scripts are used in daily work and well tested. 
+Most of the scripts are used in daily work and are well tested. 
 Some of them are less tested.
 They all may have bugs or just work in some specific environments or for specific tasks.  
 
-If mainly copy-and-pasted from somewhere else, it should be noted.
+If mainly copy-and-pasted from somewhere else, it should have been noted in the script or the description.
 
 Use them at your own risk without any warranty.
 
-Some change registry values or other system settings.  
+Some/Most change registry values or other system settings.  
 **So use them at your own risk, read them carefully beforehand, make back ups of your system before using them or test them on a VM.**
 
 Mostly there are pure batch scripts, some are ps1 some are py.
@@ -51,6 +51,7 @@ For questions and bug reports feel free to open an issue.
 - [poweroff](#poweroff)
 - [reboot](#reboot)
 - [setDNS](#setdns)
+- [settings](#settings)
 - [setIp](#setip)
 - [startNtProg](#startntprog)
 - [copyright, credits & contact](#copyright,-credits-&-contact)
@@ -414,6 +415,8 @@ Options:
 * /l List interfaces.
 * /v Verbose mode
 
+
+
 ## setIp
 Set ip, mask and gateway of a network device.
 
@@ -429,6 +432,20 @@ Options:
 * /l List interfaces
 * /c List interface configuration
 * /v Verbose mode
+
+
+
+## settings
+Set some Windows privacy and security related settings for setting up a system.
+Some are still missing.
+
+### Usage
+```bash
+$ settings.bat 
+```
+
+Has to be run as Admin.
+If current user and admin user are different, the required user id has to be set manually at `set user_sid=` and the following line has to be deleted.
 
 
 

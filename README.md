@@ -1,5 +1,5 @@
 # Some useful (batch) scripts
-Last updated: 20.12.2023  
+Last updated: 22.12.2023  
 
 Most of the scripts are used in daily work and are well tested. 
 Some of them are less tested.
@@ -28,6 +28,7 @@ For questions and bug reports feel free to open an issue.
 - [WinDbg/](#windbg)
 - [WinPE/](#winpe)
 - [Windows Features/](#windows-features)
+- [createBootStick](#createbootstick)
 - [createVHD](#createvhd)
 - [deleteFilesLT](#deletefileslt)
 - [disableErrorReporting](#disableerrorreporting)
@@ -98,6 +99,27 @@ Some WinPe related scripts to create, change or init an image.
 ## Windows Features/
 Scripts to add Windows professional features to non professional builds.  
 [windowsFeatures/README.md](windowsFeatures/README.md)
+
+
+
+## createBootStick
+Creates a bootable usb stick out of an iso file.
+
+### Usage
+```bash
+$ createBootStick.bat /if ^<path^> [/mount^|/extract^|/source] [/ul X] [/v]
+```
+Options:
+- /if Path to input iso file or folder.
+- /ul Desired drive letter of boot usb stick. Default: X.
+
+Modes:
+- /mount Mounting mode: Mounts the iso file and copies its contents over to the usb drive.
+- /extract Extracting mode: Uses 7z to extract the contents of the iso file and copies them over to the usb drive. (7z has to be installed and available in the PATH/current environment.)
+- /source Source mode: Uses a path to an already extracted iso and copies them over to the usb drive.
+
+Other:
+- /v More verbose mode.
 
 
 

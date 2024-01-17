@@ -3,7 +3,7 @@ setlocal
 
 set in=""
 set out=""
-set oscdimg="c:\Program Files (x86)\Windows Kits\10\Assessment and Deployment Kit\Deployment Tools\amd64\oscdimg\oscdimg.exe"
+set "oscdimg=c:\Program Files (x86)\Windows Kits\10\Assessment and Deployment Kit\Deployment Tools\amd64\oscdimg\oscdimg.exe"
 
 set prog_name=%~n0%~x0
 set user_dir="%~dp0"
@@ -50,7 +50,11 @@ GOTO :ParseParams
 
     call :isDir %in%
     if [%errorlevel%] == [0] (
-        echo %in% is not a directory!
+        echo [e] %in% is not a directory!
+        goto usage
+    )
+    if NOT EXIST "%oscdimg%" (
+        echo [e] "%oscdimg%" not found!
         goto usage
     )
 
@@ -60,7 +64,7 @@ GOTO :ParseParams
         echo oscdimg=%oscdimg%
     )
 
-    %oscdimg% -u2 %in% %out% 
+    "%oscdimg%" -u2 %in% %out% 
 
     exit /B 0
 

@@ -33,7 +33,6 @@ For questions and bug reports feel free to open an issue.
 - [deleteFilesLT](#deletefileslt)
 - [disableErrorReporting](#disableerrorreporting)
 - [disableIpV6](#disableipv6)
-    - [bat](#bat)
     - [ps1](#ps1)
 - [disableSearchSuggestions](#disableSearchSuggestions)
 - [disableSuperFetch](#disablesuperfetch)
@@ -167,16 +166,14 @@ $ disableErrorReporting.bat
 
 ## disableIpV6
 
-### bat
-Disable IpV6 support globally
-```bash
-$ disableIpv6.bat
-```
 ### ps1
-Disable IpV6 support on all adapters
+Disable/enable IpV6 support on all or specified adapters
 ```bash
-ps> disableIpv6.ps1
+ps> disableIpv6.ps1 [<mode>] [<name>]
 ```
+Options:
+- mode: Disable ("disable"), enable ("enable") or list ("list") specified adapters. Default: disable
+- name: Specify an adapter name. Default: "\*", i.e. all adapters.
 
 
 ## disableSearchSuggestions
@@ -197,7 +194,7 @@ Options:
 - /c Check registry entry.
 - /v Verbose mode
 
-    
+
 
 ## disableTelemetry
 Too be extended Windows telemetry disabling script.  

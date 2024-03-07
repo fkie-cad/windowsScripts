@@ -1,6 +1,11 @@
 @echo off
 setlocal enabledelayedexpansion
 
+if [%1]==[] goto end
+
+echo bytes ^| filename
+echo ----------------------
+    
 :ParseParams
 
     if [%1]==[] goto end

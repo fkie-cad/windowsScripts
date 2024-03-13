@@ -1,5 +1,5 @@
 echo off
-setlocal
+setlocal enabledelayedexpansion
 
 set in=""
 set out=""
@@ -7,8 +7,9 @@ set "oscdimg=c:\Program Files (x86)\Windows Kits\10\Assessment and Deployment Ki
 
 set prog_name=%~n0%~x0
 set user_dir="%~dp0"
-set verbose=0
+set /a verbose=0
 
+if [%1]==[] goto help
 GOTO :ParseParams
 
 :ParseParams
@@ -18,17 +19,17 @@ GOTO :ParseParams
     if /i [%1]==[/help] goto help
 
     IF /i "%~1"=="/i" (
-        SET in=%2
+        SET "in=%~2"
         SHIFT
         goto reParseParams
     )
     IF /i "%~1"=="/o" (
-        SET out=%2
+        SET "out=%~2"
         SHIFT
         goto reParseParams
     )
     IF /i "%~1"=="/v" (
-        SET verbose=1
+        SET /a verbose=1
         goto reParseParams
     ) else (
         echo Skipping unknown option "%~1"
@@ -48,7 +49,7 @@ GOTO :ParseParams
     if [%out%] == [] goto usage
     if [%out%] == [""] goto usage
 
-    call :isDir %in%
+    call :isDir "%in%"
     if [%errorlevel%] == [0] (
         echo [e] %in% is not a directory!
         goto usage
@@ -58,13 +59,13 @@ GOTO :ParseParams
         goto usage
     )
 
-    if [%verbose%]==[1] (
-        echo in=%in%
-        echo out=%out%
-        echo oscdimg=%oscdimg%
+    if %verbose% EQU 1 (
+        echo in = %in%
+        echo out = %out%
+        echo oscdimg = !oscdimg!
     )
 
-    "%oscdimg%" -u2 %in% %out% 
+    "%oscdimg%" -u2 "%in%" "%out%"
 
     exit /B 0
 

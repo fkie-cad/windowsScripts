@@ -20,7 +20,7 @@
 Param (
     [Parameter(Mandatory=$false, Position=0)]
     [ValidateNotNull()]
-    [string]$Mode="enable",
+    [string]$Mode="disable",
     [Parameter(Mandatory=$false, Position=1)]
     [ValidateNotNull()]
     [string]$Name="*"

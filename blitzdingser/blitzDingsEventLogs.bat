@@ -85,6 +85,7 @@ GOTO :ParseParams
     
     call :checkPermissions
     if NOT %errorLevel% EQU 0 (
+        echo [e] Admin permissions required.
         goto end
     )
 
@@ -136,14 +137,6 @@ GOTO :ParseParams
     )
 
     net session >nul 2>&1
-    if %errorLevel% == 0 (
-        if %verbose% EQU 1 (
-            echo Success: Administrative permissions confirmed.
-            echo.
-        )
-    ) else (
-        echo [e] Current permissions inadequate.
-    )
     exit /b %errorLevel%
 
 

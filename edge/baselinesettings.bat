@@ -218,7 +218,7 @@ rem 1 - Allow extensions from other stores
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "ControlDefaultStateOfAllowExtensionFromOtherStoresSettingEnabled" /t REG_DWORD /d "0" /f
 
 rem 1 - DeveloperToolsAllowed / 2 - DeveloperToolsDisallowed (Don't allow using the developer tools)
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "DeveloperToolsAvailability" /t REG_DWORD /d "2" /f
+REM reg add "%hkx%\%MSEdgePoliciesPath%" /v "DeveloperToolsAvailability" /t REG_DWORD /d "2" /f
 
 rem 1 - Blocks external extensions from being installed
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "BlockExternalExtensions" /t REG_DWORD /d "1" /f

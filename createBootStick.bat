@@ -190,7 +190,7 @@ setlocal
     
     diskpart /s %dp_file%
     
-ENDLOCAL
+    ENDLOCAL
     exit /B %errorlevel%
 
 
@@ -218,7 +218,7 @@ setlocal
     
     diskpart /s %dp_file%
     
-ENDLOCAL
+    ENDLOCAL
     exit /B %errorlevel%
 
 
@@ -230,7 +230,7 @@ setlocal
     
     powershell Mount-DiskImage -ImagePath "%imagePath%"
     
-ENDLOCAL
+    ENDLOCAL
     exit /B %errorlevel%
 
 
@@ -242,7 +242,7 @@ setlocal
     call :VPrint "unmounting %imagePath%"
     
     powershell Dismount-DiskImage -ImagePath "%imagePath%"
-ENDLOCAL
+    ENDLOCAL
     exit /B %errorlevel%
 
 
@@ -255,7 +255,7 @@ setlocal
     
     7z x %archive% -o%outPath%
 
-ENDLOCAL
+    ENDLOCAL
     exit /B %errorlevel%
 
 
@@ -268,7 +268,7 @@ setlocal
     
     xcopy "%source%\*.*" "%target%:\" /E /F /H
 
-ENDLOCAL
+    ENDLOCAL
     exit /B %errorlevel%
 
 
@@ -285,7 +285,7 @@ setlocal
     
     del %dp_file%
     
-ENDLOCAL
+    ENDLOCAL
     exit /B %errorlevel%
 
 
@@ -298,12 +298,18 @@ ENDLOCAL
     setlocal
     set v=%~1
     if [%v:~0,-1%\] == [%v%] (
-        if exist %v% exit /b 1
+        if exist %v% (
+            endlocal
+            exit /b 1
+        )
     ) else (
-        if exist %v%\ exit /b 1
+        if exist %v%\ (
+            endlocal
+            exit /b 1
+        )
     )
-    exit /b 0
     endlocal
+    exit /b 0
 
 
 :usage

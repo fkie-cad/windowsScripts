@@ -1,4 +1,5 @@
 :::::::::::::::::::::::::::::::::::::::::::
+::                                       ::
 :: enable vbs                            ::
 :: Windows >=10 vs 1607                  ::
 ::                                       ::
@@ -9,8 +10,9 @@
 :: CredentialGuard is only "licensed"    ::
 :: in Windows Enterprise or Education    ::
 ::                                       ::
-:: vs: 1.0.2                             ::
-:: changed: 14.09.2023                   ::
+:: vs: 1.0.4                             ::
+:: changed: 13.05.2024                   ::
+::                                       ::
 :::::::::::::::::::::::::::::::::::::::::::
 
 
@@ -33,10 +35,9 @@ set "scenarios=%deviceGuard%\Scenarios"
 set "hypervisorEnforcedCodeIntegrity=%scenarios%\HypervisorEnforcedCodeIntegrity"
 set "credentialGuard=%scenarios%\CredentialGuard"
 set "lsa=HKLM\SYSTEM\CurrentControlSet\Control\Lsa"
+set "ciStateKey=HKLM\System\CurrentControlSet\Control\CI\State"
 :: set "vdbl=HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config"
 :: VulnerableDriverBlocklistEnable = 1
-:: set "vdbl=HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\State"
-:: HVCIEnabled = 1 
 
 GOTO :ParseParams
 
@@ -120,15 +121,32 @@ GOTO :ParseParams
 
     set /a "s=%enabled%+%disabled%+%locked%+%unlocked%"
         
-    if not %s% == 0 (
+                
+    if %s% NEQ 0 (
     
+        set /a lockedStatus=0
+        
         :checkPermissions
             net session >nul 2>&1
             if %errorlevel% NEQ 0 (
-                echo [e] Admin permission required!
+                echo [e] Admin permissions required!
                 endlocal
                 exit /B 1
             )
+        
+        
+        REM if disable and unlock,
+        REM check if it was locked:
+        REM in this case unlocking is done via bcdedit and fixing efi vars
+        if %enabled% EQU 0 (
+            if %locked% EQU 0 (
+            
+                call :isLocked
+                set /a lockedStatus=!ERRORLEVEL!
+                CALL 
+
+            )
+        )
         
         REM 1: HVCI and Credential Guard can be configured
         reg add "%deviceGuard%" /v "EnableVirtualizationBasedSecurity" /t REG_DWORD /d %enabled% /f
@@ -146,7 +164,7 @@ GOTO :ParseParams
         REM The impact of these values is not documented. The value of this key is evaluated during system initialization
         reg add %deviceGuard% /v "RequireMicrosoftSignedBootChain" /t REG_DWORD /d %enabled% /f
         
-        REM 0: Disabled is enabled - HVCI is disabled 
+        REM 0: HVCI is disabled 
         REM 1: HVCI is enabled
         reg add "%hypervisorEnforcedCodeIntegrity%" /v "Enabled" /t REG_DWORD /d %enabled% /f
 
@@ -159,12 +177,8 @@ GOTO :ParseParams
         reg add "%credentialGuard%" /v "Enabled" /t REG_DWORD /d %enabled% /f
         
         REM To gray out the memory integrity UI and display the message "This setting is managed by your administrator"
-        if %locked% EQU 1 (
-            reg delete HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity /v "WasEnabledBy" /f >nul 2>&1 
-            REM set errorlevel to 0
-            call 
-        )
-        if %enabled% EQU 0 (
+        set /a "s=%disabled%+%locked%"
+        if %s% NEQ 0 (
             reg delete HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity /v "WasEnabledBy" /f >nul 2>&1 
             REM set errorlevel to 0
             call 
@@ -179,6 +193,10 @@ GOTO :ParseParams
         ) else (
             reg add "%lsa%" /v "LsaCfgFlags" /t REG_DWORD /d 0 /f
         )
+        
+        if !lockedStatus! EQU 1 (
+            call :disableLockedCredentialGuard
+        )
     )
 
     if %check% EQU 1 (
@@ -186,6 +204,7 @@ GOTO :ParseParams
         reg query %hypervisorEnforcedCodeIntegrity%
         reg query %credentialGuard%
         reg query %lsa% /v LsaCfgFlags
+        reg query %ciStateKey% /v HVCIEnabled
         
         wevtutil qe System /c:3 /f:Text "/q:*[System[Provider[@Name='Microsoft-Windows-Wininit']]]" /rd:true
         wevtutil qe System /c:1 /f:Text "/q:*[System[Provider[@Name='LsaSrv']]]" /rd:true
@@ -204,6 +223,42 @@ GOTO :ParseParams
     if %verbose% EQU 1 echo finished with code : %ERRORLEVEL%
     endlocal
     exit /b %ERRORLEVEL%
+
+
+:isLocked
+setlocal
+    set filename=%tmp%\deviceGuardIdLocked.info
+    reg query "%deviceGuard%" /v "Locked" > %filename%
+
+    set content=
+    for /f "delims=" %%i in (%filename%) do set content=%%i
+
+    for %%A in (%content%) do set /a il=%%A
+    
+    if %il% EQU 1 (
+        endlocal
+        exit /B 1
+    )
+    
+    endlocal
+    exit /B 0
+
+
+:disableLockedCredentialGuard
+setlocal
+    set "guid={0cb3b571-2f2e-4343-a879-d86a476d7215}"
+    mountvol X: /s
+    copy %WINDIR%\System32\SecConfig.efi X:\EFI\Microsoft\Boot\SecConfig.efi /Y
+    bcdedit /create %guid% /d "DebugTool" /application osloader
+    bcdedit /set %guid% path "\EFI\Microsoft\Boot\SecConfig.efi"
+    bcdedit /set {bootmgr} bootsequence %guid%
+    bcdedit /set %guid% loadoptions DISABLE-LSA-ISO
+    bcdedit /set %guid% device partition=X:
+    mountvol X: /d
+    
+    endlocal
+    exit /B 0
+
 
 :usage
     echo Usage: %prog_name% [/e] [/d] [/l] [/u] [/f] [/c] [/r] [/v] [/h]

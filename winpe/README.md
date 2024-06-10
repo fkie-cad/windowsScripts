@@ -14,7 +14,7 @@ Needs the [Assessment and Deployment Kit (ADK)](https://learn.microsoft.com/en-u
 
 ### Usage
 ```bash
-$ createWinPE.bat /i c:\winpe /v c:/disk.vhd [/a (amd64|x86|arm)] [/l V] [/s 1000] [/t fixed^|expandable] [/lbl "WinPE drive"] [/q] [/h]
+$ createWinPE.bat /i c:\winpe /v c:/disk.vhd [/a (amd64|x86|arm)] [/l V] [/s 1000] [/t fixed^|expandable] [/u] [/lbl "WinPE drive"] [/q] [/h]
 ```
 
 **Options:**
@@ -23,6 +23,7 @@ $ createWinPE.bat /i c:\winpe /v c:/disk.vhd [/a (amd64|x86|arm)] [/l V] [/s 100
 * /v Path to the (new) disk.vhd
 * /s (Maximum) size of the vhd in MB. Defaults to 1000 mb.
 * /t Type of the vhd. Static size (fixed) or dynamic size (expandable). Defaults to "fixed".
+* /u Populate a mounted USB stick, instead of creating a new VHD.
 * /lbl A string label for the vhd.
 * /l The letter of the volume of the (mounted) vhd.
 * /q More quiet mode

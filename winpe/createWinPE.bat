@@ -9,6 +9,8 @@
 @echo off
 setlocal enabledelayedexpansion
 
+set /a WPE_TYPE_VHD=1
+set /a WPE_TYPE_USB=2
 
 set image=""
 set vdisk=""
@@ -71,6 +73,10 @@ GOTO :ParseParams
     IF /i "%~1"=="/t" (
         SET vhdType=%~2
         SHIFT
+        goto reParseParams
+    )
+    IF /i "%~1"=="/u" (
+        SET wpeType=%WPE_TYPE_USB%
         goto reParseParams
     )
     IF /i "%~1"=="/v" (
@@ -136,7 +142,7 @@ GOTO :ParseParams
 
     if %detach% EQU 1 (
         call :detachVHD %vdisk%
-        :: if not !errorlevel! == 0 goto mainend
+        REM if not !errorlevel! == 0 goto mainend
         call :clean
         goto mainend
     )
@@ -144,24 +150,27 @@ GOTO :ParseParams
     if not exist %image% (
         echo ----copype
         call :createWinPeImage %image% %wpeArch%
-        :: if not !errorlevel! == 0 goto mainend
+        REM if not !errorlevel! == 0 goto mainend
         echo ----
     ) else (
-        echo Using existing %image%.
+        echo [i] Using existing %image%.
     )
 
-    if %wpeType% == 1 (
+    if %wpeType% EQU %WPE_TYPE_VHD% (
         call :createVHD %vdisk% %vhdType% %size% %label% %vletter%
-        :: if not !errorlevel! == 0 goto mainend
+        REM if not !errorlevel! == 0 goto mainend
     )
+    REM nothing to be done in case of usb
 
     echo ----MakeWinPEMedia
     call :prepareDrive %image% %vletter%
-    :: if not !errorlevel! == 0 goto mainend
+    REM if not !errorlevel! == 0 goto mainend
     echo ----
 
-    call :detachVHD %vdisk%
-    :: if not !errorlevel! == 0 goto mainend
+    if %wpeType% EQU %WPE_TYPE_VHD% (
+        call :detachVHD %vdisk%
+    )
+    REM if not !errorlevel! == 0 goto mainend
 
 
 :mainend
@@ -212,11 +221,13 @@ GOTO :ParseParams
     
     
 :prepareDrive
+setlocal
+    
     echo ----prepareDrive
-    setlocal
-        set image=%1
-        set driveLetter=%2
-        cmd /k "%devenvbat% & MakeWinPEMedia /UFD %image% %driveLetter%: & exit"
+    set image=%1
+    set driveLetter=%2
+    cmd /k "%devenvbat% & MakeWinPEMedia /UFD %image% %driveLetter%: & exit"
+    
     endlocal
     echo ----
 
@@ -245,13 +256,13 @@ GOTO :ParseParams
     if exist %dp_file% (
         del %dp_file%
     )
-    exit /B %errorlevel%
     echo ----
+    exit /B %errorlevel%
     
     
     
 :usage
-    echo Usage: %prog_name% /i c:\winpe /v c:\disk.vhdx [/a amd64^|x86^|arm] [/d] [/l V] [/s 1000] [/t fixed^|expandable] [/lbl "WinPE drive"]
+    echo Usage: %prog_name% /i c:\winpe /v c:\disk.vhdx [/a amd64^|x86^|arm] [/d] [/l V] [/s 1000] [/t fixed^|expandable] [/u] [/lbl "WinPE drive"]
     exit /B %errorlevel%
 
 
@@ -265,6 +276,7 @@ GOTO :ParseParams
     echo /v Path to the (new) disk.vhd
     echo /s (Maximum) size of the vhd in MB. Defaults to 1000.
     echo /t Tpye of the vhd. Static size (fixed) or dynamic size (expandable). Defaults to "fixed".
+    echo /u Populate a mounted USB stick, instead of creating a new VHD.
     echo /lbl A string label for the vhd.
     echo /d Detach vhd.
     echo /l The letter of the volume of the (mounted) vhd.
@@ -276,6 +288,6 @@ GOTO :ParseParams
 
 ::
 :: background image is located in c:\mount\Windows\System32\winpe.jpg
-:: To change it, the owner has to be change to the current user and then full permissions have to be granted.
+:: To change it, the owner has to be changed to the current user and then full permissions have to be granted.
 :: $ takeown /f c:\mount\Windows\System32\winpe.jpg 
-:: $ icacls c:\mount\Windows\System32\winpe.jpg /grant UserName:F
+:: $ icacls c:\mount\Windows\System32\winpe.jpg /grant %username%:F

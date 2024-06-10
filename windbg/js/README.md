@@ -28,7 +28,7 @@ kd> .scriptunload deviceIoLog.js
 kd> .scriptload deviceIoLog.js
 kd> !initLog("Beep", 0x1290)
 kd> g
-$ Talk.exe /n \Device\Beep /c 0x10000 /id 0x202 /id 0x83e /s 0x083e # make a beep
+$ powershell [console]::beep(500,1000)
 kd> !exitLog()
 kd> .scriptunload deviceIoLog.js
 $ type %tmp%\devio.log

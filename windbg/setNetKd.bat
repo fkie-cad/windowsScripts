@@ -109,7 +109,7 @@ GOTO :ParseParams
     
     if %errorlevel% EQU 0 (
     if %reboot% EQU 1 (
-        SET /P confirm="[?] Reboot now? (Y/[N])?"
+        SET /P confirm="[?] Reboot now? (Y/[N]) "
         IF /I "!confirm!" EQU "Y" (
             shutdown /r /t 0
         )

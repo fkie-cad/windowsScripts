@@ -5,6 +5,8 @@ set /a enable=1
 :: Download the Local Security Authority (LSA) Protected Process Opt-out / LSAPPLConfig.efi tool files from the download center
 set toolPath=LSAPPLConfig.efi
 set toolBaseName=LSAPPLConfig.efi
+set "keyName=HKLM\SYSTEM\CurrentControlSet\Control\Lsa"
+set "keyValue=RunAsPPL"
 
 
 if [%1]==[] goto main
@@ -54,7 +56,7 @@ GOTO :ParseParams
 
     if %enable% NEQ 0 (
 
-        C:\Windows\System32\reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /V RunAsPPL /t REG_DWORD /d 0x1 /f
+        C:\Windows\System32\reg add "%keyName%" /V %keyValue% /t REG_DWORD /d 0x1 /f
         
     ) else (
         
@@ -67,7 +69,7 @@ GOTO :ParseParams
         
         set guid="{0cb3b571-2f2e-4343-a879-d86a476d7215}"
         
-        reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /V RunAsPPL /f
+        reg delete "%keyName%" /V %keyValue%/f
         
         mountvol X: /s
 

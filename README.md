@@ -292,11 +292,16 @@ $ enableVBS.bat [/e] [/d] [/l] [/u] [/f] [/c] [/r] [/v] [/h]
     
 **Info**  
 CredentialGuard will only be "licensed" in Windows Enterprise or Windows Education Editions.
-Otherwise it will start with a "WinInit" Event 13: 
-"Credential Guard was started and will protect LSA credentials."
-But after that there occurs a "Lsa (LsaSrv)" warning 6147: 
+Otherwise it will start with a "WinInit" Event 13:  
+"Credential Guard was started and will protect LSA credentials."  
+But after that there occurs an "Lsa (LsaSrv)" warning 6147: 
 "Credential Guard is configured to run, but is not licensed. Credential Guard was not started."
 Even though it is shown as running in the registry and msinfo32 app.
+
+Disabling an uefi locked VBS system requires some Windows efi driver (SecConfig.efi) to be booted with to disable the locked vbs system.
+Just setting the registry values to 0 does not work.
+So when disabling and unlocking a locked system (/d /u), 
+  after reboot there will be two bios prompts, that ask for disabling VBS and Credential guard.
 
 ### Links
 https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-vbs  

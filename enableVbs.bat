@@ -42,10 +42,10 @@ set "ciStateKey=HKLM\System\CurrentControlSet\Control\CI\State"
 GOTO :ParseParams
 
 :ParseParams
-    if [%1]==[] goto main
-    if [%1]==[/?] goto help
-    if [%1]==[/h] goto help
-    if [%1]==[/help] goto help
+    if [%1]==[] call :usage & goto exitMain
+    if [%1]==[/?] call :help & goto exitMain
+    if [%1]==[/h] call :help & goto exitMain
+    if [%1]==[/help] call :help & goto exitMain
 
     IF /i "%~1"=="/d" (
         SET /a disabled=1
@@ -195,7 +195,7 @@ GOTO :ParseParams
         )
         
         if !lockedStatus! EQU 1 (
-            call :disableLockedCredentialGuard
+            call :disableLockedVBS
         )
     )
 
@@ -204,22 +204,25 @@ GOTO :ParseParams
         reg query %hypervisorEnforcedCodeIntegrity%
         reg query %credentialGuard%
         reg query %lsa% /v LsaCfgFlags
-        reg query %ciStateKey% /v HVCIEnabled
+        reg query %ciStateKey% /v HVCIEnabled >nul 2>&1 
         
         wevtutil qe System /c:3 /f:Text "/q:*[System[Provider[@Name='Microsoft-Windows-Wininit']]]" /rd:true
         wevtutil qe System /c:1 /f:Text "/q:*[System[Provider[@Name='LsaSrv']]]" /rd:true
+        
+        powershell -c "Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\Microsoft\Windows\DeviceGuard"
     )
     
     :: if %errorlevel% EQU 0 (
     if %reboot% EQU 1 (
         echo.
-        SET /P confirm="[?] Reboot now? (Y/[N])"
+        SET /P confirm="[?] Reboot now? (Y/[N]) "
         IF /I "!confirm!" EQU "Y" (
             shutdown /r /t 0
         )
     )
     :: )
     
+    :exitMain
     if %verbose% EQU 1 echo finished with code : %ERRORLEVEL%
     endlocal
     exit /b %ERRORLEVEL%
@@ -244,7 +247,7 @@ setlocal
     exit /B 0
 
 
-:disableLockedCredentialGuard
+:disableLockedVBS
 setlocal
     set "guid={0cb3b571-2f2e-4343-a879-d86a476d7215}"
     mountvol X: /s
@@ -252,7 +255,7 @@ setlocal
     bcdedit /create %guid% /d "DebugTool" /application osloader
     bcdedit /set %guid% path "\EFI\Microsoft\Boot\SecConfig.efi"
     bcdedit /set {bootmgr} bootsequence %guid%
-    bcdedit /set %guid% loadoptions DISABLE-LSA-ISO
+    bcdedit /set %guid% loadoptions DISABLE-VBS,DISABLE-LSA-ISO
     bcdedit /set %guid% device partition=X:
     mountvol X: /d
     

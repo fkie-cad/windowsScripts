@@ -298,10 +298,12 @@ But after that there occurs an "Lsa (LsaSrv)" warning 6147:
 "Credential Guard is configured to run, but is not licensed. Credential Guard was not started."
 Even though it is shown as running in the registry and msinfo32 app.
 
-Disabling an uefi locked VBS system requires some Windows efi driver (SecConfig.efi) to be booted with to disable the locked vbs system.
+Disabling an uefi locked VBS system requires some Windows efi driver (SecConfig.efi) to be booted with, to disable the locked vbs system.
 Just setting the registry values to 0 does not work.
 So when disabling and unlocking a locked system (/d /u), 
   after reboot there will be two bios prompts, that ask for disabling VBS and Credential guard.
+At least on a Windows 11 this lasts only until reboot, if Hyper-V (the feature) is activated.
+Then VBS activates itself again somehow.
 
 ### Links
 https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-vbs  

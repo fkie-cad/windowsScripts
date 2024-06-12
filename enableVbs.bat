@@ -19,6 +19,10 @@
 @echo off
 setlocal enabledelayedexpansion
 
+set prog_name=%~n0
+set my_dir="%~dp0"
+set "my_dir=%my_dir:~1,-2%"
+
 set /a enabled=0
 set /a disabled=0
 set /a locked=0
@@ -39,10 +43,11 @@ set "ciStateKey=HKLM\System\CurrentControlSet\Control\CI\State"
 :: set "vdbl=HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config"
 :: VulnerableDriverBlocklistEnable = 1
 
+
+if [%1]==[] call :usage & goto exitMain
 GOTO :ParseParams
 
 :ParseParams
-    if [%1]==[] call :usage & goto exitMain
     if [%1]==[/?] call :help & goto exitMain
     if [%1]==[/h] call :help & goto exitMain
     if [%1]==[/help] call :help & goto exitMain

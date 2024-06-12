@@ -61,7 +61,7 @@ GOTO :ParseParams
         exit /b %errorlevel%
     )
     
-    echo call :startComDbg
+    call :startComDbg
     
     endlocal
     exit /b %errorlevel%

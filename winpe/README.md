@@ -9,7 +9,7 @@ Last updated: 16.05.2023
 
 
 ## createWinPE
-Create a new (amd64) WinPE image (vhdx style).  
+Create a new (amd64) WinPE image on a vhdx or usb.  
 Runs in an elevated cmd.  
 Needs the [Assessment and Deployment Kit (ADK)](https://learn.microsoft.com/en-us/windows-hardware/get-started/adk-install) with the WinPE addon to be installed.
 
@@ -50,24 +50,30 @@ Mount WinPE VHD or USB image to make changes.
 
 ### Usage
 ```bash
-$ mountWinPE.bat [/v a:/disk.vhd] [/m 0|1|2|3] [/l V] [/d <path>] [/u commit|discard]
+$ mountWinPE.bat [/a <path>] [/d <path>] [/m <path>] [/u <path>] [/l V] [/um <mode>] [/v] [/?]
 ```
 **Options:**
-* /v Path to a vhd.
-* /m Mode: Unmount (0), Mount (1), Attach disk (2), Detach (3).
-* /l A volume letter to mount the drive to.
-* /d The mount directory. Default: "c:\WinPE\mount"
-* /u The unmount mode. 
+- /a Attach a vhd. 
+- /d Detach a vhd. 
+- /m Mount image located in volume /l to <path>.
+- /u Unmount image from <path>.
+- /um The unmount mode (commit|discard). Defaults to "commit".
+- /l A volume letter the vhd or usb is mounted to.
 
-Since you don't know the drive letter of a vgd in advance, the workflow for a vhd would be:
-1.  `$ mountWinPE.bat /v a:/disk.vhd /m 2 [/l V] [/d "c:\WinPE\mount"]`
-2.  :: Get the drive letter, i.e. "V".
-3.  `$ mountWinPE.bat /v a:/disk.vhd /m 1 /l V /d "c:\WinPE\mount"`
-4.  :: Make the changes
-5.  `$ mountWinPE.bat /v a:/disk.vhd /m 0 /l V /d "c:\WinPE\mount"`
+Since you don't know the drive letter of a vhd in advance, the workflow for a vhd would be:
+1.  Attach VHD  
+    `$ mountWinPE /a a:/disk.vhd`
+2.  Get the drive letter, i.e. "V".
+3.  Mount Image  
+    `$ mountWinPE /m c:\WinPE\mount /l V`
+4.  Make the changes
+5.  Unmount image  
+    `$ mountWinPE /u c:\WinPE\mount [/um commit]`
+6.  Detach VHD  
+    `$ mountWinPE /d a:/disk.vhd`
 
-When unmounting, the default is to use `/u commit`. 
-If an error message occurs, close all explorers and possibly open files of the mount and run again with `/u discard`. 
+When unmounting, the default is to use `/um commit`. 
+If an error message occurs, close all explorers and possibly open files of the mount and run again with `/um discard`. 
 Sometimes even unrelated windows and CMDs have to be closed to make it work without errors.
 
 ### Remarks:

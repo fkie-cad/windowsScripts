@@ -236,11 +236,6 @@ GOTO :ParseParams
         echo combdg : %cdbg%
     )
 
-    :: create bin dir
-    if not exist "%binDir%" (
-        mkdir "%binDir%"
-    )
-
     if %bg% EQU 1 (
         call :addBackground
     )
@@ -365,6 +360,11 @@ setlocal
 
     echo -----addScripts
     
+    :: create bin dir
+    if not exist "%binDir%" (
+        mkdir "%binDir%"
+    )
+    
     if exist "%scriptDir%" (
         copy "%scriptDir%\*.bat" "%binDir%"
     ) else (
@@ -410,7 +410,7 @@ setlocal
     
     reg load HKLM\WimRegSystem "%mountDir%\Windows\System32\config\SYSTEM"
     :: %systemroot^% gets not written as a string variable
-    reg add "HKLM\WimRegSystem\ControlSet001\Control\Session Manager\Environment" /v Path /t REG_EXPAND_SZ /d "%systemroot^%\system32;%systemroot^%;x:\Program Files;x:\Program Files\SysinternalsSuite;x:\Program Files\npp;x:\bin;" /f
+    reg add "HKLM\WimRegSystem\ControlSet001\Control\Session Manager\Environment" /v Path /t REG_EXPAND_SZ /d "^%systemroot^%\system32;^%systemroot^%;^%programfiles^%;^%programfiles^%\SysinternalsSuite;^%programfiles^%\npp;x:\bin;" /f
     reg add "HKLM\WimRegSystem\ControlSet001\Control\Session Manager\Debug Print" /V DEFAULT /t REG_DWORD /d 0xFF /f
     reg add "HKLM\WimRegSystem\ControlSet001\Control\Session Manager\Debug Print Filter" /V DEFAULT /t REG_DWORD /d 0xFF /f
 

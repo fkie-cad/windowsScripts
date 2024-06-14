@@ -50,6 +50,7 @@ For questions and bug reports feel free to open an issue.
 - [makeiso](#makeiso)
 - [poweroff](#poweroff)
 - [reboot](#reboot)
+- [rename](#rename)
 - [setDNS](#setdns)
 - [settings](#settings)
 - [setIp](#setip)
@@ -440,6 +441,35 @@ Wrapper for `shutdown -r -t 0`
 $ reboot.bat
 ```
 
+
+
+
+## rename
+Rename a list of files with a common pattern.
+
+### Usage
+```bash
+$ rename.bat /f <files> /p <pattern> [/r <replacement>] [/t] [/v] [/h]
+```
+
+Options:
+- /f File pattern to iterate.
+- /p Rattern to replace. 
+- /r Replacement. Defaults to empty string.
+- /t Test mode. Just showing the potential renaming happening, not actually renaming.
+
+Other:
+- /v Verbose mode
+- /h Print help
+
+### Example
+```bash
+# convert all .txt file in %tmp% to .bin files
+$ rename.bat /f %tmp%\*.txt /p .txt /r .bin
+
+# remove all .bck parts of file names
+$ rename.bat /f %tmp%\*.bck.txt /p .bck
+```
 
 
 ## setDNS

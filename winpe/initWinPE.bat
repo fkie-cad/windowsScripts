@@ -19,7 +19,6 @@ set /a verbose=0
 set "wpeKitPath=C:\Program Files (x86)\Windows Kits\10\Assessment and Deployment Kit\Windows Preinstallation Environment"
 set wpeArch=amd64
 
-set userName=
 set mountDir=
 set binDir=
 set hostSys32=C:\Windows\System32
@@ -42,14 +41,18 @@ set /a ss=0
 set /a as=0
 set /a ps=0
 set /a reg=0
+set /a utils=0
 set /a vsr=0
 set /a ts=0
 set /a dbg=0
-set /a ndbg=0
-set /a cdbg=0
+set /a dbgType=0
 set hostip=
 set /a port=0
 set /a legacy=0
+
+set /a COM_DEBUG=1
+set /a NET_DEBUG=2
+set /a EEM_DEBUG=3
 
 if [%~1] == [] goto usage
 
@@ -99,9 +102,8 @@ GOTO :ParseParams
         SET /a ps=1
         goto reParseParams
     )
-    IF /i "%~1"=="/u" (
-        SET "userName=%~2"
-        SHIFT
+    IF /i "%~1"=="/utils" (
+        SET /a utils=1
         goto reParseParams
     )
     IF /i "%~1"=="/vsr" (
@@ -119,13 +121,18 @@ GOTO :ParseParams
         goto reParseParams
     )
     IF /i "%~1"=="/netdbg" (
-        SET /a ndbg=1
-        SET /a dbg=1
+        SET /a dbgType=%NET_DEBUG%
+        REM SET /a dbg=1
+        goto reParseParams
+    )
+    IF /i "%~1"=="/eemdbg" (
+        SET /a dbgType=%EEM_DEBUG%
+        REM SET /a dbg=1
         goto reParseParams
     )
     IF /i "%~1"=="/comdbg" (
-        SET /a cdbg=1
-        SET /a dbg=1
+        SET /a dbgType=%COM_DEBUG%
+        REM SET /a dbg=1
         goto reParseParams
     )
     IF /i "%~1"=="/ip" (
@@ -158,7 +165,7 @@ GOTO :ParseParams
     
 
     IF /i "%~1"=="/v" (
-        SET verbose=1
+        SET /a verbose=1
         goto reParseParams
     )
     
@@ -176,7 +183,6 @@ GOTO :ParseParams
         net session >nul 2>&1
         if %errorlevel% NEQ 0 (
             echo Please run as Admin!
-            endlocal
             exit /B 1
         )
 
@@ -185,6 +191,7 @@ GOTO :ParseParams
     :: check mount dir
     if [%mountDir%] == [] (
         echo [e] Mount dir /md not set
+        call
         exit /b 1
     )
     if [%mountDir%] == [""] (
@@ -193,20 +200,21 @@ GOTO :ParseParams
     )
     if not exist "%mountDir%" (
         echo [e] mountDir "%mountDir%" not found.
+        call
         exit /b 1
     )
 
     set /a s=0
     if [%arch%] EQU [x64] set /a "s=%s%+1"
     if [%arch%] EQU [x86] set /a "s=%s%+1"
-    if not %s% == 1 (
+    if %s% NEQ 1 (
         echo [e] Unknown architecture.
+        call
         goto usage
     )
 
     set "binDir=%mountDir%\bin"
     set "wpeSys32=%mountDir%\Windows\System32"
-
 
     if %verbose% EQU 1 (
         echo bg : %bg%
@@ -219,25 +227,27 @@ GOTO :ParseParams
         )
         echo addScripts : %as%
         echo update reg : %reg%
+        echo utils : %utils%
         echo copy vsr : %vsr%
         echo add PowerShell : %ps%
         echo script dir vsr : %scriptDir%
         echo mountDir : %mountDir%
         echo binDir : %binDir%
         echo wpeSys32 : %wpeSys32%
-        echo userName : %userName%
         echo dbg : %dbg%
         echo testsigning : %ts%
-        echo netbdg : %ndbg%
-        if %ndbg% EQU 1 (
+        echo bdgType : %dbgType%
+        if %dbgType% EQU %NET_DEBUG% (
             echo   hostip: %hostip%
             echo   port: %port%
         )
-        echo combdg : %cdbg%
+        if %dbgType% EQU %EEM_DEBUG% (
+            echo   port: %port%
+        )
     )
 
     if %bg% EQU 1 (
-        call :addBackground
+        call :addBackground %bgSrc%
     )
 
     :: add start script
@@ -260,6 +270,10 @@ GOTO :ParseParams
         call :updateReg
     )
 
+    if %utils% EQU 1 (
+        call :addUtils
+    )
+
     if %vsr% EQU 1 (
         call :addVsr
     )
@@ -273,29 +287,25 @@ GOTO :ParseParams
         set bcd=%legacyBcd%
     )
     
-    if %ndbg% EQU 1 (
+    if %dbgType% EQU %NET_DEBUG% (
         call :netDbg %letter% %hostip% %port%
-    )
-    
-    if %cdbg% EQU 1 (
+    ) else (
+    if %dbgType% EQU %EEM_DEBUG% (
+        call :eemDbg %letter% %port%
+    ) else (
+    if %dbgType% EQU %COM_DEBUG% (
         call :comDbg %letter%
+    )))
+    
+    if %dbgType% EQU 0 (
+        if %dbg% NEQ 0 (
+            call :toggleDebug %letter% %dbg%
+        )
     )
     
-    if %dbg% EQU 1 (
-        call :dbgOn %letter%
-    )
-    
-    if %dbg% EQU -1 (
-        call :dbgOff %letter%
-    )
-    
-    if %ts% EQU 1 (
-        call :testSigningOn %letter%
-    )
-    
-    if %ts% EQU -1 (
-        call :testSigningOff %letter%
-    )
+    if %ts% NEQ 0 (
+        call :toggleTestSigning %letter% %ts%
+    ) 
 
     :exitMain
     endlocal
@@ -307,31 +317,31 @@ GOTO :ParseParams
 :: background image is located in c:\mount\Windows\System32\winpe.jpg but is owned by the system
 :: To change it, the owner has to be change to the current user and then full permissions have to be granted.
 :: $ takeown /f c:\mount\Windows\System32\winpe.jpg 
-:: $ icacls c:\mount\Windows\System32\winpe.jpg /grant <username>:F
+:: $ icacls c:\mount\Windows\System32\winpe.jpg /grant %username%:F
 :addBackground
 setlocal
 
     echo -----add background
     
-    if not exist "%bgSrc%" (
-        echo [e] bgSrc "%bgSrc%" not found
-        goto skipBg
-    )
-    if [%userName%] EQU [] (
-        echo [e] Username not set!
-        goto skipBg
+    set "src=%~1"
+    
+    if not exist "%src%" (
+        echo [e] bgSrc "%src%" not found!
+        call
+        goto exitAddBackground
     )
     
-    :: make bg image replacable
+    :: make bg image replaceable
     takeown /f "%wpeSys32%\winpe.jpg"
-    icacls "%wpeSys32%\winpe.jpg" /grant "%userName%":F
+    icacls "%wpeSys32%\winpe.jpg" /grant "%username%":F
 
     :: replace
-    copy "%bgSrc%" "%wpeSys32%\winpe.jpg" /y
+    copy "%src%" "%wpeSys32%\winpe.jpg" /y
     
     echo -----
     echo.
-        
+    
+    :exitAddBackground
     endlocal
     exit /b %errorlevel%
 
@@ -342,7 +352,8 @@ setlocal
     echo -----
     
     if not exist "%startScriptSrc%" (
-        echo startScriptSrc "%startScriptSrc%" not found
+        echo [e] startScriptSrc "%startScriptSrc%" not found
+        call
     ) else (
         echo copy "%startScriptSrc%" "%wpeSys32%\startnet.cmd" /y
         copy "%startScriptSrc%" "%wpeSys32%\startnet.cmd" /y
@@ -368,7 +379,8 @@ setlocal
     if exist "%scriptDir%" (
         copy "%scriptDir%\*.bat" "%binDir%"
     ) else (
-        echo scriptDir "%scriptDir%" not found
+        echo [e] scriptDir "%scriptDir%" not found
+        call
     )
     
     echo -----
@@ -383,18 +395,24 @@ setlocal
 
     echo -----add Powershell
     
-    Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-WMI.cab"
-    Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-WMI_en-us.cab"
-    Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-NetFX.cab"
-    Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-NetFX_en-us.cab"
-    Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-Scripting.cab"
-    Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-Scripting_en-us.cab"
-    Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-PowerShell.cab"
-    Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-PowerShell_en-us.cab"
-    Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-StorageWMI.cab"
-    Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-StorageWMI_en-us.cab"
-    Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-DismCmdlets.cab"
-    Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-DismCmdlets_en-us.cab"
+    call :addPackage WinPE-WMI
+    call :addPackage WinPE-NetFX
+    call :addPackage WinPE-Scripting
+    call :addPackage WinPE-PowerShell
+    call :addPackage WinPE-StorageWMI
+    call :addPackage WinPE-DismCmdlets
+    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-WMI.cab"
+    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-WMI_en-us.cab"
+    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-NetFX.cab"
+    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-NetFX_en-us.cab"
+    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-Scripting.cab"
+    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-Scripting_en-us.cab"
+    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-PowerShell.cab"
+    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-PowerShell_en-us.cab"
+    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-StorageWMI.cab"
+    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-StorageWMI_en-us.cab"
+    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-DismCmdlets.cab"
+    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-DismCmdlets_en-us.cab"
     
     echo -----
     echo.
@@ -408,9 +426,12 @@ setlocal
 
     echo -----update Registry
     
+    set "sr=^%SystemRoott"
+    set "pf=^%ProgramFiless"
+    
     reg load HKLM\WimRegSystem "%mountDir%\Windows\System32\config\SYSTEM"
     :: %systemroot^% gets not written as a string variable
-    reg add "HKLM\WimRegSystem\ControlSet001\Control\Session Manager\Environment" /v Path /t REG_EXPAND_SZ /d "^%systemroot^%\system32;^%systemroot^%;^%programfiles^%;^%programfiles^%\SysinternalsSuite;^%programfiles^%\npp;x:\bin;" /f
+    reg add "HKLM\WimRegSystem\ControlSet001\Control\Session Manager\Environment" /v Path /t REG_EXPAND_SZ /d "%sr:~1,-1%%\system32;%sr:~1,-1%%;%pf:~1,-1%%;%pf:~1,-1%%\SysinternalsSuite;%pf:~1,-1%%\npp;%pf:~1,-1%%\7z;x:\bin;x:\scripts;" /f
     reg add "HKLM\WimRegSystem\ControlSet001\Control\Session Manager\Debug Print" /V DEFAULT /t REG_DWORD /d 0xFF /f
     reg add "HKLM\WimRegSystem\ControlSet001\Control\Session Manager\Debug Print Filter" /V DEFAULT /t REG_DWORD /d 0xFF /f
 
@@ -421,6 +442,25 @@ setlocal
     echo -----
     echo.
     
+    endlocal
+    exit /b %errorlevel%
+
+
+
+:addUtils
+setlocal
+
+    echo -----add utils
+    
+    copy %hostSys32%\findstr.exe "%wpeSys32%"
+    copy %hostSys32%\en-US\findstr.exe.mui "%wpeSys32%"\en-US
+    
+    copy %hostSys32%\where.exe "%wpeSys32%"
+    copy %hostSys32%\en-US\where.exe.mui "%wpeSys32%"\en-US
+
+    echo -----
+    echo.
+
     endlocal
     exit /b %errorlevel%
 
@@ -457,19 +497,29 @@ setlocal
 :comDbg
 setlocal
 
-    echo -----enable com debug
+    echo -----init com debug
+    
+    if [%~1] EQU [] (
+        echo [e] :comDbg ^<letter^>
+        call
+        goto exitNetDbg
+    )
     
     set letter=%1
     
     if [%letter%] EQU [] (
-        echo [e] No vbd letter!
+        echo [e] No drive letter!
+        call
         goto exitComDbg
     )
 
     bcdedit /store %letter%:\%bcd% /set {default} debug on
     bcdedit /store %letter%:\%bcd% /set {default} bootdebug on
     bcdedit /store %letter%:\%bcd% /dbgsettings serial debugport:1 baudrate:115200
-    bcdedit /store %letter%:\%bcd% /dbgsettings
+    
+    if %verbose% EQU 1 (
+        bcdedit /store %letter%:\%bcd% /dbgsettings
+    )
     
     echo -----
     echo.
@@ -482,29 +532,41 @@ setlocal
 :netDbg
 setlocal
     
-    echo -----enable network debug
+    echo -----init network debug
+    
+    if [%~3] EQU [] (
+        echo [e] :netDbg ^<letter^> ^<hostIp^> ^<port^>
+        call
+        goto exitNetDbg
+    )
     
     set letter=%1
     set hostIp=%2
     set /a port=%3
     
     if [%letter%] EQU [] (
-        echo [e] No vbd letter!
+        echo [e] No drive letter!
+        call
         goto exitNetDbg
     )
     if [%hostIp%] EQU [] (
-        echo [e] No vbd hostIp!
+        echo [e] No hostIp!
+        call
         goto exitNetDbg
     )
     if %port% EQU 0 (
         echo [e] No port!
+        call
         goto exitNetDbg
     )
 
     bcdedit /store %letter%:\%bcd% /set {default} debug on
     bcdedit /store %letter%:\%bcd% /set {default} bootdebug on
     bcdedit /store %letter%:\%bcd% /dbgsettings net hostip:%hostIp% port:%port% nodhcp
-    bcdedit /store %letter%:\%bcd% /dbgsettings
+    
+    if %verbose% EQU 1 (
+        bcdedit /store %letter%:\%bcd% /dbgsettings
+    )
     
     echo -----
     echo.
@@ -514,93 +576,173 @@ setlocal
     exit /b %errorlevel%
 
 
-:dbgOn
+:eemDbg
 setlocal
     
-    echo -----enable debug
+    echo -----enable usb eem debug
     
-    set letter=%1
-    if [%letter%] EQU [] (
-        echo [e] No vbd letter!
-        goto exitDbgOn
+    if [%~2] EQU [] (
+        echo [e] :eemDbg ^<letter^> ^<port^>
+        call
+        goto exitNetDbg
     )
+    set letter=%1
+    set /a port=%2
     
-    Bcdedit.exe /store %letter%:\%bcd% /set {DEFAULT} DEBUG ON
+    if [%letter%] EQU [] (
+        echo [e] No drive letter!
+        call
+        goto exitNetDbg
+    )
+    if %port% EQU 0 (
+        echo [e] No port!
+        call
+        goto exitNetDbg
+    )
+
+    call :addPackage WinPE-RNDIS
+    REM call :addDriver "%mountDir%\Windows\INF\netrndis.inf"
+    REM call :addDriver "%mountDir%\Windows\INF\rndiscmp.inf"
+    REM call :addDriver "%mountDir%\Windows\System32\DriverStore\FileRepository\netrndis.inf_amd64_fb5a5ed358521dc0\netrndis.inf"
+    call :addDriver "%mountDir%\Windows\System32\DriverStore\FileRepository\rndiscmp.inf_amd64_e3cf74e485b2778b\rndiscmp.inf"
+    REM call :addDriver "%mountDir%\Windows\System32\DriverStore\FileRepository\netrndis.inf_amd64_fb5a5ed358521dc0\netrndis.inf"
+    call :addDriver "%mountDir%\Windows\System32\DriverStore\FileRepository\rndiscmp.inf_amd64_e3cf74e485b2778b\rndiscmp.inf"
+
+    bcdedit /store %letter%:\%bcd% /set {default} debug on
+    bcdedit /store %letter%:\%bcd% /set {default} bootdebug on
+    bcdedit /store %letter%:\%bcd% /set loadoptions EEM
+    bcdedit /store %letter%:\%bcd% /dbgsettings net key:1.2.3.4 hostip:169.254.255.255 port:%port% nodhcp busparams:0:20:0
+    
+    if %verbose% EQU 1 (
+        bcdedit /store %letter%:\%bcd% /dbgsettings
+    )
     
     echo -----
     echo.
     
-    :exitDbgOn
+    :exitNetDbg
     endlocal
     exit /b %errorlevel%
 
 
-:dbgOff
+:toggleDebug
 setlocal
     
-    echo -----disable debug
+    echo -----toggle debug
     
-    set letter=%1
-    if [%letter%] EQU [] (
-        echo [e] No vbd letter!
-        goto exitDbgOff
+    if [%~1] EQU [] (
+        echo [e] :toggleDebug ^<letter^> ^<toggle^>
+        call
+        goto exitNetDbg
     )
     
-    Bcdedit.exe /store %letter%:\%bcd% /set {DEFAULT} DEBUG OFF
+    set letter=%1
+    set /a toggle=%2
+    if [%letter%] EQU [] (
+        echo [e] No drive letter!
+        call
+        goto exitToggleDebug
+    )
+    
+    if %toggle% EQU 1 (
+        Bcdedit.exe /store %letter%:\%bcd% /set {DEFAULT} DEBUG ON
+        Bcdedit.exe /store %letter%:\%bcd% /set {DEFAULT} BOOTDEBUG ON
+    ) else (
+    if %toggle% EQU -1 (
+        Bcdedit.exe /store %letter%:\%bcd% /set {DEFAULT} DEBUG OFF
+        Bcdedit.exe /store %letter%:\%bcd% /set {DEFAULT} BOOTDEBUG OFF
+    )
+    )
+    
+    if %verbose% EQU 1 (
+        bcdedit /store %letter%:\%bcd%
+    )
     
     echo -----
     echo.
     
-    :exitDbgOff
+    :exitToggleDebug
     endlocal
     exit /b %errorlevel%
 
 
-:testSigningOn
+
+:toggleTestSigning
 setlocal
 
-    echo -----enable testsigning
+    echo -----toggle testsigning
     
-    set letter=%1
-    if [%letter%] EQU [] (
-        echo [e] No vbd letter!
-        goto exitTestSigningOn
+    if [%~2] EQU [] (
+        echo [e] :toggleTestSigning ^<letter^> ^<toggle^>
+        call
+        goto exitNetDbg
     )
     
-    Bcdedit.exe /store %letter%:\%bcd% /set {DEFAULT} TESTSIGNING ON
+    set letter=%1
+    set /a toggle=%2
+    if [%letter%] EQU [] (
+        echo [e] No drive letter!
+        call
+        goto exitToggleTestSigning
+    )
+    
+    if %toggle% EQU 1 (
+        Bcdedit.exe /store %letter%:\%bcd% /set {DEFAULT} TESTSIGNING ON
+    ) else (
+    if %toggle% EQU -1 (
+        Bcdedit.exe /store %letter%:\%bcd% /set {DEFAULT} TESTSIGNING OFF
+    )
+    )
+    
+    if %verbose% EQU 1 (
+        bcdedit /store %letter%:\%bcd%
+    )
     
     echo -----
     echo.
     
-    :exitTestSigningOn
+    :exitToggleTestSigning
     endlocal
     exit /b %errorlevel%
 
 
-:testSigningOff
+
+:addPackage
 setlocal
+
+    set packageName=%~1
     
-    echo -----disable testsigning
+    echo -----add package %packageName%
     
-    set letter=%1
-    if [%letter%] EQU [] (
-        echo [e] No vbd letter!
-        goto exitTestSigningOff
-    )
-    
-    Bcdedit.exe /store %letter%:\%bcd% /set {DEFAULT} TESTSIGNING OFF
+    Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\%packageName%.cab"
+    Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\%packageName%_en-us.cab"
     
     echo -----
     echo.
-    
-    :exitTestSigningOff
+
     endlocal
     exit /b %errorlevel%
+    
+    
+    
+:addDriver
+setlocal
 
+    set driver=%~1
+    
+    echo -----add driver %driver%
+    
+    Dism /Add-Driver /Image:"%mountDir%" /Driver:"%driver%"
+    
+    echo -----
+    echo.
+
+    endlocal
+    exit /b %errorlevel%
 
 
 :usage
-    echo Usage: %prog_name% /md ^<path^> [/bg ^<path^>] [/u ^<username^>] [/ss ^<path^>] [/sd ^<dir^>] [/reg] [/ps] [/vsr ^<arch^>] [/dbg] [/xdbg] [/netdbg] [/comdbg] [/ip ^<address^>] [/port ^<value^>] [/ts] [/xts] [/l ^<letter^>] [/legacy] [/h] [/v]
+    echo Usage: %prog_name% /md ^<path^> [/bg ^<path^>] [/ss ^<path^>] [/sd ^<dir^>] [/utils] [/reg] [/ps] [/vsr ^<arch^>] [/dbg] [/xdbg] [/netdbg] [/eemdbg] [/comdbg] [/ip ^<address^>] [/port ^<value^>] [/ts] [/xts] [/l ^<letter^>] [/legacy] [/h] [/v]
     exit /B 0
 
 :help
@@ -609,12 +751,12 @@ setlocal
     echo /md ^<path^> Directory where WinPE is mounted.
     echo.
     echo Various Settings:
-    echo /bg ^<path^> Add desktop background.
-    echo   /u ^<username^> The current username, needed for /bg.
+    echo /bg ^<path^> Add desktop background (.jpg).
     echo /ss ^<path^> Replace start script with the script found in ^<path^>.
     echo /sd ^<dir^> Copy scripts in ^<dir^> path to mount\bin.
     echo /reg Update registry: set path, set dbg print flag, [activate num keyboard].
     echo /ps Add PowerShell.
+    echo /utils Add where, findstr to System32.
     echo /vsr ^<arch^> Copy msvc**.dll and vc**.dll runtime.dlls form host C:\Windows\System32 (x64) or C:\Windows\SysWow64 (x86) to WinPE System32.
     echo .
     echo Debug Settings:
@@ -623,8 +765,10 @@ setlocal
     echo /netdbg Enable network debugging
     echo   /ip Network debugging host ip
     echo   /port Network port
+    echo /eemdbg Enable usb eem debugging (loadoptions not settable offline!)
+    echo   /port Network port
     echo /comdbg Enable com debugging on port 1
-    echo /ts Set testsigning on
+    echo /ts Set testsigning on (seems to have no effect)
     echo /xts Set testsigning off
     echo /l WinPe drive letter needed for debug settings.
     echo /legacy If WinPe is booted legacy (non UEFI). Default is non legacy, i.e. UEFI

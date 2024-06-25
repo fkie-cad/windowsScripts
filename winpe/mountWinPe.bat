@@ -6,7 +6,7 @@
 ::
 
 @echo off
-setlocal
+setlocal enabledelayedexpansion
     
 set prog_name=%~n0
 set my_dir="%~dp0"
@@ -30,15 +30,15 @@ REM set umount_mode=/discard
 set /a verbose=0
 
 
-if [%~1] == [] call :usage & goto exitMain
+if [%~1] == [] goto usage
 
 GOTO :ParseParams
 
 :ParseParams
 
-    if [%1]==[/?] call :help & goto exitMain
-    if /i [%1]==[/h] call :help & goto exitMain
-    if /i [%1]==[/help] call :help & goto exitMain
+    if [%1]==[/?] goto help
+    if /i [%1]==[/h] goto help
+    if /i [%1]==[/help] goto help
 
     IF /i "%~1"=="/a" (
         SET /a mode=%MODE_ATTACH%
@@ -88,8 +88,8 @@ GOTO :ParseParams
 
 :main
 
-    REM if [%vdisk%] == [] call :usage & goto exitMain
-    REM if [%vdisk%] == [""] call :usage & goto exitMain
+    REM if [%vdisk%] == [] goto usage
+    REM if [%vdisk%] == [""] goto usage
 
     if [%verbose%]==[1] (
         echo mode=%mode%
@@ -105,8 +105,7 @@ GOTO :ParseParams
     net session >nul 2>&1
     if %errorlevel% NEQ 0 (
         echo [e] Admin privileges required!
-        call
-        goto exitMain
+        exit /b 1
     )
     
     if %mode% EQU %MODE_NONE% goto exitMain
@@ -124,6 +123,12 @@ GOTO :ParseParams
 setlocal
     if [%vdisk%]==[] (
         echo [e] no vdisk given!
+        call
+        goto exitAttachVDisk
+    )
+    if not exist %vdisk% (
+        echo [e] Given vdisk not found!
+        call
         goto exitAttachVDisk
     )
     
@@ -144,6 +149,12 @@ setlocal
 setlocal
     if [%vdisk%]==[] (
         echo [e] no vdisk given!
+        call
+        goto exitDetachVDisk
+    )
+    if not exist %vdisk% (
+        echo [e] Given vdisk not found!
+        call
         goto exitDetachVDisk
     )
     
@@ -168,10 +179,23 @@ setlocal
 
     if [%mountDir%]==[] (
         echo [e] no mount dir given!
+        call
         goto exitMount
+    )
+    if not exist %mountDir% (
+        echo [i] Given mount dir not found!
+        echo     Creating it!
+        
+        mkdir %mountDir%
+        
+        if !errorlevel! NEQ 0 (
+            echo [e] Creating directory failed!
+            goto exitMount
+        )
     )
     if [%wimVol%]==[] (
         echo [e] no volume letter given!
+        call
         goto exitMount
     )
     
@@ -189,6 +213,12 @@ setlocal
 
     if [%mountDir%]==[] (
         echo [e] no mount dir given!
+        call
+        goto exitUnmount
+    )
+    if not exist %mountDir% (
+        echo [e] Given mount dir not found!
+        call
         goto exitUnmount
     )
     
@@ -212,7 +242,7 @@ setlocal
     echo /d Detach a vhd. 
     echo /m Mount image located in volume /l to ^<path^>.
     echo /u Unmount image from ^<path^>.
-    echo /um The unmount mode (commit|discard). Defaults to "commit".
+    echo /um The unmount mode (commit^|discard). Defaults to "commit".
     echo /l A volume letter the vhd or usb is mounted to.
     echo.
     echo Since you don't know the drive letter of a vdisk in advance, the workflow for a vdisk would be:

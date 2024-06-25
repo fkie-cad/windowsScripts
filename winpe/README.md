@@ -93,7 +93,6 @@ Adding PowerShell support needs the [Assessment and Deployment Kit (ADK)](https:
 ```bash
 $ initWinPE.bat /md <path> 
                [/bg <path>] 
-                 [/u <username>] 
                [/ss <path>] 
                [/sd <dir>] 
                [/reg] 
@@ -101,9 +100,11 @@ $ initWinPE.bat /md <path>
                [/vsr <arch>] 
                [/dbg] [/xdbg] 
                [/netdbg] 
-               [/comdbg] 
                  [/ip <address>] 
                  [/port <value>] 
+               [/eemdbg] 
+                 [/port <value>] 
+               [/comdbg] 
                [/l <letter>] 
                [/legacy] 
                [/ts] [/xts] 
@@ -111,26 +112,27 @@ $ initWinPE.bat /md <path>
                [/v]
 ```
 
-**Mandatory:**
+**Mandatory**
 - /md <path> Directory where WinPE is mounted.
 
-**Various Settings:**
+**Various Settings**
 - /bg <path> Add desktop background.
-  -  /u <username> The current username, needed for /bg.
 - /ss <path> Replace start script with the script found in <path>.
 - /sd <dir> Copy scripts in <dir> path to mount\bin.
 - /reg Update registry: set path, set dbg print flag, [activate num keyboard].
 - /ps Add PowerShell.
 - /vsr <arch> Copy msvc**.dll and vc**.dll runtime.dlls form host C:\Windows\System32 (x64) or C:\Windows\SysWow64 (x86) to WinPE System32.
 
-**Debug Settings:**
+**Debug Settings**
 - /dbg Set debug on
 - /xdbg Set debug off
 - /netdbg Enable network debugging
   - /ip Network debugging host ip
   - /port Network port
+- /eemdbg Enable usb eem debugging (loadoptions not settable offline!)
+  - /port Network port
 - /comdbg Enable com debugging on port 1
-- /ts Set testsigning on
+- /ts Set testsigning on (seems to have no effect)
 - /xts Set testsigning off
 - /l WinPe drive letter needed for debug settings.
 - /legacy If WinPe is booted legacy (non UEFI). Default is non legacy, i.e. UEFI.
@@ -140,5 +142,8 @@ $ initWinPE.bat /md <path>
 - /h Pint this.
 
 **Remarks**  
-The `/vsr` only works, if the runtime libs are present on the host system. 
+The `/vsr` only works, 
+  if the runtime libs are present on the host system. 
 This may be changed soon.
+
+`/eemdbg` did not successfully work yet.

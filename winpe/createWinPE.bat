@@ -9,6 +9,10 @@
 @echo off
 setlocal enabledelayedexpansion
 
+set prog_name=%~n0
+set my_dir="%~dp0"
+set "my_dir=%my_dir:~1,-2%"
+
 set /a WPE_TYPE_NONE=0
 set /a WPE_TYPE_VHD=1
 set /a WPE_TYPE_USB=2
@@ -26,23 +30,19 @@ set /a wpeType=%WPE_TYPE_NONE%
 set wpeArch=amd64
 set /a detach=0
 
-set prog_name=%~n0
-set my_dir="%~dp0"
-set "my_dir=%my_dir:~1,-2%"
-
 set dp_file="%tmp%\createvhd.txt"
 
 set devenvbat="C:\Program Files (x86)\Windows Kits\10\Assessment and Deployment Kit\Deployment Tools\DandISetEnv.bat"
 
-if [%1]==[] call :usage & goto mainend
+if [%1]==[] goto usage
 
 GOTO :ParseParams
 
 :ParseParams
 
-    if [%1]==[/?] call :help & goto mainend
-    if [%1]==[/h] call :help & goto mainend
-    if [%1]==[/help] call :help & goto mainend
+    if [%1]==[/?] goto help
+    if [%1]==[/h] goto help
+    if [%1]==[/help] goto help
 
     IF /i "%~1"=="/a" (
         SET wpeArch=%~2
@@ -116,8 +116,7 @@ GOTO :ParseParams
         net session >nul 2>&1
         if %errorlevel% NEQ 0 (
             echo [e] Admin privileges required!
-            call
-            goto mainend
+            exit /b 1
         )
     
     set /a s=0
@@ -140,6 +139,7 @@ GOTO :ParseParams
     if [%wpeArch%] EQU [arm] set /a "s=%s%+1"
     if %s% NEQ 1 (
         echo [e] Unknown architecture.
+        call
         goto mainend
     )
 
@@ -172,6 +172,7 @@ GOTO :ParseParams
 
         if [%vdisk%]==[""] (
             echo [e] No disk path set. Set with /v ^<path^>.
+            call
             goto mainend
         )
 

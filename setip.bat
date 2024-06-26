@@ -20,7 +20,6 @@ GOTO :ParseParams
 
 :ParseParams
 
-    REM IF "%~1"=="" GOTO Main
     if [%1]==[/?] goto help
     if /i [%1]==[/h] goto help
     if /i [%1]==[/help] goto help
@@ -70,8 +69,8 @@ GOTO :ParseParams
 :main
 
     set /a c=0
-    if not [%ip%] == [] set /a c=1
-    if not [%gw%] == [""] set /a c=1
+    if [%ip%] NEQ [] set /a c=1
+    if [%gw%] NEQ [""] set /a c=1
     if %list_interfaces% == 1 set /a c=1
     if %c% == 0 goto usage
 
@@ -86,7 +85,7 @@ GOTO :ParseParams
         echo List interfaces:
         netsh interface %ipv% show interfaces
         echo.
-        goto mainend
+        goto exitMain
     )
     
     if %check% == 1 (
@@ -101,24 +100,24 @@ GOTO :ParseParams
             echo !command!
         )
         !command!
-        goto mainend
+        goto exitMain
     )
     
     :checkPermissions
     net session >nul 2>&1
     if NOT %errorlevel% == 0 (
         echo [e] Admin privileges required!
-        exit /B 1
+        exit /b 1
     )
 
     :: error checks
     if [%ip%] EQU [] (
         echo [e] No ip given!
-        exit /B 1
+        exit /b 1
     )
     if [%iname%] EQU [] (
         echo [e] No interface name or id given!
-        exit /B 1
+        exit /b 1
     )
     
     
@@ -133,7 +132,7 @@ GOTO :ParseParams
     )
     !command!
     
-    :mainend
+    :exitMain
     if %verbose% == 1 echo exit status : %errorlevel%
     endlocal
     exit /B %errorlevel%

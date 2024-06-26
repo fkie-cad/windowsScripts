@@ -44,13 +44,13 @@ set "ciStateKey=HKLM\System\CurrentControlSet\Control\CI\State"
 :: VulnerableDriverBlocklistEnable = 1
 
 
-if [%1]==[] call :usage & goto exitMain
+if [%1]==[] goto usage
 GOTO :ParseParams
 
 :ParseParams
-    if [%1]==[/?] call :help & goto exitMain
-    if [%1]==[/h] call :help & goto exitMain
-    if [%1]==[/help] call :help & goto exitMain
+    if [%1]==[/?] goto help
+    if [%1]==[/h] goto help
+    if [%1]==[/help] goto help
 
     IF /i "%~1"=="/d" (
         SET /a disabled=1
@@ -135,7 +135,6 @@ GOTO :ParseParams
             net session >nul 2>&1
             if %errorlevel% NEQ 0 (
                 echo [e] Admin permissions required!
-                endlocal
                 exit /B 1
             )
         
@@ -149,7 +148,6 @@ GOTO :ParseParams
                 call :isLocked
                 set /a lockedStatus=!ERRORLEVEL!
                 CALL 
-
             )
         )
         

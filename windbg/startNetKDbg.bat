@@ -181,16 +181,20 @@ GOTO :ParseParams
 ::
 :: Target
 :: $ bcdedit /debug on
+:: $ [bcdedit /bootdebug on]
 :: $ bcdedit /dbgsettings net hostip:w.x.y.z port:n [key:Key] nodhcp
 :: - hostip: ip of the debugging host
 :: - port: n € [49152,65535]
-:: - key € For blocks of (1-9|a-z) with 1-13 signs, separated by a dot. (1-9|a-z){1,13}.(1-9|a-z){1,13}.(1-9|a-z){1,13}
+:: - key € four blocks of (1-9|a-z) with 1-13 signs, separated by a dot. (1-9|a-z){1,13}.(1-9|a-z){1,13}.(1-9|a-z){1,13}
 :: If key is not set, a random key will be generated.
 ::
 :: Busparams have to be set, if multiple network adapters are available on the target. 
 :: Otherwise it may work without setting it, especially if the "location" value does not provide sufficient values.
 :: $ bcdedit /set "{dbgsettings}" busparams b.d.f
-:: To specify the bus parameters, Open Device Manager, and locate the network adapter that you want to use for debugging. 
+:: To specify the bus parameters, 
+:: run kdnet.exe
+:: or
+:: Open Device Manager, and locate the network adapter that you want to use for debugging. 
 :: Open the property page for the network adapter on the target, and make a note of the bus number (b), device number (d), and function number (f). 
 :: These values are displayed in Device Manager under Location on the 
 ::  - General tab.

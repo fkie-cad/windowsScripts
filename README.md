@@ -28,6 +28,7 @@ For questions and bug reports feel free to open an issue.
 - [WinDbg/](#windbg)
 - [WinPE/](#winpe)
 - [Windows Features/](#windows-features)
+- [addBinShellCtxtMenuEntry](#addBinShellCtxtMenuEntry)
 - [createBootStick](#createbootstick)
 - [createVHD](#createvhd)
 - [deleteFilesLT](#deletefileslt)
@@ -46,6 +47,7 @@ For questions and bug reports feel free to open an issue.
 - [Get Windows product key](#get-windows-product-key)
 - [iterate](#iterate)
 - [killProcess](#killprocess)
+- [listDriveLetters](#listDriveLetters)
 - [listFilesGt](#listFilesGt)
 - [makeiso](#makeiso)
 - [poweroff](#poweroff)
@@ -102,6 +104,25 @@ Scripts to add Windows professional features to non professional builds.
 
 
 
+## addBinShellCtxtMenuEntry
+
+Add binary to right click context menu.
+
+### Usage
+```bash
+Usage: %prog_name% /p ^<path^> /l ^<label^> [/pb ^<params^>] [/pa ^<params^>] [/d] [/v] [/h]
+```
+Options:
+- /p Path to the binary. Must not have spaces at the moment!
+- /l Label to show up in the context menu.
+- /d Delete entry specified by /l label.
+- /pb Additional parameters before the file. 
+- /pa Additional parameters after the file. 
+- /v Verbose mode.
+- /h Print this.
+
+
+
 ## createBootStick
 Creates a bootable usb stick out of an iso file.
 
@@ -120,6 +141,9 @@ Modes:
 
 Other:
 - /v More verbose mode.
+
+### Remarks
+On UEFI you just need a (FAT32) stick with an `\EFI\BOOT\bootx64.efi`
 
 
 
@@ -383,6 +407,16 @@ Options:
 - /k: Kill provided `<pid>` or `<name>`. 
 - /d: Delete and kill the target `<name>`.
 - /h: Print this.
+
+
+
+## listDriveLetters
+List used and unused drive letters
+
+### Usage
+```
+$ listDriveLetters.bat
+```
 
 
 

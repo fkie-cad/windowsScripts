@@ -2,7 +2,8 @@
 setlocal
 
 rem Change this if you are using Community or Professional editions
-set vs_edition=Professional
+REM set vs_edition=Professional
+REM set vs_year=2019
 
 fltmc >nul 2>&1 || (
     echo [e] Administrator privileges required.
@@ -11,10 +12,10 @@ fltmc >nul 2>&1 || (
 )
 
 
-set "VS_INSTALL_DIR=%ProgramFiles(x86)%\Microsoft Visual Studio\2019\%vs_edition%"
-if not defined ProgramFiles(x86) (
-    set "VS_INSTALL_DIR=%ProgramFiles%\Microsoft Visual Studio\2019\%vs_edition%"
-)
+REM set "VS_INSTALL_DIR=%ProgramFiles(x86)%\Microsoft Visual Studio\%vs_year%\%vs_edition%"
+REM if not defined ProgramFiles(x86) (
+    REM set "VS_INSTALL_DIR=%ProgramFiles%\Microsoft Visual Studio\%vs_year%\%vs_edition%"
+REM )
 
 set "VS_POLICIES_KEY=HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\VisualStudio"
 set "VS_POLICIES_FEEDBACK_KEY=%VS_POLICIES_KEY%\Feedback"

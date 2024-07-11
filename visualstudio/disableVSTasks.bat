@@ -21,10 +21,6 @@ set /a ucfg=0
 
 set tcmd=/Disable
 
-set vs_base="%ProgramFiles(x86)%\Microsoft Visual Studio"
-set vs_edition=Professional
-set vs_year=2019
-
 set user_sid=
 for /f %%i in ('wmic useraccount where name^="%username%" get sid ^| findstr ^S\-d*') do set user_sid=%%i
 
@@ -60,17 +56,6 @@ GOTO :ParseParams
 
     IF /i "%~1"=="/e" (
         SET tcmd=/Enable
-        goto reParseParams
-    )
-    
-    IF /i "%~1"=="/vse" (
-        SET vs_edition=%~2
-        SHIFT
-        goto reParseParams
-    )
-    IF /i "%~1"=="/vsy" (
-        SET vs_year=%~2
-        SHIFT
         goto reParseParams
     )
     
@@ -146,10 +131,6 @@ GOTO :ParseParams
     echo.
     echo Options:
     echo /e: /Enable specified scheduled tasks
-    echo.
-    echo VS flavour:
-    echo /vse: Edition. Default: Professional
-    echo /vsy: Year. Default: 2019
     echo.
     echo Other:
     echo /v: More verbose.

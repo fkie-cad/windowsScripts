@@ -2,12 +2,12 @@
 :: Block or reset Visual Studio Professional network connections.
 :: Be sure to rerun especially for devenv.exe after each update.
 ::
-:: Last change: 09.02.2022
-:: Version: 1.0.7
+:: Last change: 11.07.2024
+:: Version: 1.1.0
 ::
 
 @echo off
-setlocal
+setlocal enabledelayedexpansion
 
 set prog_name=%~n0%~x0
 set script_dir="%~dp0"
@@ -27,6 +27,7 @@ set /a block=1
 set vs_base="%ProgramFiles(x86)%\Microsoft Visual Studio"
 set vs_edition=Professional
 set vs_year=2019
+set vs_path=
 
 
 GOTO :ParseParams
@@ -98,6 +99,21 @@ GOTO :ParseParams
 
 :main
     
+    REM check "Program Files (x86)" path
+    REM if not found, adjust to "Program Files"
+    set "vs_path=%vs_base:~1,-1%\%vs_year%\%vs_edition%"
+    if not exist "%vs_path%\Common7\IDE\devenv.exe" (
+        if %verbose% == 1 echo [i] No "%vs_path%\Common7\IDE\devenv.exe" found!
+            
+        set vs_base="%ProgramFiles%\Microsoft Visual Studio"
+        set "vs_path=!vs_base:~1,-1!\%vs_year%\%vs_edition%"
+        
+        if not exist "!vs_path!\Common7\IDE\devenv.exe" (
+            echo [e] No "%vs_path%\Common7\IDE\devenv.exe" found!
+            exit /b %errorlevel%
+        )
+    )
+    
     :: Admin check
     fltmc >nul 2>&1 || (
         echo [e] Administrator privileges required.
@@ -118,6 +134,9 @@ GOTO :ParseParams
     )
 
     if %verbose% == 1 (
+        echo vs_year: %vs_year%
+        echo vs_edition: %vs_edition%
+        echo vs_path: "%vs_path%"
         echo bgdl : %bgdl%
         echo devenv : %devenv%
         echo perfwatson : %perfwatson%
@@ -125,70 +144,100 @@ GOTO :ParseParams
         echo shub : %shub%
         echo tlmtr : %tlmtr%
     )
-
-    :: BackgroundDownload
+    
+    REM BackgroundDownload
     if %bgdl% == 1 (
         call :makeRule "VS BackgroundDownload" "%vs_base:~1,-1%\Installer\resources\app\ServiceHub\Services\Microsoft.VisualStudio.Setup.Service\BackgroundDownload.exe" %block%
     )
 
-    :: DevEnv.exe
+    REM DevEnv.exe
     if %devenv% == 1 (
-        call :makeRule "VS DevEnv" "%vs_base:~1,-1%\%vs_year%\%vs_edition%\Common7\IDE\devenv.exe" %block%
+        call :makeRule "VS DevEnv" "%vs_path%\Common7\IDE\devenv.exe" %block%
     )
 
-    :: PerfWatson2
+    REM PerfWatson2
     if %perfwatson% == 1 (
-        call :makeRule "VS PerfWatson2" "%vs_base:~1,-1%\%vs_year%\%vs_edition%\Common7\IDE\PerfWatson2.exe" %block%
+        call :makeRule "VS PerfWatson2" "%vs_path%\Common7\IDE\PerfWatson2.exe" %block%
     )
 
-    :: RemoteContainer.dll
+    REM RemoteContainer.dll
     if %remoteContainer% == 1 (
-        call :makeRule "VS RemoteContainer" "%vs_base:~1,-1%\%vs_year%\%vs_edition%\Common7\IDE\PrivateAssemblies\Microsoft.Alm.Shared.Remoting.RemoteContainer.dll" %block%
+        call :makeRule "VS RemoteContainer" "%vs_path%\Common7\IDE\PrivateAssemblies\Microsoft.Alm.Shared.Remoting.RemoteContainer.dll" %block%
     )
 
-    :: VSDetouredHost
+    REM service hub hosts
     if %shub% == 1 (
-        call :makeRule "VS ServiceHub Controller" "%vs_base:~1,-1%\%vs_year%\%vs_edition%\Common7\ServiceHub\controller\Microsoft.ServiceHub.Controller.exe" %block%
-        call :makeRule "VS ServiceHub VSDetouredHost" "%vs_base:~1,-1%\%vs_year%\%vs_edition%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\ServiceHub.VSDetouredHost.exe" %block%
-        call :makeRule "VS ServiceHub IdentityHost" "%vs_base:~1,-1%\%vs_year%\%vs_edition%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\ServiceHub.IdentityHost.exe" %block%
-        call :makeRule "VS ServiceHub SettingsHost" "%vs_base:~1,-1%\%vs_year%\%vs_edition%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\ServiceHub.SettingsHost.exe" %block%
-        call :makeRule "VS ServiceHub TestWindowStoreHost" "%vs_base:~1,-1%\%vs_year%\%vs_edition%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.AnyCPU\ServiceHub.TestWindowStoreHost.exe" %block%
+    
+        call :makeRule "VS ServiceHub Controller" "%vs_path%\Common7\ServiceHub\controller\Microsoft.ServiceHub.Controller.exe" %block%
+        
+        call :disableServiceHubHosts %block%
     )
     
     REM set tlmtr_dll=Microsoft.VisualStudio.Telemetry.dll
-    REM :: telemetry
+    REM telemetry
     REM if %tlmtr% == 1 (
         REM call :makeRule "VS Telemetry01" "C:\Windows\assembly\NativeImages_v4.0.30319_32\Microsoft.*****#\*****\Microsoft.VisualStudio.Telemetry.ni.dll" %block%
-        REM call :makeRule "VS Telemetry02" "%vs_base:~1,-1%\%vs_year%\Professional\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x64\PrivateHost\%tlmtr_dll%" %block%
-        REM call :makeRule "VS Telemetry03" "%vs_base:~1,-1%\%vs_year%\Professional\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\PrivateHost\%tlmtr_dll%" %block%
+        REM call :makeRule "VS Telemetry02" "%vs_path%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x64\PrivateHost\%tlmtr_dll%" %block%
+        REM call :makeRule "VS Telemetry03" "%vs_path%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\PrivateHost\%tlmtr_dll%" %block%
         REM call :makeRule "VS Telemetry04" "%vs_base:~1,-1%\%vs_year%\BuildTools\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x64\PrivateHost\%tlmtr_dll%" %block%
         REM call :makeRule "VS Telemetry05" "%vs_base:~1,-1%\%vs_year%\BuildTools\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\PrivateHost\%tlmtr_dll%" %block%
-        REM call :makeRule "VS Telemetry06" "%vs_base:~1,-1%\%vs_year%\Professional\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64\%tlmtr_dll%" %block%
-        REM call :makeRule "VS Telemetry07" "%vs_base:~1,-1%\%vs_year%\Professional\VC\Tools\MSVC\14.29.30133\bin\Hostx86\x86\%tlmtr_dll%" %block%
+        REM call :makeRule "VS Telemetry06" "%vs_path%\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64\%tlmtr_dll%" %block%
+        REM call :makeRule "VS Telemetry07" "%vs_path%\VC\Tools\MSVC\14.29.30133\bin\Hostx86\x86\%tlmtr_dll%" %block%
         REM call :makeRule "VS Telemetry08" "%vs_base:~1,-1%\%vs_year%\BuildTools\VC\Tools\MSVC\14.16.27023\bin\HostX64\x64\%tlmtr_dll%" %block%
         REM call :makeRule "VS Telemetry09" "%vs_base:~1,-1%\%vs_year%\BuildTools\VC\Tools\MSVC\14.16.27023\bin\HostX86\x86\%tlmtr_dll%" %block%
     REM )
 
-    :: C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\VC\vcpackages\VCPkgSrv.exe
-    :: C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\PrivateAssemblies\Microsoft.Alm.Shared.Remoting.RemoteContainer.dll
+    :: C:\Program Files (x86)\Microsoft Visual Studio\%vs_year%\%vs_edition%\Common7\IDE\VC\vcpackages\VCPkgSrv.exe
+    :: C:\Program Files (x86)\Microsoft Visual Studio\%vs_year%\%vs_edition%\Common7\IDE\PrivateAssemblies\Microsoft.Alm.Shared.Remoting.RemoteContainer.dll
 
     :mainend
     endlocal
-    exit /b 0
+    exit /b %errorlevel%
 
-:makeRule
-    setlocal
-        set "rule_name=%~1"
-        set "program_name=%~2"
-        set /a block=%3
 
-        echo Deleting "%rule_name%" rule
-        netsh advfirewall firewall delete rule name="%rule_name%"
-        if %block% == 1 (
-            echo Blocking "%rule_name%" : "%program_name%"
-            netsh advfirewall firewall add rule name="%rule_name%" dir=in action=block profile=any program="%program_name%"
-            netsh advfirewall firewall add rule name="%rule_name%" dir=out action=block profile=any program="%program_name%"
+REM block all <host>.exe in the ServiceHub\Hosts directories
+REM params:
+REM 1 block boolean block or unblock rule
+:disableServiceHubHosts
+setlocal
+    
+    set /a block=%~1
+    set /a counter=0
+    set "shdir=%vs_path%\Common7\ServiceHub\Hosts"
+
+    for /r "%shdir%" %%p in ("*.exe") do (
+        For %%A in ("%%p") do (
+            Set folder=%%~dpA
+            Set name=%%~nxA
         )
+        call :makeRule "VS ServiceHub (!counter!) !name!" "%%p" %block%
+        
+        set /a counter+=1
+    )
+    
+    endlocal
+    exit /b %errorlevel%
+
+REM make a firewall rule
+REM params:
+REM 1 rule_name string name of the rule
+REM 2 program_name string target program name path for the firewall rule
+REM 3 block boolean block or unblock rule
+:makeRule
+setlocal
+
+    set "rule_name=%~1"
+    set "program_name=%~2"
+    set /a block=%3
+
+    echo Deleting "%rule_name%" rule
+    netsh advfirewall firewall delete rule name="%rule_name%" >nul 2>&1
+    if %block% == 1 (
+        echo Blocking "%rule_name%" : "%program_name%"
+        netsh advfirewall firewall add rule name="%rule_name%" dir=in action=block profile=any program="%program_name%"
+        netsh advfirewall firewall add rule name="%rule_name%" dir=out action=block profile=any program="%program_name%"
+    )
+    
     endlocal
     exit /b %errorlevel%
 
@@ -202,10 +251,10 @@ GOTO :ParseParams
     echo Block Targets:
     echo /all: All following targets (default).
     echo /b: Microsoft Visual Studio\Installer\resources\app\ServiceHub\Services\Microsoft.VisualStudio.Setup.Service\BackgroundDownload.exe
-    echo /d: %vs_base:~1,-1%\%vs_year%\%vs_edition%\Common7\IDE\devenv.exe
-    echo /p: %vs_base:~1,-1%\%vs_year%\%vs_edition%\Common7\IDE\PerfWatson2.exe
-    echo /r: %vs_base:~1,-1%\%vs_year%\%vs_edition%\Common7\IDE\PrivateAssemblies\Microsoft.Alm.Shared.Remoting.RemoteContainer.dll
-    echo /s: %vs_base:~1,-1%\%vs_year%\%vs_edition%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\ServiceHub.(VSDetouredHost.exe, IdentityHost.exe, SettingsHost.exe)
+    echo /d: %vs_path%\Common7\IDE\devenv.exe
+    echo /p: %vs_path%\Common7\IDE\PerfWatson2.exe
+    echo /r: %vs_path%\Common7\IDE\PrivateAssemblies\Microsoft.Alm.Shared.Remoting.RemoteContainer.dll
+    echo /s: %vs_path%\Common7\ServiceHub\Hosts\*\*.exe
     echo.
     echo /x: Delete the specified rule(s), i.e. unblock target(s).
     echo.

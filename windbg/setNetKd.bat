@@ -14,6 +14,9 @@ set key=
 set bus=
 set /a dhcp=0
 set /a reboot=0
+set /a clear=0
+set /a debug=0
+set /a bootdebug=0
 
 set prog_name=%~n0%~x0
 set user_dir="%~dp0"
@@ -34,21 +37,72 @@ GOTO :ParseParams
         SHIFT
         goto reParseParams
     )
+    IF /i "%~1"=="/bus" (
+        SET bus=%~2
+        SHIFT
+        goto reParseParams
+    )
+    
+    IF /i "%~1"=="/c" (
+        SET /a clear=1
+        goto reParseParams
+    )
+    IF /i "%~1"=="/clear" (
+        SET /a clear=1
+        goto reParseParams
+    )
+    
+    IF /i "%~1"=="/d" (
+        SET /a debug=1
+        goto reParseParams
+    )
+    IF /i "%~1"=="/debug" (
+        SET /a debug=1
+        goto reParseParams
+    )
+    
+    IF /i "%~1"=="/bd" (
+        SET /a bootdebug=1
+        goto reParseParams
+    )
+    IF /i "%~1"=="/bootdebug" (
+        SET /a bootdebug=1
+        goto reParseParams
+    )
+    
     IF /i "%~1"=="/i" (
         SET ip=%~2
         SHIFT
         goto reParseParams
     )
+    IF /i "%~1"=="/ip" (
+        SET ip=%~2
+        SHIFT
+        goto reParseParams
+    )
+    
     IF /i "%~1"=="/k" (
         SET key=%~2
         SHIFT
         goto reParseParams
     )
+    IF /i "%~1"=="/key" (
+        SET key=%~2
+        SHIFT
+        goto reParseParams
+    )
+    
     IF /i "%~1"=="/p" (
         SET /a port=%~2
         SHIFT
         goto reParseParams
     )
+    IF /i "%~1"=="/port" (
+        SET /a port=%~2
+        SHIFT
+        goto reParseParams
+    )
+    
     IF /i "%~1"=="/d" (
         SET /a dhcp=1
         goto reParseParams
@@ -57,6 +111,7 @@ GOTO :ParseParams
         SET /a dhcp=1
         goto reParseParams
     )
+    
     IF /i "%~1"=="/r" (
         SET /a reboot=1
         goto reParseParams
@@ -64,6 +119,8 @@ GOTO :ParseParams
     IF /i "%~1"=="/v" (
         SET verbose=1
         goto reParseParams
+    ) ELSE (
+        echo Unknown option : "%~1"
     )
     
     :reParseParams
@@ -75,6 +132,20 @@ GOTO :ParseParams
 
 :main
 
+    if %clear% EQU 1 (
+        echo deleting debug settings...
+        bcdedit /deletevalue debug >nul 2>&1 
+        bcdedit /deletevalue bootdebug >nul 2>&1 
+        bcdedit /deletevalue {dbgsettings} hostip >nul 2>&1 
+        bcdedit /deletevalue {dbgsettings} port >nul 2>&1 
+        bcdedit /deletevalue {dbgsettings} busparams >nul 2>&1 
+        bcdedit /deletevalue {dbgsettings} key >nul 2>&1 
+        bcdedit /deletevalue {dbgsettings} debugtype >nul 2>&1 
+        bcdedit /deletevalue {dbgsettings} dhcp >nul 2>&1 
+        echo done
+        goto reboot
+    )
+
     set /a valid=1
     if [%port%] LSS [50000] (
         set /a valid=0
@@ -84,7 +155,8 @@ GOTO :ParseParams
         )
     )
 
-    if [%valid%] == [0] (
+    if %valid% == 0 (
+        echo [e] Unsupported port value!
         call :help
         set /a %errorlevel% -1
         goto mainend
@@ -97,6 +169,9 @@ GOTO :ParseParams
         echo busparams=%busparams%
         echo dhcp=%dhcp%
         echo reboot=%reboot%
+        echo debug=%debug%
+        echo bootdebug=%bootdebug%
+        echo clear=%clear%
     )
 
     call :checkPermissions
@@ -107,6 +182,14 @@ GOTO :ParseParams
     
     call :edit
     
+    if %debug% EQU 1 (
+        bcdedit /set debug on
+    )
+    if %bootdebug% EQU 1 (
+        bcdedit /set bootdebug on
+    )
+    
+    :reboot
     if %errorlevel% EQU 0 (
     if %reboot% EQU 1 (
         SET /P confirm="[?] Reboot now? (Y/[N]) "
@@ -149,7 +232,7 @@ GOTO :ParseParams
 
 
 :usage
-    echo Usage: %prog_name% [/i ^<ip^>] [/p ^<port^>] [/k ^<key^>] [/b ^<param^>] [/dhcp] [/r] [/v] [/h]
+    echo Usage: %prog_name% [/i ^<ip^>] [/p ^<port^>] [/k ^<key^>] [/b ^<param^>] [/dhcp] [/d] [/bd] [/c] [/r] [/v] [/h]
     exit /B 0
     
 :help
@@ -159,9 +242,12 @@ GOTO :ParseParams
     echo /i The host ip.
     echo /p The connection port. Default: 50000.
     echo /k The connection key. If not set, a random key will be generated.
-    echo /b The bus param of the network device. Usually works without setting it. If not: Open the property page for the network adapter :: details ^> Location information. 
+    echo /b The bus param of the network device. Usually works without setting it. If not: Use kdnet.exe or open the property page for the network adapter :: details ^> Location information. 
     echo /dhcp For DHCP.
     echo /r Reboot system with prompt.
+    echo /d Set debug on.
+    echo /d Set bootdebug on.
+    echo /c Clear debug settings.
     echo /v Verbose mode
     echo /h Print this
 

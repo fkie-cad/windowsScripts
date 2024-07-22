@@ -88,9 +88,6 @@ GOTO :ParseParams
 
 :main
 
-    REM if [%vdisk%] == [] goto usage
-    REM if [%vdisk%] == [""] goto usage
-
     if [%verbose%]==[1] (
         echo mode=%mode%
         echo vdisk=%vdisk%
@@ -100,7 +97,6 @@ GOTO :ParseParams
         echo umount_mode=%umount_mode%
     )
 
-
     if [%verbose%]==[1] echo checking Admin permissions...
     net session >nul 2>&1
     if %errorlevel% NEQ 0 (
@@ -108,11 +104,14 @@ GOTO :ParseParams
         exit /b 1
     )
     
-    if %mode% EQU %MODE_NONE% goto exitMain
-    if %mode% EQU %MODE_UNMOUNT% call :unmount
-    if %mode% EQU %MODE_MOUNT% call :mount
-    if %mode% EQU %MODE_ATTACH% call :attachVDisk
-    if %mode% EQU %MODE_DETACH% call :detachVDisk
+    if %mode% EQU %MODE_NONE% (
+        echo [e] No mode selected!
+        goto exitMain
+    )
+    if %mode% EQU %MODE_UNMOUNT% call :unmount && goto exitMain
+    if %mode% EQU %MODE_MOUNT% call :mount && goto exitMain
+    if %mode% EQU %MODE_ATTACH% call :attachVDisk && goto exitMain
+    if %mode% EQU %MODE_DETACH% call :detachVDisk && goto exitMain
 
     :exitMain
     endlocal
@@ -212,7 +211,7 @@ setlocal
     REM Dism /Unmount-Wim /MountDir:%MountDir% %umount_mode%
 
     if [%mountDir%]==[] (
-        echo [e] no mount dir given!
+        echo [e] No mount dir given!
         call
         goto exitUnmount
     )

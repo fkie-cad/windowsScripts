@@ -478,6 +478,7 @@ setlocal
         copy %hostSys32%\vccorlib*.dll "%wpeSys32%"
         copy %hostSys32%\vcomp*.dll "%wpeSys32%"
         copy %hostSys32%\vcruntime*.dll "%wpeSys32%"
+        copy %hostSys32%\ucrtbase*.dll "%wpeSys32%"
     ) else (
     if [%arch%] EQU [x86] (
         copy %hostWow64%\msvcp*.dll "%wpeSys32%"
@@ -486,6 +487,7 @@ setlocal
         copy %hostWow64%\vccorlib*.dll "%wpeSys32%"
         copy %hostWow64%\vcomp*.dll "%wpeSys32%"
         copy %hostWow64%\vcruntime*.dll "%wpeSys32%"
+        copy %hostWow64%\ucrtbase*.dll "%wpeSys32%"
     ))
     echo -----
     echo.

@@ -116,6 +116,11 @@ GOTO :ParseParams
         SET /a reboot=1
         goto reParseParams
     )
+    IF /i "%~1"=="/reboot" (
+        SET /a reboot=1
+        goto reParseParams
+    )
+    
     IF /i "%~1"=="/v" (
         SET verbose=1
         goto reParseParams
@@ -134,6 +139,7 @@ GOTO :ParseParams
 
     if %clear% EQU 1 (
         echo deleting debug settings...
+        
         bcdedit /deletevalue debug >nul 2>&1 
         bcdedit /deletevalue bootdebug >nul 2>&1 
         bcdedit /deletevalue {dbgsettings} hostip >nul 2>&1 
@@ -142,6 +148,7 @@ GOTO :ParseParams
         bcdedit /deletevalue {dbgsettings} key >nul 2>&1 
         bcdedit /deletevalue {dbgsettings} debugtype >nul 2>&1 
         bcdedit /deletevalue {dbgsettings} dhcp >nul 2>&1 
+        
         echo done
         goto reboot
     )
@@ -246,8 +253,8 @@ GOTO :ParseParams
     echo /dhcp For DHCP.
     echo /r Reboot system with prompt.
     echo /d Set debug on.
-    echo /d Set bootdebug on.
-    echo /c Clear debug settings.
+    echo /bd Set bootdebug on.
+    echo /c Clear all debug settings.
     echo /v Verbose mode
     echo /h Print this
 

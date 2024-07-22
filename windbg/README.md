@@ -18,13 +18,18 @@ Set guest system up for net kd. `BcdEdit` wrapper.
 
 ### Usage
 ```bash
-$ setNetKd.bat [/i <ip>] [/p <port>] [/k <key>] [/b <param>] [/r] [/v] [/h]
+$ setNetKd.bat [/i <ip>] [/p <port>] [/k <key>] [/b <param>] [/dhcp] [/d] [/bd] [/c] [/r] [/v] [/h]
 ```
 **Options:**
 * /i The host ip.
 * /p The connection port. Default: 50000.
 * /k The connection key. If not set, a random key will be generated.
-* /b The bus param. Open the property page for the network adapter :: details > Location information. Usually works without setting it.
+* /b The bus param of the network device. Usually works without setting it. If not: Use kdnet.exe or open the property page for the network adapter :: details > Location information.
+* /dhcp For DHCP.
+* /r Reboot system with prompt.
+* /d Set debug on.
+* /bd Set bootdebug on.
+* /c Clear all debug settings.
 * /r: Reboot system with confirmation prompt.
 * /v Verbose mode
 * /h Print this

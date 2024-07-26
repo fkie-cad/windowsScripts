@@ -21,7 +21,8 @@ set /a WPE_TYPE_MAX=2
 set image=""
 set vdisk=""
 set /a usbDisk=0
-set size=1000
+set bpf=FAT32
+set size=2048
 set vhdType=fixed
 set label="WinPE"
 set vletter=V
@@ -46,6 +47,11 @@ GOTO :ParseParams
 
     IF /i "%~1"=="/a" (
         SET wpeArch=%~2
+        SHIFT
+        goto reParseParams
+    )
+    IF /i "%~1"=="/bpf" (
+        SET bpf=%~2
         SHIFT
         goto reParseParams
     )
@@ -190,8 +196,10 @@ GOTO :ParseParams
     if %wpeType% EQU %WPE_TYPE_USB% (
     
         set vletter=X
-        call :initUsb %usbDisk% !vletter! Y %label%
+        call :initUsb %usbDisk% %bpf% %size% !vletter! Y %label%
     
+        echo errorlevel: %errorlevel%
+        pause
     ))
 
 
@@ -243,6 +251,8 @@ setlocal
     echo assign letter=%vletter% >> %dp_file%
     echo Exit >> %dp_file%
     
+    if %verbose% EQU 1 type %dp_file%
+    
     diskpart /s %dp_file%
     
     echo ----
@@ -255,20 +265,24 @@ setlocal
     echo ----initUsb
     
     set /a disk=%1
-    set letterF=%2
-    set letterN=%3
-    set "label=%~4"
+    set bpf=%2
+    set /a size=%3
+    set letterF=%4
+    set letterN=%5
+    set "label=%~6"
     
     echo select disk %disk% > %dp_file%
     echo clean >> %dp_file%
-    echo create partition primary size=2048 >> %dp_file%
-    echo active >> %dp_file%
-    echo format fs=FAT32 quick label="%label%" >> %dp_file%
+    echo create partition primary size=%size% >> %dp_file%
+    REM echo active >> %dp_file%
+    echo format fs=%bpf% quick label="%label%" >> %dp_file%
     echo assign letter=%letterF% >> %dp_file%
     echo create partition primary >> %dp_file%
     echo format fs=NTFS quick label="BigN" >> %dp_file%
     echo assign letter=%letterN% >> %dp_file%
     echo Exit >> %dp_file%
+    
+    if %verbose% EQU 1 type %dp_file%
     
     diskpart /s %dp_file%
     
@@ -339,7 +353,7 @@ setlocal
     echo.
     echo VHD options:
     echo   /vdp Path to the (new) disk.vhd
-    echo   /s (Maximum) size of the vhd in MB. Defaults to 1000.
+    echo   /s (Maximum) size of the vhd in MB. Defaults to 2048.
     echo   /t Tpye of the vhd. Static size (fixed) or dynamic size (expandable). Defaults to "fixed".
     echo   /lbl A string label for the vhd. Default: WinPe
     echo   /d Detach vhd.
@@ -348,6 +362,8 @@ setlocal
     echo USB options:
     echo   /ud Disk number of the usb drive. Use diskpart : "list disk" to get this.
     echo   /lbl A string label for the WinPe partition. Default: WinPe
+    echo   /s Size in MB of the WinPe partition. Defaults to 2048.
+    echo   /bpf Boot partition format. Defaults to FAT32.
     echo.
     echo /v More verbose mode
     

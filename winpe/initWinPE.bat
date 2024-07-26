@@ -43,12 +43,15 @@ set /a ps=0
 set /a reg=0
 set /a utils=0
 set /a vsr=0
+set /a wmi=0
 set /a ts=0
 set /a dbg=0
 set /a dbgType=0
 set hostip=
 set /a port=0
 set /a legacy=0
+
+set /a check=0
 
 set /a COM_DEBUG=1
 set /a NET_DEBUG=2
@@ -75,6 +78,10 @@ GOTO :ParseParams
         SET "bgSrc=%~2"
         SET /a bg=1
         SHIFT
+        goto reParseParams
+    )
+    IF /i "%~1"=="/check" (
+        SET /a check=1
         goto reParseParams
     )
     IF /i "%~1"=="/md" (
@@ -110,6 +117,10 @@ GOTO :ParseParams
         SET /a vsr=1
         SET arch=%~2
         SHIFT
+        goto reParseParams
+    )
+    IF /i "%~1"=="/wmi" (
+        SET /a wmi=1
         goto reParseParams
     )
     IF /i "%~1"=="/dbg" (
@@ -189,17 +200,12 @@ GOTO :ParseParams
     :start
 
     :: check mount dir
-    if [%mountDir%] == [] (
-        echo [e] Mount dir /md not set
-        call
-        exit /b 1
-    )
-    if [%mountDir%] == [""] (
+    if ["%mountDir%"] == [""] (
         echo [e] Mount dir /md not set
         exit /b 1
     )
     if not exist "%mountDir%" (
-        echo [e] mountDir "%mountDir%" not found.
+        echo [e] Dir "%mountDir%" not found.
         call
         exit /b 1
     )
@@ -265,6 +271,11 @@ GOTO :ParseParams
         call :addPs
     )
 
+    :: and wmi support
+    if %wmi% EQU 1 (
+        call :addWmi
+    )
+
     :: update registry
     if %reg% EQU 1 (
         call :updateReg
@@ -305,6 +316,10 @@ GOTO :ParseParams
     
     if %ts% NEQ 0 (
         call :toggleTestSigning %letter% %ts%
+    ) 
+    
+    if %check% EQU 1 (
+        call :checkFeatures "%mountDir%"
     ) 
 
     :exitMain
@@ -395,24 +410,39 @@ setlocal
 
     echo -----add Powershell
     
-    call :addPackage WinPE-WMI
     call :addPackage WinPE-NetFX
     call :addPackage WinPE-Scripting
     call :addPackage WinPE-PowerShell
     call :addPackage WinPE-StorageWMI
     call :addPackage WinPE-DismCmdlets
-    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-WMI.cab"
-    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-WMI_en-us.cab"
-    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-NetFX.cab"
-    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-NetFX_en-us.cab"
-    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-Scripting.cab"
-    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-Scripting_en-us.cab"
-    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-PowerShell.cab"
-    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-PowerShell_en-us.cab"
-    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-StorageWMI.cab"
-    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-StorageWMI_en-us.cab"
-    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\WinPE-DismCmdlets.cab"
-    REM Dism /Add-Package /Image:"%mountDir%" /PackagePath:"%wpeKitPath%\%wpeArch%\WinPE_OCs\en-us\WinPE-DismCmdlets_en-us.cab"
+    
+    echo -----
+    echo.
+
+    endlocal
+    exit /b %errorlevel%
+
+
+:addWmi
+setlocal
+
+    echo -----add WMI
+    
+    call :addPackage WinPE-WMI
+    
+    echo -----
+    echo.
+
+    endlocal
+    exit /b %errorlevel%
+
+
+:addWifi
+setlocal
+
+    echo -----add Wifi
+    
+    call :addPackage WinPE-Wifi
     
     echo -----
     echo.
@@ -450,11 +480,13 @@ setlocal
 :addUtils
 setlocal
 
-    echo -----add utils
+    echo -----add utils:
+    echo add findstr
     
     copy %hostSys32%\findstr.exe "%wpeSys32%"
     copy %hostSys32%\en-US\findstr.exe.mui "%wpeSys32%"\en-US
     
+    echo add where
     copy %hostSys32%\where.exe "%wpeSys32%"
     copy %hostSys32%\en-US\where.exe.mui "%wpeSys32%"\en-US
 
@@ -709,6 +741,23 @@ setlocal
 
 
 
+:checkFeatures
+setlocal
+
+    set "md=%~1"
+    
+    echo -----check features
+    
+    dism /Image:"%md%" /Get-Features
+    
+    echo -----
+    echo.
+
+    endlocal
+    exit /b %errorlevel%
+
+
+
 :addPackage
 setlocal
 
@@ -744,7 +793,7 @@ setlocal
 
 
 :usage
-    echo Usage: %prog_name% /md ^<path^> [/bg ^<path^>] [/ss ^<path^>] [/sd ^<dir^>] [/utils] [/reg] [/ps] [/vsr ^<arch^>] [/dbg] [/xdbg] [/netdbg] [/eemdbg] [/comdbg] [/ip ^<address^>] [/port ^<value^>] [/ts] [/xts] [/l ^<letter^>] [/legacy] [/h] [/v]
+    echo Usage: %prog_name% /md ^<path^> [/bg ^<path^>] [/ss ^<path^>] [/sd ^<dir^>] [/utils] [/reg] [/ps] [/wmi] [/vsr ^<arch^>] [/dbg] [/xdbg] [/netdbg] [/eemdbg] [/comdbg] [/ip ^<address^>] [/port ^<value^>] [/ts] [/xts] [/l ^<letter^>] [/legacy] [/check] [/h] [/v]
     exit /B 0
 
 :help
@@ -760,6 +809,7 @@ setlocal
     echo /ps Add PowerShell.
     echo /utils Add where, findstr to System32.
     echo /vsr ^<arch^> Copy msvc**.dll and vc**.dll runtime.dlls form host C:\Windows\System32 (x64) or C:\Windows\SysWow64 (x86) to WinPE System32.
+    echo /wmi Add WMI support.
     echo .
     echo Debug Settings:
     echo /dbg Set debug on
@@ -775,6 +825,7 @@ setlocal
     echo /l WinPe drive letter needed for debug settings.
     echo /legacy If WinPe is booted legacy (non UEFI). Default is non legacy, i.e. UEFI
     echo.
+    echo /check Check installed features.
     echo /v More verbose.
     echo /h Pint this.
     exit /B 0

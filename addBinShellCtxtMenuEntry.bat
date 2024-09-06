@@ -17,13 +17,16 @@ set /a mode=%MODE_ADD%
 set pb=
 set pa=
 
+if [%1]==[] goto help
+if ["%1"]==[""] goto help
+
 GOTO :ParseParams
 
 :ParseParams
 
-    if [%1]==[/?] call :help & goto exitMain
-    if [%1]==[/h] call :help & goto exitMain
-    if [%1]==[/help] call :help & goto exitMain
+    if [%1]==[/?] goto help
+    if [%1]==[/h] goto help
+    if [%1]==[/help] goto help
 
     IF "%~1"=="/p" (
         SET bin_path=%~2
@@ -63,14 +66,14 @@ GOTO :ParseParams
 
 :main
 
-    if ["%bin_path%"] == [] call :usage & goto exitMain
     if ["%bin_path%"] == [""] call :usage & goto exitMain
-    if ["%label%"] == [] call :usage & goto exitMain
+    if ["%bin_path%"] == [""] call :usage & goto exitMain
+    if ["%label%"] == [""] call :usage & goto exitMain
     if ["%label%"] == [""] call :usage & goto exitMain
 
     IF not exist "%bin_path%" (
         echo Binary not found at "%bin_path%"!
-        echo Place it there or adjust the bin_path.
+        echo Place it there or give a correct /b ^<path^>
         exit /b 0
     )
 
@@ -86,8 +89,7 @@ GOTO :ParseParams
         call :deleteEntry
     ) else (
         echo [e] Unknown mode!
-        call
-        goto exitMain
+        exit /b 1
     ))
     
     :exitMain

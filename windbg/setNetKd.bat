@@ -8,22 +8,25 @@
 @echo off
 SETLOCAL enabledelayedexpansion
 
+set prog_name=%~n0%~x0
+set user_dir="%~dp0"
+
+set /a verbose=0
+set /a bootdebug=0
+set /a clear=0
+set /a check=0
+set /a debug=0
+set /a reboot=0
+set /a dhcp=0
 set ip=
 set /a port=50000
 set key=
 set bus=
-set /a dhcp=0
-set /a reboot=0
-set /a clear=0
-set /a debug=0
-set /a bootdebug=0
-
-set prog_name=%~n0%~x0
-set user_dir="%~dp0"
-set /a verbose=0
 
 
 
+
+if [%1]==[] goto usage
 GOTO :ParseParams
 
 :ParseParams
@@ -49,6 +52,15 @@ GOTO :ParseParams
     )
     IF /i "%~1"=="/clear" (
         SET /a clear=1
+        goto reParseParams
+    )
+    
+    IF /i "%~1"=="/t" (
+        SET /a check=1
+        goto reParseParams
+    )
+    IF /i "%~1"=="/check" (
+        SET /a check=1
         goto reParseParams
     )
     
@@ -122,7 +134,7 @@ GOTO :ParseParams
     )
     
     IF /i "%~1"=="/v" (
-        SET verbose=1
+        SET /a verbose=1
         goto reParseParams
     ) ELSE (
         echo Unknown option : "%~1"
@@ -173,7 +185,7 @@ GOTO :ParseParams
         echo ip=%ip%
         echo port=%port%
         echo key=%key%
-        echo busparams=%busparams%
+        echo busparams=%bus%
         echo dhcp=%dhcp%
         echo reboot=%reboot%
         echo debug=%debug%
@@ -194,6 +206,14 @@ GOTO :ParseParams
     )
     if %bootdebug% EQU 1 (
         bcdedit /set bootdebug on
+    )
+    
+    if %check% EQU 1 (
+        echo bcdedit:
+        bcdedit | findstr debug
+        echo.
+        echo dbgsettings:
+        bcdedit /dbgsettings
     )
     
     :reboot
@@ -222,14 +242,16 @@ GOTO :ParseParams
         ) else (
             set key_kv=newkey
         )
-        set "cmd=bcdedit /dbgsettings net hostip:%ip% port:%port% !key_kv! !dhcp_v!"
-    ) else (
-        if NOT [%bus%] EQU [] (
-            set "cmd=bcdedit /set "{dbgsettings}" busparams %bus%"
+        set busparams_v=
+        if [%bus%] NEQ [] (
+            set "busparams_v=busparams:%bus%"
         )
+        set "cmd=bcdedit /dbgsettings net hostip:%ip% port:%port% !key_kv! !dhcp_v! !busparams_v!"
     )
+    
     if %verbose% EQU 1 echo !cmd!
     !cmd!
+    
     exit /B %errorlevel%
 
 
@@ -239,7 +261,7 @@ GOTO :ParseParams
 
 
 :usage
-    echo Usage: %prog_name% [/i ^<ip^>] [/p ^<port^>] [/k ^<key^>] [/b ^<param^>] [/dhcp] [/d] [/bd] [/c] [/r] [/v] [/h]
+    echo Usage: %prog_name% [/i ^<ip^>] [/p ^<port^>] [/k ^<key^>] [/b ^<param^>] [/dhcp] [/d] [/bd] [/c] [/t] [/r] [/v] [/h]
     exit /B 0
     
 :help
@@ -255,6 +277,7 @@ GOTO :ParseParams
     echo /d Set debug on.
     echo /bd Set bootdebug on.
     echo /c Clear all debug settings.
+    echo /t Check settings.
     echo /v Verbose mode
     echo /h Print this
 

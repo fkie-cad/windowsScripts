@@ -6,10 +6,12 @@ set my_dir="%~dp0"
 set "my_dir=%my_dir:~1,-2%"
 
 echo ========== disableVSNetConnections
-CALL "%my_dir%\disableVSNetConnections.bat"
+CALL "%my_dir%\disableVSNetConnections.bat" /vsy 2019
+CALL "%my_dir%\disableVSNetConnections.bat" /vsy 2022
 
 echo ========== disableVSTasks
-CALL  "%my_dir%\disableVSTasks.bat"
+CALL  "%my_dir%\disableVSTasks.bat" /vsy 2019
+CALL  "%my_dir%\disableVSTasks.bat" /vsy 2022
 
 echo ========== disableVSTelemetryAndFeedback
 CALL "%my_dir%\disableVSTelemetryAndFeedback.bat"

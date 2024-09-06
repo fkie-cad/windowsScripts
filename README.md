@@ -280,7 +280,7 @@ Therefore, this complicated steps have to be followed:
 https://www.microsoft.com/en-us/download/details.aspx?id=40897
 
 The script tries to do it automatically with the `/d` option.
-Nonetheless the required [Local Security Authority (LSA) Protected Process Opt-out tool](https://www.microsoft.com/en-us/download/details.aspx?id=40897)  has to be downloaded first.
+Nonetheless the required [Local Security Authority (LSA) Protected Process Opt-out tool](https://www.microsoft.com/en-us/download/details.aspx?id=40897) has to be downloaded first.
 
 
 ### Links

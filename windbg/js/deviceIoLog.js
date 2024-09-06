@@ -16,7 +16,7 @@
 // params:
 //   moduleName: name of the module to log
 //   moduleOffset: module offset to the DeviceControl function
-//   outFileName: [optional] output file name, defaults to %tmp%\devio.log
+//   outFileName: [optional] output file name encapsulated in "" (quotation marks) and escaped \\ (backslash). Defaults to %tmp%\devio.log
 //   flags: [optional] flags.
 //            1: verbose mode
 //
@@ -36,9 +36,9 @@
 
 // General function shortcuts
 const execute = cmd => host.namespace.Debugger.Utility.Control.ExecuteCommand(cmd);
-const log = msg => host.diagnostics.debugLog(`${msg}`);
-const logLn = msg => host.diagnostics.debugLog(`${msg}\n`);
-const logErr = msg => host.diagnostics.debugLog(`[e] ${msg}\n`);
+const dbgInfo = msg => host.diagnostics.debugLog(`${msg}`);
+const dbgInfoLn = msg => host.diagnostics.debugLog(`${msg}\n`);
+const dbgErr = msg => host.diagnostics.debugLog(`[e] ${msg}\n`);
 
 const FLAG_VERBOSE = 1;
 
@@ -110,7 +110,7 @@ function bytesToU64(bytes)
 // - !exitLog or dx @$exitLog()
 function initializeScript()
 {
-    log("initializeScript()\n");
+    dbgInfo("initializeScript()\n");
     return [
         new host.apiVersionSupport(1, 3),
         new host.functionAlias(init, "initLog"),
@@ -122,7 +122,7 @@ function initializeScript()
 // - calls exit() if not done yet
 function uninitializeScript()
 {
-    log("uninitializeScript()\n");
+    dbgInfo("uninitializeScript()\n");
     exit();
 }
 
@@ -133,7 +133,7 @@ function uninitializeScript()
 // 
 function init(moduleName, moduleOffset, outFileName, flags_)
 {
-    log("init()\n");
+    dbgInfo("init()\n");
     
     if ( initialized )
         exit();
@@ -144,11 +144,11 @@ function init(moduleName, moduleOffset, outFileName, flags_)
     // get filename
     if ( !outFileName )
         outFileName = fs.TempDirectory + "\\devio.log";
-    log("outFileName: "+outFileName+"\n");
+    dbgInfo("outFileName: "+outFileName+"\n");
     
     if ( flags_ )
         flags = flags_;
-    log("flags: "+flags+"\n");
+    dbgInfo("flags: "+flags+"\n");
     
     // open file and prepare writer
     outFile = fs.CreateFile(outFileName, "CreateAlways");
@@ -176,7 +176,7 @@ function init(moduleName, moduleOffset, outFileName, flags_)
 //
 function exit()
 {
-    log("exit()\n");
+    dbgInfo("exit()\n");
     
     if ( !initialized )
         return;
@@ -188,7 +188,7 @@ function exit()
     }
     catch ( e )
     {
-        logErr(e);
+        dbgErr(e);
     }
     outFile = null;
     
@@ -211,19 +211,19 @@ function onEnter()
     var registers = host.namespace.Debugger.State.DebuggerVariables.curthread.Registers.User;
     
     if ( flags & FLAG_VERBOSE )
-        log("enter\n");
+        dbgInfo("enter\n");
     // textWriter.WriteLine("enter");
     
     // var rcx = registers.rcx
-    // log("  rcx: "+rcx.toString(16)+"\n");
+    // dbgInfo("  rcx: "+rcx.toString(16)+"\n");
     var rdx = registers.rdx
-    // log("  rdx: "+rdx.toString(16)+"\n");
+    // dbgInfo("  rdx: "+rdx.toString(16)+"\n");
     
     var irp = host.createTypedObject(rdx, "nt", "_IRP");
     var systemBuffer = irp.AssociatedIrp.SystemBuffer.address;
     var stackAddr = irp.Tail.Overlay.CurrentStackLocation.address;
-    // log("  systemBuffer: "+systemBuffer.toString(16)+"\n");
-    // log("  stackAddr: "+stackAddr.toString(16)+"\n");
+    // dbgInfo("  systemBuffer: "+systemBuffer.toString(16)+"\n");
+    // dbgInfo("  stackAddr: "+stackAddr.toString(16)+"\n");
     var stack = host.createTypedObject(stackAddr, "ntkrnlmp", "_IO_STACK_LOCATION");
     
     var outputBufferLength = stack.Parameters.DeviceIoControl.OutputBufferLength;
@@ -237,10 +237,10 @@ function onEnter()
     
     if ( flags & FLAG_VERBOSE )
     {
-        log("  ioctl: 0x"+ioctl.toString(16)+" ("+typeof(ioctl)+")\n");
-        log("  outputBufferLength: 0x"+outputBufferLength.toString(16)+" ("+typeof(outputBufferLength)+")\n");
-        log("  inputBufferLength: 0x"+inputBufferLength.toString(16)+" ("+typeof(inputBufferLength)+")\n");
-        log("  systemBuffer: "+systemBuffer.toString(16)+" ("+typeof(systemBuffer)+")\n");
+        dbgInfo("  ioctl: 0x"+ioctl.toString(16)+" ("+typeof(ioctl)+")\n");
+        dbgInfo("  outputBufferLength: 0x"+outputBufferLength.toString(16)+" ("+typeof(outputBufferLength)+")\n");
+        dbgInfo("  inputBufferLength: 0x"+inputBufferLength.toString(16)+" ("+typeof(inputBufferLength)+")\n");
+        dbgInfo("  systemBuffer: "+systemBuffer.toString(16)+" ("+typeof(systemBuffer)+")\n");
     }
     
     //
@@ -252,12 +252,12 @@ function onEnter()
     {
         if ( flags & FLAG_VERBOSE )
         {
-            log("  inputBufferBytes: ");
+            dbgInfo("  inputBufferBytes: ");
             for ( var i = 0; i < inputBufferLength.getLowPart(); i++ ) 
             {
-                log(paddedByte(systemBufferBytes[i])+" ");
+                dbgInfo(paddedByte(systemBufferBytes[i])+" ");
             }
-            log("\n");
+            dbgInfo("\n");
         }
         for ( var i = 0; i < inputBufferLength.getLowPart(); i++ ) 
         {
@@ -293,12 +293,12 @@ function onReturn(systemBufferLow, systemBufferHigh, outputBufferLength)
 
     if ( flags & FLAG_VERBOSE )
     {
-        log("return\n");
-        log("  rax: 0x"+rax.toString(16)+" ("+typeof(rax)+")\n");
-        log("  systemBufferLow: 0x"+systemBufferLow.toString(16)+" ("+typeof(systemBufferLow)+")\n");
-        log("  systemBufferHigh: 0x"+systemBufferHigh.toString(16)+" ("+typeof(systemBufferHigh)+")\n");
-        log("  outputBufferLength: 0x"+outputBufferLength.toString(16)+" ("+typeof(outputBufferLength)+")\n");
-        log("  flags: 0x"+flags.toString(16)+" ("+typeof(flags)+")\n");
+        dbgInfo("return\n");
+        dbgInfo("  rax: 0x"+rax.toString(16)+" ("+typeof(rax)+")\n");
+        dbgInfo("  systemBufferLow: 0x"+systemBufferLow.toString(16)+" ("+typeof(systemBufferLow)+")\n");
+        dbgInfo("  systemBufferHigh: 0x"+systemBufferHigh.toString(16)+" ("+typeof(systemBufferHigh)+")\n");
+        dbgInfo("  outputBufferLength: 0x"+outputBufferLength.toString(16)+" ("+typeof(outputBufferLength)+")\n");
+        dbgInfo("  flags: 0x"+flags.toString(16)+" ("+typeof(flags)+")\n");
     }
     textWriter.Write("0x"+rax.toString(16)+";0x"+outputBufferLength.toString(16)+";");
     
@@ -309,12 +309,12 @@ function onReturn(systemBufferLow, systemBufferHigh, outputBufferLength)
     
         if ( flags & FLAG_VERBOSE )
         {
-            log("  outputBufferBytes: ");
+            dbgInfo("  outputBufferBytes: ");
             for ( var i = 0; i < outputBufferLength; i++ ) 
             {
-                log(paddedByte(systemBufferBytes[i])+" ");
+                dbgInfo(paddedByte(systemBufferBytes[i])+" ");
             }
-            log("\n");
+            dbgInfo("\n");
         }
         
         for ( var i = 0; i < outputBufferLength; i++ ) 

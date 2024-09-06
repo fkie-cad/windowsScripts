@@ -92,10 +92,10 @@ GOTO :ParseParams
         for %%p in ("%dir%\*.%type%") do (
             if %verbose% EQU 1 echo %%p  %%~zp
             If %%~zp LSS %min% (
-                if %verbose% EQU 1 echo   deleting %%p
                 if %check% NEQ 0 (
                     echo del "%%p"
                 ) else (
+                    if %verbose% EQU 1 echo   deleting %%p
                     del "%%p"
                 )
             )
@@ -104,10 +104,10 @@ GOTO :ParseParams
         for /r "%dir%" %%p in (*.%type%) do (
             if %verbose% EQU 1 echo %%p  %%~zp
             If %%~zp LSS %min% (
-                if %verbose% EQU 1 echo   deleting %%p
                 if %check% NEQ 0 (
                     echo del "%%p"
                 ) else (
+                    if %verbose% EQU 1 echo   deleting %%p
                     del "%%p"
                 )
             )
@@ -115,6 +115,17 @@ GOTO :ParseParams
     )
 
     exit /B 0
+
+:isDir
+    setlocal
+    set "v=%~1"
+    if ["%v:~0,-1%\"] == ["%v%"] (
+        if exist "%v%" exit /b 1
+    ) else (
+        if exist "%v%\" exit /b 1
+    )
+    exit /b 0
+    endlocal
 
 
 :usage
@@ -133,14 +144,3 @@ GOTO :ParseParams
     echo /v Verbose mode.
     echo /h Print this.
     exit /B 0
-
-:isDir
-    setlocal
-    set "v=%~1"
-    if ["%v:~0,-1%\"] == ["%v%"] (
-        if exist "%v%" exit /b 1
-    ) else (
-        if exist "%v%\" exit /b 1
-    )
-    exit /b 0
-    endlocal

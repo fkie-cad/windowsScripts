@@ -11,7 +11,9 @@ Last updated: 28.01.2023
 
 
 ## js
-Collection of windbg javascript extensions. 
+Collection of windbg javascript extensions.  
+[windbg/js](windbg/js)
+
 
 ## setNetKd
 Set guest system up for net kd. `BcdEdit` wrapper.

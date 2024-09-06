@@ -36,7 +36,7 @@ $ blitzDingsDefender.bat
   `reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 0x01 /f`  
   `reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiVirus /t REG_DWORD /d 0x01 /f`  
   `reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v ServiceStartStates /t REG_DWORD /d 0x00 /f`  
-  or ('enableDefender.bat /e /r')  
+  or ('enableDefender.bat /d /r')  
   This prevents automatic restarting of WindowsDefender after a reboot.  
   Just the first key may be sufficient.
 - Reboot
@@ -46,7 +46,7 @@ $ blitzDingsDefender.bat
   `reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /f`  
   `reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiVirus /f`  
   `reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v ServiceStartStates /f`  
-  (or 'enableDefender.bat /d /r)  
+  (or 'enableDefender.bat /e /r)  
   They will be changed to non "tampered" values anyway, if not deleted, after resetting "Tamper Protection".
 - Manually enable "Tamper Protection" in Windows Security > Virus & Thread Protection > Virus & Thread Protection Settings > Manage Settings
 - If not already automatically enabled, manually enable "Real Time Protection" in Windows Security > Virus & Thread Protection > Virus & Thread Protection Settings > Manage Settings

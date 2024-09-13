@@ -11,7 +11,7 @@ Last updated: 16.10.2023
 
 
 ## blitzDingsDefender
-Blitzdings windows defender entries.
+Blitzdings Windows Defender entries.
 
 **Does not work anymore out of the box since about 1903.**  
 Defender holds open file handles to most files and you get Access Denied errors.
@@ -41,13 +41,12 @@ $ blitzDingsDefender.bat
   Just the first key may be sufficient.
 - Reboot
 - Run `blitzDingsDefender.bat`
-- (Optional)  
-    Delete added keys:  
+- Delete added keys:  
   `reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /f`  
   `reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiVirus /f`  
   `reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v ServiceStartStates /f`  
   (or 'enableDefender.bat /e /r)  
-  They will be changed to non "tampered" values anyway, if not deleted, after resetting "Tamper Protection".
+- Reboot
 - Manually enable "Tamper Protection" in Windows Security > Virus & Thread Protection > Virus & Thread Protection Settings > Manage Settings
 - If not already automatically enabled, manually enable "Real Time Protection" in Windows Security > Virus & Thread Protection > Virus & Thread Protection Settings > Manage Settings
 - Reboot

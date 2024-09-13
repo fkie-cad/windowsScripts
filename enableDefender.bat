@@ -14,6 +14,8 @@ set /a enable=0
 set /a check=0
 set /a reboot=0
 
+set "hklmSwPMWD=HKLM\SOFTWARE\Policies\Microsoft\Windows Defender"
+
 
 GOTO :ParseParams
 
@@ -95,9 +97,9 @@ GOTO :ParseParams
 :disableDefender
 setlocal
     echo [^>] disableDefender
-    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 0x00000001 /f
-    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiVirus /t REG_DWORD /d 0x00000001 /f
-    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v ServiceStartStates /t REG_DWORD /d 0x00000001 /f
+    reg add "%hklmSwPMWD%" /v DisableAntiSpyware /t REG_DWORD /d 0x00000001 /f
+    reg add "%hklmSwPMWD%" /v DisableAntiVirus /t REG_DWORD /d 0x00000001 /f
+    reg add "%hklmSwPMWD%" /v ServiceStartStates /t REG_DWORD /d 0x00000001 /f
 
     endlocal
     exit /B %errorlevel%
@@ -105,9 +107,9 @@ setlocal
 :enableDefender
 setlocal
     echo [^>] enableDefender
-    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /f
-    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiVirus /f
-    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v ServiceStartStates /f
+    reg delete "%hklmSwPMWD%" /v DisableAntiSpyware /f
+    reg delete "%hklmSwPMWD%" /v DisableAntiVirus /f
+    reg delete "%hklmSwPMWD%" /v ServiceStartStates /f
 
     endlocal
     exit /B %errorlevel%
@@ -116,11 +118,14 @@ setlocal
 setlocal
     echo [^>] checkDefender
     echo   DisableAntiSpyware
-    reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware
+    reg query "%hklmSwPMWD%" /v DisableAntiSpyware
+    echo.
     echo   DisableAntiVirus
-    reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiVirus
+    reg query "%hklmSwPMWD%" /v DisableAntiVirus
+    echo.
     echo   DisableAntiVirus
-    reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiVirus
+    reg query "%hklmSwPMWD%" /v ServiceStartStates
+    echo.
 
     endlocal
     exit /B %errorlevel%

@@ -3,6 +3,7 @@ Last updated: 14.12.2023
 
 ## Contents
 - [baselinesettings](#baselinesettings)
+- [disableBrowserSignin](#disableBrowserSignin)
 
 
 
@@ -28,3 +29,23 @@ $ baselinesettings.bat
 ["This policy controls the use of code integrity guard in the browser process, which only allows Microsoft signed binaries to load."](https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#browsercodeintegritysetting)
 If so, setting it to `0` will solve the issue. 
 (`1` is obsolete as of version 110.)
+
+
+
+## disableBrowserSignin
+Disable edge from auto sign in into MS Account.
+Alternatively enable or force it.
+
+### Usage
+```bash
+disableBrowserSignin.bat [/d|/e|/f|/c] [/i <hive>] [/v] [/h]
+```
+
+**Options**
+- /d Disable auto signing into Microsoft Account. (Default)
+- /e Enable auto signing into Microsoft Account.
+- /f Force auto signing into Microsoft Account.
+- /c Check registry key.
+- /i Registry hive. Default: HKCU.
+- /v Verbose mode.
+- /h Print this.

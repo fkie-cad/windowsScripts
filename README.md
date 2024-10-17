@@ -71,6 +71,10 @@ Some useful blintzDings scripts to clean up log entries or other stuff.
 Some crypto related scripts.  
 [crypto/README.md](crypto/README.md)
 
+## edge/
+Some edge related scripts.  
+[edge/README.md](edge/README.md)
+
 ## explorer/
 Set useful explorer settings.  
 [explorer/README.md](explorer/README.md)

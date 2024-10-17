@@ -107,9 +107,15 @@ setlocal
 :enableDefender
 setlocal
     echo [^>] enableDefender
+    echo   DisableAntiSpyware
     reg delete "%hklmSwPMWD%" /v DisableAntiSpyware /f
+    echo.
+    echo   DisableAntiVirus
     reg delete "%hklmSwPMWD%" /v DisableAntiVirus /f
+    echo.
+    echo   DisableAntiVirus
     reg delete "%hklmSwPMWD%" /v ServiceStartStates /f
+    echo.
 
     endlocal
     exit /B %errorlevel%

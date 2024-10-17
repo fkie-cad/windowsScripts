@@ -94,21 +94,21 @@ GOTO :ParseParams
     
     :exitMain
     endlocal
-    exit /B 0
+    exit /B %ERRORLEVEL%
 
 :addEntry
 setlocal
     C:\Windows\System32\reg add "HKEY_CURRENT_USER\SOFTWARE\Classes\*\shell\%label%\Command" /t REG_SZ /d "cmd /k %bin_path% %pb% \"%%1\" %pa%"
 
     endlocal
-    exit /B 0
+    exit /B %ERRORLEVEL%
 
 :deleteEntry
 setlocal
     C:\Windows\System32\reg DELETE "HKEY_CURRENT_USER\SOFTWARE\Classes\*\shell\%label%"
 
     endlocal
-    exit /B 0
+    exit /B %ERRORLEVEL%
 
 :usage
     echo Usage: %prog_name% /p ^<path^> /l ^<label^> [/pb ^<params^>] [/pa ^<params^>] [/d] [/v] [/h]

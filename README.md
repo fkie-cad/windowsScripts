@@ -45,6 +45,7 @@ For questions and bug reports feel free to open an issue.
 - [enableWinUpdateOptions](#enableWinUpdateOptions)
 - [filesize](#filesize)
 - [Get Windows product key](#get-windows-product-key)
+- [Get Pid](#get-pid)
 - [iterate](#iterate)
 - [killProcess](#killprocess)
 - [listDriveLetters](#listDriveLetters)
@@ -368,6 +369,16 @@ Read LastBiosKey from `HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\ClipSVC\
 ### Usage
 ```bash
 $ getProductKey.bat
+```
+
+
+
+## Get Pid
+Get pid of a running process
+
+### Usage
+```bash
+$ getPid.bat <name>
 ```
 
 

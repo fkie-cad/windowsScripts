@@ -1,10 +1,9 @@
 # Some edge settings scripts
-Last updated: 14.12.2023  
+Last updated: 17.10.2024
 
 ## Contents
 - [baselinesettings](#baselinesettings)
 - [disableBrowserSignin](#disableBrowserSignin)
-
 
 
 

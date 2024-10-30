@@ -1,5 +1,5 @@
 # Some useful (batch) scripts
-Last updated: 22.12.2023  
+Last updated: 17.10.2024
 
 Most of the scripts are used in daily work and are well tested. 
 Some of them are less tested.

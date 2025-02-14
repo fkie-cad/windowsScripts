@@ -30,8 +30,36 @@ rem Audit (1) = Enable code integrity guard audit mode in the browser process.
 rem Enabled (2) = Enable code integrity guard enforcement in the browser process.
 reg add "%hkx%\%MSEdgePoliciesPath%"  /v "BrowserCodeIntegritySetting" /t REG_DWORD /d "2" /f
 
+
+
 rem "we will personalize your top web sites based on your  browsing history/activities."
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewTabPageHideDefaultTopSites" /t REG_DWORD /d "0" /f
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewTabPageHideDefaultTopSites" /t REG_DWORD /d 1 /f
+
+rem Page Layout / 1 - DisableImageOfTheDay / 2 -  DisableCustomImage / 3 - DisableAll
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewTabPageAllowedBackgroundTypes" /t REG_DWORD /d "3" /f
+
+rem 1 - Allow Microsoft News content on the new tab page
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewTabPageContentEnabled" /t REG_DWORD /d "0" /f
+
+rem 1 - Preload the new tab page for a faster experience
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewTabPagePrerenderEnabled" /t REG_DWORD /d "0" /f
+
+rem 1 - Allow quick links on the new tab page
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewTabPageQuickLinksEnabled" /t REG_DWORD /d "0" /f
+
+rem Search on new tabs uses search box or address bar / redirect - address bar / bing - search box
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewTabPageSearchBox" /t REG_SZ /d "redirect" /f
+
+rem By default, the App Launcher is shown every time a user opens a new tab page.
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewTabPageAppLauncherEnabled" /t REG_DWORD /d 0 /f
+
+rem Disable Bing chat entry-points on Microsoft Edge Enterprise new tab page
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewTabPageBingChatEnabled" /t REG_DWORD /d 0 /f
+
+rem Hide the company logo on the Microsoft Edge new tab page
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewTabPageCompanyLogoEnabled" /t REG_DWORD /d 0 /f
+
+
 
 rem Discover feature In Microsoft Edge (obsolete), but the button is still there...
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "EdgeDiscoverEnabled" /t REG_DWORD /d "0" /f
@@ -110,9 +138,6 @@ reg add "%hkx%\%MSEdgePoliciesPath%" /v "MouseGestureEnabled" /t REG_DWORD /d "0
 
 rem 1 - Microsoft Edge built-in PDF reader powered by Adobe Acrobat enabled
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewPDFReaderEnabled" /t REG_DWORD /d "0" /f
-
-rem 1 - Hide the default top sites from the new tab page
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewTabPageHideDefaultTopSites" /t REG_DWORD /d "1" /f
 
 rem - Allow QUIC protocol
 rem https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#quicallowed
@@ -233,21 +258,6 @@ rem https://www.bleepingcomputer.com/news/security/google-microsoft-can-get-your
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "MicrosoftEditorProofingEnabled" /t REG_DWORD /d "0" /f
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "MicrosoftEditorSynonymsEnabled" /t REG_DWORD /d "0" /f
 
-rem Page Layout / 1 - DisableImageOfTheDay / 2 -  DisableCustomImage / 3 - DisableAll
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewTabPageAllowedBackgroundTypes" /t REG_DWORD /d "0" /f
-
-rem 1 - Allow Microsoft News content on the new tab page
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewTabPageContentEnabled" /t REG_DWORD /d "0" /f
-
-rem 1 - Preload the new tab page for a faster experience
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewTabPagePrerenderEnabled" /t REG_DWORD /d "0" /f
-
-rem 1 - Hide the default top sites from the new tab page
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewTabPageHideDefaultTopSites" /t REG_DWORD /d "1" /f
-
-rem 1 - Allow quick links on the new tab page
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewTabPageQuickLinksEnabled" /t REG_DWORD /d "0" /f
-
 rem 1 - Browse as guest
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "BrowserGuestModeEnabled" /t REG_DWORD /d "0" /f
 
@@ -262,9 +272,6 @@ reg add "%hkx%\%MSEdgePoliciesPath%" /v "AutomaticHttpsDefault" /t REG_DWORD /d 
 
 rem Diagnostic Data / 0 - Off / 1 - RequiredData / 2 - OptionalData
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "DiagnosticData" /t REG_DWORD /d "0" /f
-
-rem Search on new tabs uses search box or address bar / redirect - address bar / bing - search box
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "NewTabPageSearchBox" /t REG_SZ /d "redirect" /f
 
 rem 1 - Use a web service to help resolve navigation errors
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "ResolveNavigationErrorsUseWebService" /t REG_DWORD /d "0" /f
@@ -320,3 +327,9 @@ rem NetworkPredictionAlways (0) = Predict network actions on any network connect
 rem NetworkPredictionWifiOnly (1) = Not supported, if this value is used it will be treated as if 'Predict network actions on any network connection' (0) was set
 rem NetworkPredictionNever (2) = Don't predict network actions on any network connection
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "NetworkPredictionOptions" /t REG_DWORD /d "2" /f
+
+
+:: rewrite with copilot ai
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#composeinlineenabled
+:: Data Type: Boolean
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "ComposeInlineEnabled" /t REG_DWORD /d 0 /f

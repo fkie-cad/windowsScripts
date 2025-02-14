@@ -31,6 +31,14 @@ set /a wpeType=%WPE_TYPE_NONE%
 set wpeArch=amd64
 set /a detach=0
 
+set /a PTT_GPT=1
+set /a PTT_MBR=2
+set /a ptt=%PTT_GPT%
+
+set /a IEM_7Z=1
+set /a IEM_PS_MOUNT=2
+set /a iem=%IEM_7Z%
+
 set dp_file="%tmp%\createvhd.txt"
 
 set devenvbat="C:\Program Files (x86)\Windows Kits\10\Assessment and Deployment Kit\Deployment Tools\DandISetEnv.bat"
@@ -100,6 +108,10 @@ GOTO :ParseParams
     IF /i "%~1"=="/ud" (
         SET /a usbDisk=%~2
         SHIFT
+        goto reParseParams
+    )
+    IF /i "%~1"=="/mbr" (
+        SET /a ptt=%PTT_MBR%
         goto reParseParams
     )
     
@@ -192,23 +204,22 @@ GOTO :ParseParams
         call :createVHD %vdisk% %vhdType% %size% %label% %vletter%
         REM if not !errorlevel! == 0 goto mainend
         
+        call :prepareDrive %image% %vletter%
+        
+        call :detachVHD %vdisk%
+        
     ) else (
     if %wpeType% EQU %WPE_TYPE_USB% (
     
         set vletter=X
-        call :initUsb %usbDisk% %bpf% %size% !vletter! Y %label%
+        call :initUsb %usbDisk% %bpf% %size% !vletter! Y %label% %ptt%
     
         echo errorlevel: %errorlevel%
         pause
+        
+        call :copyWinPE %image% !vletter! %iem%
     ))
 
-
-    call :prepareDrive %image% %vletter%
-
-
-    if %wpeType% EQU %WPE_TYPE_VHD% (
-        call :detachVHD %vdisk%
-    )
 
 
     :mainend
@@ -270,17 +281,28 @@ setlocal
     set letterF=%4
     set letterN=%5
     set "label=%~6"
+    set /a ptt=%~7
     
+    REM (uefi) winpe boot partition
     echo select disk %disk% > %dp_file%
     echo clean >> %dp_file%
     echo create partition primary size=%size% >> %dp_file%
     REM echo active >> %dp_file%
     echo format fs=%bpf% quick label="%label%" >> %dp_file%
     echo assign letter=%letterF% >> %dp_file%
+    
+    REM ntfs data partition
     echo create partition primary >> %dp_file%
     echo format fs=NTFS quick label="BigN" >> %dp_file%
     echo assign letter=%letterN% >> %dp_file%
     echo Exit >> %dp_file%
+    
+    REM select partition type
+    if %ptt% EQU PTT_MBR (
+        echo convert mbr >> %dp_file%
+    ) else (
+        echo convert gpt >> %dp_file%
+    )
     
     if %verbose% EQU 1 type %dp_file%
     
@@ -297,7 +319,53 @@ setlocal
     echo ----prepareDrive
     set image=%1
     set driveLetter=%2
-    cmd /k "%devenvbat% & MakeWinPEMedia /UFD %image% %driveLetter%: & exit"
+    
+    cmd /k "%devenvbat% & MakeWinPEMedia /F /UFD %image% %driveLetter%: & exit"
+    
+    echo ----
+    endlocal
+    exit /B %errorlevel%
+
+
+:copyWinPE 
+setlocal
+    echo ----copyWinPE
+    
+    set "image=%~1"
+    set "vletter=%~2"
+    set /a iem=%~3
+    
+    set "isoFile=%temp%\WinPE.iso"
+    set "isoExtract=%temp%\WinPEIso"
+    
+    cmd /k "%devenvbat% & MakeWinPEMedia /ISO "%image%" "%isoFile%" & exit"
+    if %errorlevel% NEQ 0 exit /B %errorlevel%
+    
+    if %iem% EQU %IEM_7Z% (
+        7z x "%isoFile%" -o"%isoExtract%"
+    ) else (
+    if %iem% EQU %IEM_PS_MOUNT% (
+        powershell Mount-DiskImage -ImagePath "%image%"
+        SET /P isoLetter="[?] Type mounted iso drive letter: "
+        IF /I [!isoLetter!] EQU [] (
+            echo [e] No iso drive letter given!
+            exit /B %errorlevel%
+        )
+        set isoExtract=!isoLetter!:\
+    )
+    )
+    
+    xcopy "%isoExtract%\*.*" "%vletter%:\" /E /F /H
+    
+    if %iem% EQU %IEM_7Z% (
+        rmdir /s /q "%isoExtract%"
+    ) else (
+    if %iem% EQU %IEM_PS_MOUNT% (
+        powershell Dismount-DiskImage -ImagePath "%image%"
+    )
+    )
+    
+    del "%isoFile%"
     
     echo ----
     endlocal
@@ -336,7 +404,7 @@ setlocal
     
     
 :usage
-    echo Usage: %prog_name% /i c:\winpe [/usb^|/vhd] [/vdp c:\disk.vhdx] [/ud ^<disk^>] [/a amd64^|x86^|arm] [/d] [/l V] [/s 1000] [/t fixed^|expandable] [/lbl "WinPE drive"] [/v] [/h]
+    echo Usage: %prog_name% /i c:\winpe [/usb^|/vhd] [/vdp c:\disk.vhdx] [/ud ^<disk^>] [/a amd64^|x86^|arm] [/d] [/l V] [/s 1000] [/t fixed^|expandable] [/lbl "WinPE drive"] [/mbr] [/v] [/h]
     exit /B %errorlevel%
 
 
@@ -364,6 +432,7 @@ setlocal
     echo   /lbl A string label for the WinPe partition. Default: WinPe
     echo   /s Size in MB of the WinPe partition. Defaults to 2048.
     echo   /bpf Boot partition format. Defaults to FAT32.
+    echo   /mbr Creates mbr (legacy) stick
     echo.
     echo /v More verbose mode
     

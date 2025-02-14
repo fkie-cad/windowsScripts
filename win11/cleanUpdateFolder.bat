@@ -1,4 +1,4 @@
- @echo off
+@echo off
 
 net stop wuauserv
 net stop bits

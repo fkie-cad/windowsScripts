@@ -50,6 +50,7 @@ set /a dbgType=0
 set hostip=
 set /a port=0
 set /a legacy=0
+set /a memDump=0
 
 set /a check=0
 
@@ -173,6 +174,11 @@ GOTO :ParseParams
         SET legacy=1
         goto reParseParams
     )
+    IF /i "%~1"=="/memDump" (
+        SET /A memDump=%~2
+        SHIFT
+        goto reParseParams
+    )
     
 
     IF /i "%~1"=="/v" (
@@ -279,6 +285,11 @@ GOTO :ParseParams
     :: update registry
     if %reg% EQU 1 (
         call :updateReg
+    )
+
+    :: enable memory dump
+    if %memDump% GTR 0 (
+        call :enableMemDump %memDump%
     )
 
     if %utils% EQU 1 (
@@ -459,14 +470,65 @@ setlocal
     set "sr=^%SystemRoott"
     set "pf=^%ProgramFiless"
     
+    echo loading hive
     reg load HKLM\WimRegSystem "%mountDir%\Windows\System32\config\SYSTEM"
+    
+    echo setting values
     :: %systemroot^% gets not written as a string variable
-    reg add "HKLM\WimRegSystem\ControlSet001\Control\Session Manager\Environment" /v Path /t REG_EXPAND_SZ /d "%sr:~1,-1%%\system32;%sr:~1,-1%%;%pf:~1,-1%%;%pf:~1,-1%%\SysinternalsSuite;%pf:~1,-1%%\npp;%pf:~1,-1%%\7z;x:\bin;x:\scripts;" /f
+    reg add "HKLM\WimRegSystem\ControlSet001\Control\Session Manager\Environment" /v Path /t REG_EXPAND_SZ /d "%%System"Root%%"\system32;%%System"Root%%";%%Program"Files%%";%%Program"Files%%"\SysinternalsSuite;%%Program"Files%%"\npp;%%Program"Files%%"\7z;x:\bin;x:\scripts;" /f
     reg add "HKLM\WimRegSystem\ControlSet001\Control\Session Manager\Debug Print" /V DEFAULT /t REG_DWORD /d 0xFF /f
     reg add "HKLM\WimRegSystem\ControlSet001\Control\Session Manager\Debug Print Filter" /V DEFAULT /t REG_DWORD /d 0xFF /f
 
     REM reg add "HKEY_USERS\.DEFAULT\Control Panel\Keyboard" /V InitialKeyboardIndicators /t REG_SZ /d 0x2 /f
 
+    reg query "HKLM\WimRegSystem\ControlSet001\Control\Session Manager\Environment"
+    
+    echo unloading hive
+    reg unload HKLM\WimRegSystem
+    
+    echo -----
+    echo.
+    
+    endlocal
+    exit /b %errorlevel%
+
+REM Set the CrashDump settings in WinPE
+REM
+REM AutoReboot    REG_DWORD    0x1
+REM CrashDumpEnabled    REG_DWORD    0x7
+REM   0 = None
+REM   1 = Complete memory dump
+REM   2 = Kernel memory dump
+REM   3 = Small memory dump (64KB)
+REM   7 = Automatic memory dump
+REM DumpFile    REG_EXPAND_SZ    %SystemRoot%\MEMORY.DMP
+REM DumpLogLevel    REG_DWORD    0x0
+REM EnableLogFile    REG_DWORD    0x1
+REM LogEvent    REG_DWORD    0x1
+REM MinidumpDir    REG_EXPAND_SZ    %SystemRoot%\Minidump
+REM MinidumpsCount    REG_DWORD    0x5
+REM Overwrite    REG_DWORD    0x1
+REM DumpFilters    REG_MULTI_SZ    dumpfve.sys
+REM
+:enableMemDump
+setlocal
+    echo -----enable memory dumps
+    
+    set /a cdType=%~1
+    REM set "dumpFile=%~2"
+    
+    echo loading hive
+    reg load HKLM\WimRegSystem "%mountDir%\Windows\System32\config\SYSTEM"
+
+    echo setting values
+    reg add "HKLM\WimRegSystem\ControlSet001\Control\CrashControl" /v CrashDumpEnabled /t REG_DWORD /d %cdType% /f
+    REM reg add "HKLM\WimRegSystem\ControlSet001\Control\CrashControl" /v DumpFile /t REG_SZ /d dumpFile /f
+    REM reg add "HKLM\WimRegSystem\ControlSet001\Control\CrashControl" /v Overwrite /t REG_SZ /d 1 /f
+    reg add "HKLM\WimRegSystem\ControlSet001\Control\CrashControl" /v AutoReboot /t REG_SZ /d 1 /f
+    
+    reg query "HKLM\WimRegSystem\ControlSet001\Control\CrashControl"
+    
+    echo unloading hive
     reg unload HKLM\WimRegSystem
     
     echo -----
@@ -793,7 +855,7 @@ setlocal
 
 
 :usage
-    echo Usage: %prog_name% /md ^<path^> [/bg ^<path^>] [/ss ^<path^>] [/sd ^<dir^>] [/utils] [/reg] [/ps] [/wmi] [/vsr ^<arch^>] [/dbg] [/xdbg] [/netdbg] [/eemdbg] [/comdbg] [/ip ^<address^>] [/port ^<value^>] [/ts] [/xts] [/l ^<letter^>] [/legacy] [/check] [/h] [/v]
+    echo Usage: %prog_name% /md ^<path^> [/bg ^<path^>] [/ss ^<path^>] [/sd ^<dir^>] [/utils] [/reg] [/ps] [/wmi] [/memdump ^<type^>] [/vsr ^<arch^>] [/dbg] [/xdbg] [/netdbg] [/eemdbg] [/comdbg] [/ip ^<address^>] [/port ^<value^>] [/ts] [/xts] [/l ^<letter^>] [/legacy] [/check] [/h] [/v]
     exit /B 0
 
 :help
@@ -810,7 +872,8 @@ setlocal
     echo /utils Add where, findstr to System32.
     echo /vsr ^<arch^> Copy msvc**.dll and vc**.dll runtime.dlls form host C:\Windows\System32 (x64) or C:\Windows\SysWow64 (x86) to WinPE System32.
     echo /wmi Add WMI support.
-    echo .
+    echo /memdump Enable memdump with ^<type^>. 0 = None, 1 = Complete memory dump, 2 = Kernel memory dump, 3 = Small memory dump (64KB), 7 = Automatic memory dump
+    echo.
     echo Debug Settings:
     echo /dbg Set debug on
     echo /xdbg Set debug off

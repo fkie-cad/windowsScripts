@@ -80,6 +80,7 @@ Sometimes even unrelated windows and CMDs have to be closed to make it work with
 
 If the VHD (or USB) is already mounted on drive letter V for example,
   just mounting and unmounting the image is needed.
+I.e. `mountWinPe /m c:\mount /l v`
 
 
 
@@ -98,6 +99,7 @@ $ initWinPE.bat /md <path>
                [/reg] 
                [/ps] 
                [/vsr <arch>] 
+               [/memdump <type>] 
                [/dbg] [/xdbg] 
                [/netdbg] 
                  [/ip <address>] 
@@ -122,6 +124,7 @@ $ initWinPE.bat /md <path>
 - /reg Update registry: set path, set dbg print flag, [activate num keyboard].
 - /ps Add PowerShell.
 - /vsr <arch> Copy msvc**.dll and vc**.dll runtime.dlls form host C:\Windows\System32 (x64) or C:\Windows\SysWow64 (x86) to WinPE System32.
+- /memdump Enable memdump with <type>. 0 = None, 1 = Complete memory dump, 2 = Kernel memory dump, 3 = Small memory dump (64KB), 7 = Automatic memory dump
 
 **Debug Settings**
 - /dbg Set debug on

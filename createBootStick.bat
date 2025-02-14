@@ -23,6 +23,10 @@ set format=fat32
 set /a mode=%MODE_MOUNT%
 set dp_file="%tmp%\%my_name%-diskpart.txt"
 
+set /a PTT_GPT=1
+set /a PTT_MBR=2
+set /a ptt=%PTT_GPT%
+
 set /a verbose=0
 
 set /a isMounted=0
@@ -66,6 +70,10 @@ GOTO :ParseParams
     )
     IF "%~1"=="/source" (
         SET mode=%MODE_SOURCE%
+        goto reParseParams
+    )
+    IF /i "%~1"=="/mbr" (
+        SET /a ptt=%PTT_MBR%
         goto reParseParams
     )
 
@@ -211,6 +219,13 @@ setlocal
     echo assign letter=%letter% >> %dp_file%
     echo Exit >> %dp_file%
     
+    REM select partition type
+    if %ptt% EQU PTT_MBR (
+        echo convert mbr >> %dp_file%
+    ) else (
+        echo convert gpt >> %dp_file%
+    )
+    
     if %verbose% EQU 1 (
         echo the script:
         type %dp_file%
@@ -313,7 +328,7 @@ setlocal
 
 
 :usage
-    echo Usage: %prog_name% /if ^<path^> [/mount^|/extract^|/source] [/ul X] [/v]
+    echo Usage: %prog_name% /if ^<path^> [/mount^|/extract^|/source] [/ul X] [/f ^<format^>] [/mbr] [/v]
     exit /B %errorlevel%
 
 
@@ -326,6 +341,8 @@ setlocal
     echo /extract Extracting mode: Uses 7z to extract the contents of the iso file and copies them over to the usb drive. (7z has to be installed and available in the PATH/current environment.)
     echo /source Source mode: Uses a path to an already extracted iso to copy over to the usb drive.
     echo /ul Desired drive letter of boot usb stick. Default: X.
+    echo /f File format of the stick. Default: Fat32.
+    echo /mbr Creates mbr (legacy) stick.
     echo.
     echo /v More verbose mode.
     

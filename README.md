@@ -148,7 +148,7 @@ Other:
 - /v More verbose mode.
 
 ### Remarks
-On UEFI you just need a (FAT32) stick with an `\EFI\BOOT\bootx64.efi`
+On UEFI you just need a (FAT32) stick with an `\EFI\BOOT\bootx64.efi` file.
 
 
 

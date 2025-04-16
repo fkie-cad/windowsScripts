@@ -116,7 +116,7 @@ GOTO :ParseParams
         exit /b 1
     )
     if [%iname%] EQU [] (
-        echo [e] No interface name or id given!
+        echo [e] No interface name given!
         exit /b 1
     )
     

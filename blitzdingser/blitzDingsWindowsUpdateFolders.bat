@@ -65,7 +65,11 @@ GOTO :ParseParams
 
 :clean
     echo "cleaning"
+    
     net stop wuauserv
+    REM net stop cryptSvc
+    REM net stop bits
+    REM net stop msiserver
 
     rmdir /q /s C:\Windows\SoftwareDistribution\DataStore
     rmdir /q /s C:\Windows\SoftwareDistribution\Download
@@ -79,7 +83,11 @@ GOTO :ParseParams
     
 :start
     echo "starting"
+
     net start wuauserv
+    REM net start cryptSvc
+    REM net start bits
+    REM net start msiserver
     
     exit /b %errorlevel%
 

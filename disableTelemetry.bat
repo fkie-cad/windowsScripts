@@ -34,6 +34,12 @@ setlocal
 
     reg add "HKCU\SOFTWARE\Microsoft\Siuf\Rules" /v "NumberOfSIUFInPeriod " /t REG_DWORD /d 0 /f
     reg add "HKCU\SOFTWARE\Microsoft\Siuf\Rules" /v "PeriodInNanoSeconds " /t REG_DWORD /d 0 /f
+    
+    set "key=HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-User Experience Virtualization-SQM Uploader"
+    REM forward slash is not a typo!!
+    reg add "%key%/Analytic" /v "Enabled" /t REG_DWORD /d 0 /f
+    reg add "%key%/Debzg" /v "Enabled" /t REG_DWORD /d 0 /f
+    reg add "%key%/Operational" /v "Enabled" /t REG_DWORD /d 0 /f
 
     :: AllowTelemetry : minimal data  1 on windows home/pro, 0 on enterprise
     :: Services : Disabled (4) - Indicates that the service is disabled, so that it cannot be started by a user or application.

@@ -15,18 +15,20 @@ set script_dir="%~dp0"
 set verbose=0
 
 set /a all=0
+set /a bgdl=0
 set /a devenv=0
 set /a perfwatson=0
 set /a remoteContainer=0
-set /a bgdl=0
 set /a shub=0
-set /a tlmtr=0
+REM set /a tlmtr=0
+set /a vctip=0
 
 set /a block=1
 
-set vs_base="%ProgramFiles(x86)%\Microsoft Visual Studio"
+set "bt_base=%ProgramFiles(x86)%\Microsoft Visual Studio"
+set "vs_base=%ProgramFiles(x86)%\Microsoft Visual Studio"
 set vs_edition=Professional
-set vs_year=2019
+set vs_year=2022
 set vs_path=
 
 
@@ -65,6 +67,10 @@ GOTO :ParseParams
         SET /a shub=1
         goto reParseParams
     )
+    IF /i "%~1"=="/t" (
+        SET /a vctip=1
+        goto reParseParams
+    )
     REM IF /i "%~1"=="/t" (
         REM SET /a tlmtr=1
         REM goto reParseParams
@@ -99,20 +105,43 @@ GOTO :ParseParams
 
 :main
     
-    REM check "Program Files (x86)" path
+    REM check "Program Files (x86)" path for vs devenv.exe
     REM if not found, adjust to "Program Files"
-    set "vs_path=%vs_base:~1,-1%\%vs_year%\%vs_edition%"
+    REM set "vs_path=%vs_base:~1,-1%\%vs_year%\%vs_edition%"
+    set "vs_path=%vs_base%\%vs_year%\%vs_edition%"
     if not exist "%vs_path%\Common7\IDE\devenv.exe" (
         if %verbose% == 1 echo [i] No "%vs_path%\Common7\IDE\devenv.exe" found!
             
-        set vs_base="%ProgramFiles%\Microsoft Visual Studio"
-        set "vs_path=!vs_base:~1,-1!\%vs_year%\%vs_edition%"
+        set "vs_base=%ProgramFiles%\Microsoft Visual Studio"
+        set "vs_path=!vs_base!\%vs_year%\%vs_edition%"
         
         if not exist "!vs_path!\Common7\IDE\devenv.exe" (
-            echo [e] No "%vs_path%\Common7\IDE\devenv.exe" found!
+            echo [e] No "!vs_path!\Common7\IDE\devenv.exe" found!
             exit /b %errorlevel%
         )
+        if %verbose% == 1 echo [i] New VS path: "!vs_path!"
+    ) else (
+        if %verbose% == 1 echo [i] VS path: "%bt_path%"
     )
+    
+    set "bt_path=%bt_base%\%vs_year%\BuildToolss"
+    if not exist "%bt_path%" (
+        if %verbose% == 1 echo [i] No "%bt_path%" found!
+        
+        set "bt_base=%ProgramFiles%\Microsoft Visual Studio"
+        set "bt_path=!bt_base!\%vs_year%\BuildTools"
+        
+        if not exist "!bt_path!" (
+            REM echo [e] No "!bt_path!" found!
+            REM exit /b %errorlevel%
+            set bt_path=
+        ) else (
+            if %verbose% == 1 echo [i] New BT path: "!bt_path!"
+        )
+    ) else (
+        if %verbose% == 1 echo [i] BT base: "%bt_base%"
+    )
+    
     
     :: Admin check
     fltmc >nul 2>&1 || (
@@ -121,7 +150,8 @@ GOTO :ParseParams
         goto mainend
     )
 
-    set /a "s=%bgdl%+%devenv%+%perfwatson%+%remoteContainer%+%shub%+%tlmtr%"
+
+    set /a "s=%bgdl%+%devenv%+%perfwatson%+%remoteContainer%+%shub%+%vctip%"
     if %s% == 0 set /a all=1
 
     if %all% == 1 (
@@ -130,7 +160,8 @@ GOTO :ParseParams
         set /a perfwatson=1
         set /a remoteContainer=1
         set /a shub=1
-        set /a tlmtr=1
+        REM set /a tlmtr=1
+        set /a vctip=1
     )
 
     if %verbose% == 1 (
@@ -142,7 +173,8 @@ GOTO :ParseParams
         echo perfwatson : %perfwatson%
         echo remoteContainer : %remoteContainer%
         echo shub : %shub%
-        echo tlmtr : %tlmtr%
+        REM echo tlmtr : %tlmtr%
+        echo vctip : %vctip%
     )
     
     REM BackgroundDownload
@@ -190,33 +222,18 @@ GOTO :ParseParams
     :: C:\Program Files (x86)\Microsoft Visual Studio\%vs_year%\%vs_edition%\Common7\IDE\VC\vcpackages\VCPkgSrv.exe
     :: C:\Program Files (x86)\Microsoft Visual Studio\%vs_year%\%vs_edition%\Common7\IDE\PrivateAssemblies\Microsoft.Alm.Shared.Remoting.RemoteContainer.dll
 
+
+    REM service hub hosts
+    if %vctip% == 1 (
+        if ["%bt_path%"] NEQ [] call :disableVctip "%bt_path%" %block%
+        call :disableVctip "%vs_path%" %block%
+    )
+    
+    
     :mainend
     endlocal
     exit /b %errorlevel%
 
-
-REM block all <host>.exe in the ServiceHub\Hosts directories
-REM params:
-REM 1 block boolean block or unblock rule
-:disableServiceHubHosts
-setlocal
-    
-    set /a block=%~1
-    set /a counter=0
-    set "shdir=%vs_path%\Common7\ServiceHub\Hosts"
-
-    for /r "%shdir%" %%p in ("*.exe") do (
-        For %%A in ("%%p") do (
-            Set folder=%%~dpA
-            Set name=%%~nxA
-        )
-        call :makeRule "VS ServiceHub (!counter!) !name!" "%%p" %block%
-        
-        set /a counter+=1
-    )
-    
-    endlocal
-    exit /b %errorlevel%
 
 REM make a firewall rule
 REM params:
@@ -240,9 +257,61 @@ setlocal
     
     endlocal
     exit /b %errorlevel%
+    
+
+REM block all <host>.exe in the ServiceHub\Hosts directories
+REM params:
+REM 1 block boolean block or unblock rule
+:disableServiceHubHosts
+setlocal
+    
+    set /a block=%~1
+    set /a counter=0
+    set "shdir=%vs_path%\Common7\ServiceHub\Hosts"
+
+    for /r "%shdir%" %%p in ("*.exe") do (
+        For %%A in ("%%p") do (
+            Set folder=%%~dpA
+            Set name=%%~nxA
+        )
+        call :makeRule "VS ServiceHub (!counter!) !name!" "%%p" %block%
+        
+        set /a counter+=1
+    )
+    
+    endlocal
+    exit /b %errorlevel%
+    
+
+REM block all vctip.exe 
+REM params:
+REM 1 base path
+REM 2 block boolean block or unblock rule
+:disableVctip
+setlocal
+    
+    set "base=%~1"
+    set /a block=%~2
+    set /a counter=0
+    set "dir1=%base%\VC\Tools\MSVC"
+    
+    for /r "%dir1%" %%p in ("*.exe") do (
+        For %%A in ("%%p") do (
+            Set folder=%%~dpA
+            Set name=%%~nxA
+        )
+        
+        if ["vctip.exe"] == ["!name!"] (
+            call :makeRule "vctip (!counter!) !name!" "%%p" %block%
+            set /a counter+=1
+        )
+    )
+    
+    endlocal
+    exit /b %errorlevel%
 
 :usage
-    echo Usage: %prog_name% [/all] [/b] [/d] [/p] [/r] [/s] [/x] [/vse] [/vsy] [/h] [/v]
+    echo Usage: %prog_name% [/all] [/b] [/d] [/p] [/r] [/s] [/t] [/x] [/vse ^<edition^>] [/vsy ^<year^>] [/h] [/v]
     exit /B 0
     
 :help
@@ -255,6 +324,7 @@ setlocal
     echo /p: %vs_path%\Common7\IDE\PerfWatson2.exe
     echo /r: %vs_path%\Common7\IDE\PrivateAssemblies\Microsoft.Alm.Shared.Remoting.RemoteContainer.dll
     echo /s: %vs_path%\Common7\ServiceHub\Hosts\*\*.exe
+    echo /t: VisualStudio and BuildTools vctip.exe
     echo.
     echo /x: Delete the specified rule(s), i.e. unblock target(s).
     echo.

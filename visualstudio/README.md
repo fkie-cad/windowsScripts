@@ -21,18 +21,20 @@ Running this script is considered more reliable then `disableVSTelemetryAndFeedb
 
 ### Usage
 ```bash
-$ disableVSNetConnections.bat [/b] [/d] [/p] [/sdh] [/sih] [/x] [/h] [/v]
+$ disableVSNetConnections.bat [/all] [/b] [/d] [/p] [/r] [/s] [/t] [/x] [/vse <edition>] [/vsy <year>] [/h] [/v]
 ```
 **Targets:**
+- /all: All following targets (default).
 - /b: Block Microsoft Visual Studio\Installer\resources\app\ServiceHub\Services\Microsoft.VisualStudio.Setup.Service\BackgroundDownload.exe
 - /d: Block Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\IDE\devenv.exe
 - /p: Block Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\IDE\PerfWatson2.exe
-- /sdh: Block Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\ServiceHub.VSDetouredHost.exe
-- /sih: Block Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\ServiceHub.IdentityHost.exe
-
+- /r: Block Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\IDE\PrivateAssemblies\Microsoft.Alm.Shared.Remoting.RemoteContainer.dll
+- /s: Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\ServiceHub\Hosts\*\*.exe
+- /t: Block Visual Studio and BuildTools vctip.exe
+    
 **VS flavour:**
-* /vse: Edition. Default: Professional
-* /vsy: Year. Default: 2019
+- /vse: Edition. Default: Professional
+- /vsy: Year. Default: 2022
 
 **Flags:**
 - /x: Delete the specified rule(s) (instead of adding them).

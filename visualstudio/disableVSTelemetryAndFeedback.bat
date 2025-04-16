@@ -4,7 +4,7 @@ setlocal
 rem Change this if you are using Community or Professional editions
 REM set vs_edition=Professional
 REM set vs_year=2019
-
+    
 fltmc >nul 2>&1 || (
     echo [e] Administrator privileges required.
     endlocal
@@ -34,6 +34,7 @@ reg add "%VS_POLICIES_SQM_KEY%" /v OptIn /t REG_DWORD /d 0 /f
 rem Disable telemetry
 reg add "%VS_TELEMETRY_KEY%" /v TurnOffSwitch /t REG_DWORD /d 1 /f
 
+call :optOutSqm "HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\VSCommon"
 
 rem Delete telemetry directories
 rmdir /s /q "%AppData%\vstelemetry" 2>nul
@@ -57,6 +58,35 @@ rem - Test Adapter for Boost.Test
 
 endlocal
 exit /b %errorlevel%
+
+
+
+:optOutSqm
+setlocal
+    echo ^[^>^] optOutSqm
+    
+    set "key=%~1"
+    set "tmp_file=%tmp%\optOutSqm.txt"
+
+    reg query "%key%" /s /f OptIn > "%tmp_file%"
+
+    for /F "usebackq tokens=*" %%A in ("%tmp_file%") do (
+        set "line=%%A"
+        set "line2=!line:~0,4!"
+        if [!line2!] == [HKEY] (
+            reg add "!line!" /v OptIn /t REG_DWORD /d 0 /f
+        )
+    )
+    
+    if exist "%tmp_file%" (
+        del "%tmp_file%"
+    )
+    
+    echo ^[^<^] optOutSqm
+    endlocal
+    exit /b %errorlevel%
+
+
 
 rem Also considering adding these hostnames to your C:\Windows\system32\drivers\etc\hosts
 REM ################################

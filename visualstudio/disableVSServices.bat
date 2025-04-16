@@ -15,7 +15,7 @@ setlocal
 set prog_name=%~n0%~x0
 set script_dir="%~dp0"
 
-set verbose=0
+set /a verbose=0
 
 set "installerElevationKey=HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VSInstallerElevationService"
 set "collectorKey=HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VSStandardCollectorService150"
@@ -114,15 +114,19 @@ GOTO :ParseParams
     if %installerElevation% EQU 1 (
         if %startValue% EQU %START_DELETE% (
             reg delete "%installerElevationKey%"
+            call :disableSc VSInstallerElevationService
         ) else (
             reg add "%installerElevationKey%" /v "Start" /t REG_DWORD /d %startValue% /f
+            call :enableSc VSInstallerElevationService
         )
     )      
     if %collector% EQU 1 (
         if %startValue% EQU %START_DELETE% (
             reg delete "%collectorKey%"
+            call :disableSc VSStandardCollectorService150
         ) else (
             reg add "%collectorKey%" /v "Start" /t REG_DWORD /d %startValue% /f
+            call :enableSc VSStandardCollectorService150
         )
     )   
     
@@ -134,7 +138,28 @@ GOTO :ParseParams
 :usage
     echo Usage: %prog_name% [/all] [/ctr] [/ie] [/e|/d|/x] [/h] [/v]
     exit /B 0
-    
+
+
+:disableSc
+setlocal
+    set "name=%~1"
+
+    sc stop "%name%" & sc config "%name%" start= disabled
+
+    endlocal
+    exit /b %errorlevel%
+
+
+:enableSc
+setlocal
+    set "name=%~1"
+
+    sc start "%name%" & sc config "%name%" start= auto
+
+    endlocal
+    exit /b %errorlevel%
+
+
 :help
     call :usage
     echo.

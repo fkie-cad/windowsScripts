@@ -32,6 +32,7 @@ For questions and bug reports feel free to open an issue.
 - [createBootStick](#createbootstick)
 - [createVHD](#createvhd)
 - [deleteFilesLT](#deletefileslt)
+- [disableCoInstallers](#disablecoinstallers)
 - [disableErrorReporting](#disableerrorreporting)
 - [disableIpV6](#disableipv6)
     - [ps1](#ps1)
@@ -184,6 +185,16 @@ Options:
  * /c Checking mode. Don't delete files, just print, what would be deleted, if this flag would not have been set.
  * /v Verbose mode.
 
+
+
+
+## disableCoInstallers
+Blocking Windows driver co-installer applications  
+https://www.bleepingcomputer.com/news/microsoft/how-to-block-windows-plug-and-play-auto-installing-insecure-apps/  
+
+```bash
+$ disableCoInstallers.bat
+```
 
 
 

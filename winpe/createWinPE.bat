@@ -208,8 +208,7 @@ GOTO :ParseParams
         
         call :detachVHD %vdisk%
         
-    ) else (
-    if %wpeType% EQU %WPE_TYPE_USB% (
+    ) else if %wpeType% EQU %WPE_TYPE_USB% (
     
         set vletter=X
         call :initUsb %usbDisk% %bpf% %size% !vletter! Y %label% %ptt%
@@ -218,7 +217,7 @@ GOTO :ParseParams
         pause
         
         call :copyWinPE %image% !vletter! %iem%
-    ))
+    )
 
 
 
@@ -343,8 +342,7 @@ setlocal
     
     if %iem% EQU %IEM_7Z% (
         7z x "%isoFile%" -o"%isoExtract%"
-    ) else (
-    if %iem% EQU %IEM_PS_MOUNT% (
+    ) else if %iem% EQU %IEM_PS_MOUNT% (
         powershell Mount-DiskImage -ImagePath "%image%"
         SET /P isoLetter="[?] Type mounted iso drive letter: "
         IF /I [!isoLetter!] EQU [] (
@@ -353,16 +351,13 @@ setlocal
         )
         set isoExtract=!isoLetter!:\
     )
-    )
     
     xcopy "%isoExtract%\*.*" "%vletter%:\" /E /F /H
     
     if %iem% EQU %IEM_7Z% (
         rmdir /s /q "%isoExtract%"
-    ) else (
-    if %iem% EQU %IEM_PS_MOUNT% (
+    ) else if %iem% EQU %IEM_PS_MOUNT% (
         powershell Dismount-DiskImage -ImagePath "%image%"
-    )
     )
     
     del "%isoFile%"

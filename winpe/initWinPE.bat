@@ -311,13 +311,11 @@ GOTO :ParseParams
     
     if %dbgType% EQU %NET_DEBUG% (
         call :netDbg %letter% %hostip% %port%
-    ) else (
-    if %dbgType% EQU %EEM_DEBUG% (
+    ) else if %dbgType% EQU %EEM_DEBUG% (
         call :eemDbg %letter% %port%
-    ) else (
-    if %dbgType% EQU %COM_DEBUG% (
+    ) else if %dbgType% EQU %COM_DEBUG% (
         call :comDbg %letter%
-    )))
+    )
     
     if %dbgType% EQU 0 (
         if %dbg% NEQ 0 (
@@ -573,8 +571,7 @@ setlocal
         copy %hostSys32%\vcomp*.dll "%wpeSys32%"
         copy %hostSys32%\vcruntime*.dll "%wpeSys32%"
         copy %hostSys32%\ucrtbase*.dll "%wpeSys32%"
-    ) else (
-    if [%arch%] EQU [x86] (
+    ) else if [%arch%] EQU [x86] (
         copy %hostWow64%\msvcp*.dll "%wpeSys32%"
         copy %hostWow64%\msvcr*.dll "%wpeSys32%"
         copy %hostWow64%\vcamp*.dll "%wpeSys32%"
@@ -582,7 +579,7 @@ setlocal
         copy %hostWow64%\vcomp*.dll "%wpeSys32%"
         copy %hostWow64%\vcruntime*.dll "%wpeSys32%"
         copy %hostWow64%\ucrtbase*.dll "%wpeSys32%"
-    ))
+    )
     echo -----
     echo.
 
@@ -743,11 +740,9 @@ setlocal
     if %toggle% EQU 1 (
         Bcdedit.exe /store %letter%:\%bcd% /set {DEFAULT} DEBUG ON
         Bcdedit.exe /store %letter%:\%bcd% /set {DEFAULT} BOOTDEBUG ON
-    ) else (
-    if %toggle% EQU -1 (
+    ) else if %toggle% EQU -1 (
         Bcdedit.exe /store %letter%:\%bcd% /set {DEFAULT} DEBUG OFF
         Bcdedit.exe /store %letter%:\%bcd% /set {DEFAULT} BOOTDEBUG OFF
-    )
     )
     
     if %verbose% EQU 1 (
@@ -784,10 +779,8 @@ setlocal
     
     if %toggle% EQU 1 (
         Bcdedit.exe /store %letter%:\%bcd% /set {DEFAULT} TESTSIGNING ON
-    ) else (
-    if %toggle% EQU -1 (
+    ) else if %toggle% EQU -1 (
         Bcdedit.exe /store %letter%:\%bcd% /set {DEFAULT} TESTSIGNING OFF
-    )
     )
     
     if %verbose% EQU 1 (

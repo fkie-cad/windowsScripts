@@ -1,9 +1,9 @@
 ::
-:: Block or reset Visual Studio Professional network connections.
+:: Block or reset Visual Studio (Professional) network connections.
 :: Be sure to rerun especially for devenv.exe after each update.
 ::
-:: Last change: 11.07.2024
-:: Version: 1.1.0
+:: Last change: 06.06.2025
+:: Version: 1.2.0
 ::
 
 @echo off
@@ -11,6 +11,7 @@ setlocal enabledelayedexpansion
 
 set prog_name=%~n0%~x0
 set script_dir="%~dp0"
+set "my_dir=%my_dir:~1,-2%"
 
 set verbose=0
 
@@ -20,12 +21,10 @@ set /a devenv=0
 set /a perfwatson=0
 set /a remoteContainer=0
 set /a shub=0
-REM set /a tlmtr=0
 set /a vctip=0
 
 set /a block=1
 
-set "bt_base=%ProgramFiles(x86)%\Microsoft Visual Studio"
 set "vs_base=%ProgramFiles(x86)%\Microsoft Visual Studio"
 set vs_edition=Professional
 set vs_year=2022
@@ -71,10 +70,6 @@ GOTO :ParseParams
         SET /a vctip=1
         goto reParseParams
     )
-    REM IF /i "%~1"=="/t" (
-        REM SET /a tlmtr=1
-        REM goto reParseParams
-    REM )
     IF /i "%~1"=="/x" (
         SET /a block=0
         goto reParseParams
@@ -107,7 +102,7 @@ GOTO :ParseParams
     
     REM check "Program Files (x86)" path for vs devenv.exe
     REM if not found, adjust to "Program Files"
-    REM set "vs_path=%vs_base:~1,-1%\%vs_year%\%vs_edition%"
+    REM set "vs_path=%vs_base%\%vs_year%\%vs_edition%"
     set "vs_path=%vs_base%\%vs_year%\%vs_edition%"
     if not exist "%vs_path%\Common7\IDE\devenv.exe" (
         if %verbose% == 1 echo [i] No "%vs_path%\Common7\IDE\devenv.exe" found!
@@ -121,25 +116,7 @@ GOTO :ParseParams
         )
         if %verbose% == 1 echo [i] New VS path: "!vs_path!"
     ) else (
-        if %verbose% == 1 echo [i] VS path: "%bt_path%"
-    )
-    
-    set "bt_path=%bt_base%\%vs_year%\BuildToolss"
-    if not exist "%bt_path%" (
-        if %verbose% == 1 echo [i] No "%bt_path%" found!
-        
-        set "bt_base=%ProgramFiles%\Microsoft Visual Studio"
-        set "bt_path=!bt_base!\%vs_year%\BuildTools"
-        
-        if not exist "!bt_path!" (
-            REM echo [e] No "!bt_path!" found!
-            REM exit /b %errorlevel%
-            set bt_path=
-        ) else (
-            if %verbose% == 1 echo [i] New BT path: "!bt_path!"
-        )
-    ) else (
-        if %verbose% == 1 echo [i] BT base: "%bt_base%"
+        if %verbose% == 1 echo [i] VS path: "%vs_path%"
     )
     
     
@@ -179,7 +156,7 @@ GOTO :ParseParams
     
     REM BackgroundDownload
     if %bgdl% == 1 (
-        call :makeRule "VS BackgroundDownload" "%vs_base:~1,-1%\Installer\resources\app\ServiceHub\Services\Microsoft.VisualStudio.Setup.Service\BackgroundDownload.exe" %block%
+        call :makeRule "VS BackgroundDownload" "%vs_base%\Installer\resources\app\ServiceHub\Services\Microsoft.VisualStudio.Setup.Service\BackgroundDownload.exe" %block%
     )
 
     REM DevEnv.exe
@@ -211,12 +188,12 @@ GOTO :ParseParams
         REM call :makeRule "VS Telemetry01" "C:\Windows\assembly\NativeImages_v4.0.30319_32\Microsoft.*****#\*****\Microsoft.VisualStudio.Telemetry.ni.dll" %block%
         REM call :makeRule "VS Telemetry02" "%vs_path%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x64\PrivateHost\%tlmtr_dll%" %block%
         REM call :makeRule "VS Telemetry03" "%vs_path%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\PrivateHost\%tlmtr_dll%" %block%
-        REM call :makeRule "VS Telemetry04" "%vs_base:~1,-1%\%vs_year%\BuildTools\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x64\PrivateHost\%tlmtr_dll%" %block%
-        REM call :makeRule "VS Telemetry05" "%vs_base:~1,-1%\%vs_year%\BuildTools\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\PrivateHost\%tlmtr_dll%" %block%
+        REM call :makeRule "VS Telemetry04" "%vs_base%\%vs_year%\BuildTools\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x64\PrivateHost\%tlmtr_dll%" %block%
+        REM call :makeRule "VS Telemetry05" "%vs_base%\%vs_year%\BuildTools\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\PrivateHost\%tlmtr_dll%" %block%
         REM call :makeRule "VS Telemetry06" "%vs_path%\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64\%tlmtr_dll%" %block%
         REM call :makeRule "VS Telemetry07" "%vs_path%\VC\Tools\MSVC\14.29.30133\bin\Hostx86\x86\%tlmtr_dll%" %block%
-        REM call :makeRule "VS Telemetry08" "%vs_base:~1,-1%\%vs_year%\BuildTools\VC\Tools\MSVC\14.16.27023\bin\HostX64\x64\%tlmtr_dll%" %block%
-        REM call :makeRule "VS Telemetry09" "%vs_base:~1,-1%\%vs_year%\BuildTools\VC\Tools\MSVC\14.16.27023\bin\HostX86\x86\%tlmtr_dll%" %block%
+        REM call :makeRule "VS Telemetry08" "%vs_base%\%vs_year%\BuildTools\VC\Tools\MSVC\14.16.27023\bin\HostX64\x64\%tlmtr_dll%" %block%
+        REM call :makeRule "VS Telemetry09" "%vs_base%\%vs_year%\BuildTools\VC\Tools\MSVC\14.16.27023\bin\HostX86\x86\%tlmtr_dll%" %block%
     REM )
 
     :: C:\Program Files (x86)\Microsoft Visual Studio\%vs_year%\%vs_edition%\Common7\IDE\VC\vcpackages\VCPkgSrv.exe
@@ -225,7 +202,6 @@ GOTO :ParseParams
 
     REM service hub hosts
     if %vctip% == 1 (
-        if ["%bt_path%"] NEQ [] call :disableVctip "%bt_path%" %block%
         call :disableVctip "%vs_path%" %block%
     )
     
@@ -302,7 +278,7 @@ setlocal
         )
         
         if ["vctip.exe"] == ["!name!"] (
-            call :makeRule "vctip (!counter!) !name!" "%%p" %block%
+            call :makeRule "vs vctip (!counter!) !name!" "%%p" %block%
             set /a counter+=1
         )
     )
@@ -324,7 +300,7 @@ setlocal
     echo /p: %vs_path%\Common7\IDE\PerfWatson2.exe
     echo /r: %vs_path%\Common7\IDE\PrivateAssemblies\Microsoft.Alm.Shared.Remoting.RemoteContainer.dll
     echo /s: %vs_path%\Common7\ServiceHub\Hosts\*\*.exe
-    echo /t: VisualStudio and BuildTools vctip.exe
+    echo /t: VisualStudio vctip.exe
     echo.
     echo /x: Delete the specified rule(s), i.e. unblock target(s).
     echo.

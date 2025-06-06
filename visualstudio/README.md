@@ -1,11 +1,44 @@
-# Batch scripts to silence visual studio communication
-Last updated: 28.01.2023  
+# Visual Studio + Build Tools silencer scripts
+
+Batch scripts to silence visual studio and build tools network communication
+
+**Should be rerun after each update of them**
+
+Last updated: 06.06.2025  
 
 
 ## Contents
+- [disableBuildToolsNetConnections](#disableBuildToolsNetConnections)
 - [disableVSNetConnections](#disableVSNetConnections)
 - [disableVSTasks](#disableVSTasks)
 - [disableVSTelemetryAndFeedback](#disableVSTelemetryAndFeedback)
+
+
+
+## disableBuildToolsNetConnections
+Disabling Build Tools internet connections from 
+- %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\Build Tools\VC\Tools\MSVC\\...\HostXX\xx\vctip.exe
+
+### Usage
+```bash
+$ disableBuildToolsNetConnections.bat [/all] [/t] [/x] [/vsy <year>] [/h] [/v]
+```
+**Targets:**
+- /all: All following targets (default).
+- /t: Block BuildTools vctip.exe
+    
+**VS flavour:**
+- /vsy: Year. Default: 2022
+
+**Flags:**
+- /x: Delete the specified rule(s) (instead of adding them).
+
+**Other:**
+- /v: More verbose.
+- /h: Print this.
+
+Defaults to set all targets.  
+
 
 
 ## disableVSNetConnections
@@ -16,6 +49,7 @@ Disabling Visual Studio internet connections from
 - %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\ServiceHub.VSDetouredHost.exe
 - %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\ServiceHub.IdentityHost.exe
 - %ProgramFiles% (x86)\Microsoft Visual Studio\Installer\resources\app\ServiceHub\Services\Microsoft.VisualStudio.Setup.Service\BackgroundDownload.exe
+- %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\\%vs_edition%\VC\Tools\MSVC\\...\HostXX\xx\vctip.exe
 
 Running this script is considered more reliable then `disableVSTelemetryAndFeedback.bat`.
 
@@ -29,8 +63,8 @@ $ disableVSNetConnections.bat [/all] [/b] [/d] [/p] [/r] [/s] [/t] [/x] [/vse <e
 - /d: Block Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\IDE\devenv.exe
 - /p: Block Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\IDE\PerfWatson2.exe
 - /r: Block Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\IDE\PrivateAssemblies\Microsoft.Alm.Shared.Remoting.RemoteContainer.dll
-- /s: Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\ServiceHub\Hosts\*\*.exe
-- /t: Block Visual Studio and BuildTools vctip.exe
+- /s: Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\ServiceHub\Hosts\xx\xx.exe
+- /t: Block Visual Studio vctip.exe
     
 **VS flavour:**
 - /vse: Edition. Default: Professional
@@ -70,16 +104,13 @@ $ disableVSTasks.bat [/all] [/vsau] [/ubdl] [/ucfg] [/e] [/h] [/v]
 
 **VS flavour:**
 * /vse: Edition. Default: Professional
-* /vsy: Year. Default: 2019
+* /vsy: Year. Default: 2022
 
 **Other:**
 - /v: More verbose.
 - /h: Print this.
 
 Defaults to `/d` (Disable) all targets.
-
-### Remarks 
-**Be sure to rerun especially for /ucfg after each update!**
 
 
 

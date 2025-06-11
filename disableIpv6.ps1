@@ -33,13 +33,13 @@ Write-Host "Name: $Name"
 if ( $Mode -eq "e" -or $Mode -eq "enable" )
 {
     Write-Host "enabling adapters $Name"
-    Enable-NetAdapterBinding -Name "*" -ComponentID ms_tcpip6
+    Enable-NetAdapterBinding -Name "$Name" -ComponentID ms_tcpip6
     Get-NetAdapterBinding | Where-Object ComponentID -EQ 'ms_tcpip6'
 }
 elseif ( $Mode -eq "d" -or $Mode -eq "disable" )
 {
     Write-Host "disabling adapters: $Name"
-    Disable-NetAdapterBinding -Name "*" -ComponentID ms_tcpip6
+    Disable-NetAdapterBinding -Name "$Name" -ComponentID ms_tcpip6
     Get-NetAdapterBinding | Where-Object ComponentID -EQ 'ms_tcpip6'
 }
 elseif ( $Mode -eq "l" -or $Mode -eq "list" )

@@ -38,11 +38,25 @@ GOTO :ParseParams
         SHIFT
         goto reParseParams
     )
+    IF /i "%~1"=="/ip" (
+        SET ip=%~2
+        SHIFT
+        goto reParseParams
+    )
     IF /i "%~1"=="/l" (
         SET /a list_interfaces=1
         goto reParseParams
     )
+    IF /i "%~1"=="/list" (
+        SET /a list_interfaces=1
+        goto reParseParams
+    )
     IF /i "%~1"=="/m" (
+        SET nwm=%~2
+        SHIFT
+        goto reParseParams
+    )
+    IF /i "%~1"=="/mask" (
         SET nwm=%~2
         SHIFT
         goto reParseParams

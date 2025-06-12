@@ -1,16 +1,16 @@
 # Some useful (batch) scripts
-Last updated: 17.10.2024
+Last updated: 12.06.2025
 
 Most of the scripts are used in daily work and are well tested. 
 Some of them are less tested.
-They all may have bugs or just work in some specific environments or for specific tasks.  
+They all may have bugs or just work in some specific environment or are useful just for specific tasks.  
 
 If mainly copy-and-pasted from somewhere else, it should have been noted in the script or the description.
 
 Use them at your own risk without any warranty.
 
 Some/Most change registry values or other system settings.  
-**So use them at your own risk, read them carefully beforehand, make back ups of your system before using them or test them on a VM.**
+**So use them at your own risk, read them carefully beforehand, make backups of your system/registry before using them or test them on a VM.**
 
 Mostly there are pure batch scripts, some are ps1 some are py.
 
@@ -37,6 +37,7 @@ For questions and bug reports feel free to open an issue.
 - [disableIpV6](#disableipv6)
     - [ps1](#ps1)
 - [disableSearchSuggestions](#disableSearchSuggestions)
+- [disableServices](#disableServices)
 - [disableSuperFetch](#disablesuperfetch)
 - [disableTelemetry](#disabletelemetry)
 - [enableDbgPrint](#enabledbgprint)
@@ -222,6 +223,42 @@ Disable Windows search suggestions in start menu search.
 ```bash
 $ disableSearchSuggestions.bat
 ```
+
+
+
+## disableServices
+Disable a predefined list of services you might not need to be running.
+Alternatively a specific service name can be targeted.
+
+The list should be checked and adjusted before running the script.
+
+Uses sc manager by default.
+Can fail some time due to access restrictions.
+Using the registry keys is less restricted.
+
+```bash
+$ disableServices.bat [/c|/d|/e] [/reg|/sc] [/n] [/v] [/h]
+```
+
+**Actions:**
+- /c : Check the services.
+- /d : Disable the services.
+- /d : Enable the services.
+
+**Options:**
+- /n : Name a specific arbitrary target.
+- /reg : Use registry to overwrite service start setting.
+- /sc : Use sc service manager to manage service start setting (default).
+
+**Other:**
+- /v: More verbose.
+- /h: Print this.
+
+**Remarks:**  
+The default targets can be listed with `/h`.
+
+Enabling the services will set them to autostart (4), which might not be their original value.
+
 
 
 ## disableSuperFetch

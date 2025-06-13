@@ -5,8 +5,8 @@
 :: Can fail some time due to access restrictions
 :: Using the reg keys is less restricted
 ::
-:: vs 1.0.0
-:: date 12.06.2025
+:: vs 1.0.1
+:: date 13.06.2025
 ::
 
 @echo off
@@ -43,7 +43,7 @@ set /a cphs=0
 set /a cplspcon=0
 set /a diagt=0
 set /a diagb=0
-set /a do=0
+REM set /a do=0
 set /a gipt=0
 set /a hfcd=0
 set /a ics=0
@@ -108,7 +108,6 @@ set names=(^
     cplspcon^
     DiagTrack^
     DialogBlockingService^
-    DoSvc^
     GameInputSvc^
     HfcDisableService^
     icssvc^
@@ -148,7 +147,6 @@ set names=(^
     WarpJITSvc^
     WbioSrvc^
     WerSvc^
-    REM WinHTTPAutoProxySvc^
     WinRM^
     wlidsvc^
     WpcMonSvc^
@@ -356,7 +354,7 @@ setlocal
     echo /cplspcon : cplspcon: Intel(R) Content Protection HDCP Service: Intel(R) Content Protection HDCP Service - enables communication with Content Protection HDCP HW
     echo /diagt : DiagTrack: Connected User Experiences and Telemetry: The Connected User Experiences and Telemetry service enables features that support in-application and connected user experiences. Additionally, this service manages the event driven collection and transmission of diagnostic and usage information (used to improve the experience and quality of the Windows Platform) when the diagnostics and usage privacy option settings are enabled under Feedback and Diagnostics.
     echo /diagb : DialogBlockingService: DialogBlockingService: Dialog Blocking Service
-    echo /do : DoSvc: Delivery Optimization: Performs content delivery optimization tasks
+    REM echo /do : DoSvc: Delivery Optimization: Performs content delivery optimization tasks. Windows Updates depend on it.
     echo /gipt : GameInputSvc: Enables keyboards, mice, gamepads, and other input devices to be used with the GameInput API.
     echo /hfcd : HfcDisableService: Intel(R) RST HFC Disable Service: Turns off hiberfile caching in Intel(R) RST driver.
     echo /ics : icssvc: Provides the ability to share a cellular data connection with another device.
@@ -396,7 +394,7 @@ setlocal
     echo /wjit : WarpJITSvc: Enables JIT compilation support in d3d10warp.dll for processes in which code generation is disabled.
     echo /wbio : WbioSrvc: The Windows biometric service gives client applications the ability to capture, compare, manipulate, and store biometric data without gaining direct access to any biometric hardware or samples.
     echo /wer : WerSvc: Allows errors to be reported when programs stop working or responding and allows existing solutions to be delivered.
-    echo /whap : WinHTTPAutoProxySvc: WinHTTP implements the client HTTP stack and provides developers with a Win32 API and COM Automation component for sending HTTP requests and receiving responses. Required by WLAN service!
+    REM echo /whap : WinHTTPAutoProxySvc: WinHTTP implements the client HTTP stack and provides developers with a Win32 API and COM Automation component for sending HTTP requests and receiving responses. Required by WLAN service!
     echo /wrm : WinRM: Windows Remote Management (WinRM) service implements the WS-Management protocol for remote management. 
     echo /wlid : wlidsvc: Enables user sign-in through Microsoft account identity services. If this service is stopped, users will not be able to logon to the computer with their Microsoft account.
     echo /wpc : WpcMonSvc: Enforces parental controls for child accounts in Windows. If this service is stopped or disabled, parental controls may not be enforced.

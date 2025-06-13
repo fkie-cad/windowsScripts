@@ -252,7 +252,7 @@ GOTO :ParseParams
         ) else (
             for /d %%i in %names% do (
                 echo disabling %%i
-                echo call :disableSrvc "%%i"
+                call :disableSrvc "%%i"
                 echo.
                 echo.
             )
@@ -264,7 +264,7 @@ GOTO :ParseParams
         ) else (
             for /d %%i in %names% do (
                 echo enabling %%i
-                echo call :enableSrvc "%%i"
+                call :enableSrvc "%%i"
                 echo.
                 echo.
             )

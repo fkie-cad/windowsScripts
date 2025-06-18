@@ -116,7 +116,7 @@ for /f %%i in ('wmic useraccount where name^="%username%" get sid ^| findstr ^S\
     exit /b 0
 
 :Privacy_AppPermissions
-    :: better walk children of ConsentStore and deny value
+    :: TODO : better walk children of ConsentStore and deny value
         :: "Allow" | "Deny"
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics" /v "Value" /t REG_SZ /d "Deny" /f
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appointments" /v "Value" /t REG_SZ /d "Deny" /f

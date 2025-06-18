@@ -1,5 +1,5 @@
 # Some useful (batch) scripts
-Last updated: 16.06.2025
+Last updated: 18.06.2025
 
 Most of the scripts are used in daily work and are well tested. 
 Some of them are less tested.
@@ -49,6 +49,7 @@ For questions and bug reports feel free to open an issue.
 - [filesize](#filesize)
 - [Get Windows product key](#get-windows-product-key)
 - [Get Pid](#get-pid)
+- [initSystem](#initSystem)
 - [iterate](#iterate)
 - [killProcess](#killprocess)
 - [listDriveLetters](#listDriveLetters)
@@ -58,7 +59,6 @@ For questions and bug reports feel free to open an issue.
 - [reboot](#reboot)
 - [rename](#rename)
 - [setDNS](#setdns)
-- [settings](#settings)
 - [setIp](#setip)
 - [startNtProg](#startntprog)
 - [copyright, credits & contact](#copyright,-credits-&-contact)
@@ -467,6 +467,20 @@ $ getPid.bat <name>
 
 
 
+## initSystem
+Set some Windows privacy and security related settings for setting up a system.
+Some are still missing.
+
+### Usage
+```bash
+$ settings.bat 
+```
+
+Has to be run as Admin.
+If current user and admin user are different, the required user id has to be set manually at `set user_sid=` and the following line has to be deleted.
+
+
+
 ## iterate
 Iterate files in a directory and execute a command with optional parameters.
 
@@ -634,20 +648,6 @@ Options:
 * /l List interfaces
 * /c List interface configuration
 * /v Verbose mode
-
-
-
-## settings
-Set some Windows privacy and security related settings for setting up a system.
-Some are still missing.
-
-### Usage
-```bash
-$ settings.bat 
-```
-
-Has to be run as Admin.
-If current user and admin user are different, the required user id has to be set manually at `set user_sid=` and the following line has to be deleted.
 
 
 

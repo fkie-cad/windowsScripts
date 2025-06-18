@@ -24,7 +24,7 @@ So Defender has to be disabled first.
 $ blitzDingsDefender.bat
 ```
 
-### Disable Defender
+### Disable Defender Manually
 - Disconnect from Internet and avoid automatic reconnection after a reboot.
 
 **Windows 10 - 10.0.19045.**  
@@ -63,9 +63,7 @@ Found in https://www.alitajran.com/turn-off-windows-defender-windows-11-permanen
 - Optional: 
     Download [autoruns](https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns)
 - Boot into safe mode
-  - Start an elevated `msconfig.exe`
-  - Goto "boot", select "Safe Boot, minimal" 
-  - Restart
+  - Run `bcdedit /set {current} safeboot && shutdown /r /t 0`
 - Two options
     a. Open autoruns and deselect "WinDefend" service.
         - Select "Services" tab
@@ -75,9 +73,7 @@ Found in https://www.alitajran.com/turn-off-windows-defender-windows-11-permanen
         - `reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WinDefend" /v Start /t REG_DWORD /d 4 /f`  
             4 means disabled, normally it's 2 = Auto Start.
 - Boot into normal mode
-  - Start an elevated `msconfig.exe`
-  - In the "General" select "Normal startup"
-  - Restart
+  - Run `bcdedit /deletevalue {current} safeboot && shutdown /r /t 0`
 - Defender should be disabled now.
 - Run `$ blitzDingsDefender.bat`
 - If not working, try the steps above a second time and don't wait too long after the reboot into normal mode.

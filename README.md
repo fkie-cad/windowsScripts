@@ -1,5 +1,5 @@
 # Some useful (batch) scripts
-Last updated: 12.06.2025
+Last updated: 16.06.2025
 
 Most of the scripts are used in daily work and are well tested. 
 Some of them are less tested.
@@ -39,6 +39,7 @@ For questions and bug reports feel free to open an issue.
 - [disableSearchSuggestions](#disableSearchSuggestions)
 - [disableServices](#disableServices)
 - [disableSuperFetch](#disablesuperfetch)
+- [disableTasks](#disableTasks)
 - [disableTelemetry](#disabletelemetry)
 - [enableDbgPrint](#enabledbgprint)
 - [enableNumLock](#enablenumlock)
@@ -271,6 +272,37 @@ Options:
 - /d Set registry values to this number. Default: 0 = disable.
 - /c Check registry entry.
 - /v Verbose mode
+
+
+
+## disableTasks
+Disable a predefined list of tasks you might not need to be running.
+Alternatively a specific task name can be targeted.
+
+The list should be checked and adjusted before running the script.
+
+Uses `schtasks`.
+
+```bash
+$ disableTasks.bat [/c|/d|/e] [/n] [/v] [/h]
+```
+
+**Actions:**
+- /c : Check the task(s).
+- /d : Disable the task(s).
+- /d : Enable the task(s).
+
+**Options:**
+- /n : Name a specific arbitrary target.
+
+**Other:**
+- /v: More verbose.
+- /h: Print this.
+
+**Remarks:**  
+The default targets can be listed with `/h`.
+
+Disabling a task will also stop it.
 
 
 

@@ -236,7 +236,7 @@ setlocal
     echo Actions:
     echo /c : Check the services.
     echo /d : Disable the services.
-    echo /d : Enable the services.
+    echo /e : Enable the services.
     echo.
     echo Options:
     echo /n : Name a specific arbitrary target.

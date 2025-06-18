@@ -244,7 +244,7 @@ $ disableServices.bat [/c|/d|/e] [/reg|/sc] [/n] [/v] [/h]
 **Actions:**
 - /c : Check the services.
 - /d : Disable the services.
-- /d : Enable the services.
+- /e : Enable the services.
 
 **Options:**
 - /n : Name a specific arbitrary target.
@@ -258,7 +258,7 @@ $ disableServices.bat [/c|/d|/e] [/reg|/sc] [/n] [/v] [/h]
 **Remarks:**  
 The default targets can be listed with `/h`.
 
-Enabling the services will set them to autostart (4), which might not be their original value.
+Enabling the services will set them to autostart (2), which might not be their original value.
 
 
 
@@ -290,7 +290,7 @@ $ disableTasks.bat [/c|/d|/e] [/n] [/v] [/h]
 **Actions:**
 - /c : Check the task(s).
 - /d : Disable the task(s).
-- /d : Enable the task(s).
+- /e : Enable the task(s).
 
 **Options:**
 - /n : Name a specific arbitrary target.
@@ -468,7 +468,7 @@ $ getPid.bat <name>
 
 
 ## initSystem
-Set some Windows privacy and security related settings for setting up a system.
+Set some Windows privacy and security related settings for setting up a system.
 Some are still missing.
 
 ### Usage

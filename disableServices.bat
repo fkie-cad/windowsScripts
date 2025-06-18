@@ -25,6 +25,14 @@ set /a ACTION_ENABLE=2
 set /a ACTION_CHECK=3
 set /a action=%ACTION_DISABLE%
 
+set /a START_TYPE_BOOT=0
+set /a START_TYPE_SYSTEM=1
+set /a START_TYPE_AUTO=2
+set /a START_TYPE_DEMAND=3
+set /a START_TYPE_DISABLED=4
+
+set /a enable_start_type=%START_TYPE_AUTO%
+
 set /a verbose=0
 
 set name=
@@ -234,7 +242,7 @@ setlocal
     if %mode% EQU %MODE_SC% (
         sc stop "%name%" & sc config "%name%" start= disabled
     ) else if %mode% EQU %MODE_REG% (
-        reg add "HKLM\SYSTEM\CurrentControlSet\Services\%name%" /v "Start" /t REG_DWORD /d 4 /f
+        reg add "HKLM\SYSTEM\CurrentControlSet\Services\%name%" /v "Start" /t REG_DWORD /d %START_TYPE_DISABLED% /f
     )
     
     endlocal
@@ -248,7 +256,7 @@ setlocal
     if %mode% EQU %MODE_SC% (
         sc start "%name%" & sc config "%name%" start= auto
     ) else if %mode% EQU %MODE_REG% (
-        reg add "HKLM\SYSTEM\CurrentControlSet\Services\%name%" /v "Start" /t REG_DWORD /d 2 /f
+        reg add "HKLM\SYSTEM\CurrentControlSet\Services\%name%" /v "Start" /t REG_DWORD /d %enable_start_type% /f
     )
 
     endlocal
@@ -344,7 +352,7 @@ setlocal
     echo Actions:
     echo /c : Check the services.
     echo /d : Disable the services.
-    echo /d : Enable the services.
+    echo /e : Enable the services.
     echo.
     echo Options:
     echo /n : Name a specific arbitrary target.

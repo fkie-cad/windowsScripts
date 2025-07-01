@@ -143,6 +143,7 @@ GOTO :ParseParams
             goto mainEnd
         )
         set extractedOut=!isoLetter!:\
+        
     ) else if %mode% EQU %MODE_EXTRACT% (
     
         if NOT EXIST "%inFile%" (
@@ -151,6 +152,7 @@ GOTO :ParseParams
         )
         
         call :extractFiles "%inFile%" "%extractedOut%"
+        
     ) else if %mode% EQU %MODE_SOURCE% (
     
         call :isDir %inFile%
@@ -160,6 +162,7 @@ GOTO :ParseParams
         )
     
         set "extractedOut=%inFile%"
+        
     )
     
     call :VPrint "extractedOut: %extractedOut%"

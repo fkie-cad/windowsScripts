@@ -15,7 +15,7 @@ set "my_dir=%my_dir:~1,-2%"
 set /a ACTION_DISABLE=1
 set /a ACTION_ENABLE=2
 set /a ACTION_CHECK=3
-set /a action=%ACTION_DISABLE%
+set /a action=%ACTION_CHECK%
 
 set /a verbose=0
 
@@ -56,37 +56,37 @@ GOTO :ParseParams
     if [%1]==[/h] goto help
     if [%1]==[/help] goto help
 
-    IF "%~1"=="/c" (
+    IF /i "%~1"=="/c" (
         SET /a action=%ACTION_CHECK%
         goto reParseParams
     )
-    IF "%~1"=="/check" (
+    IF /i "%~1"=="/check" (
         SET /a action=%ACTION_CHECK%
         goto reParseParams
     )
-    IF "%~1"=="/d" (
+    IF /i "%~1"=="/d" (
         SET /a action=%ACTION_DISABLE%
         goto reParseParams
     )
-    IF "%~1"=="/disable" (
+    IF /i "%~1"=="/disable" (
         SET /a action=%ACTION_DISABLE%
         goto reParseParams
     )
-    IF "%~1"=="/e" (
+    IF /i "%~1"=="/e" (
         SET /a action=%ACTION_ENABLE%
         goto reParseParams
     )
-    IF "%~1"=="/enable" (
+    IF /i "%~1"=="/enable" (
         SET /a action=%ACTION_ENABLE%
         goto reParseParams
     )
     
-    IF "%~1"=="/n" (
+    IF /i "%~1"=="/n" (
         SET "name=%~2"
         SHIFT
         goto reParseParams
     )
-    IF "%~1"=="/name" (
+    IF /i "%~1"=="/name" (
         SET "name=%~2"
         SHIFT
         goto reParseParams
@@ -94,11 +94,11 @@ GOTO :ParseParams
     
     
     
-    IF "%~1"=="/v" (
+    IF /i "%~1"=="/v" (
         SET /a verbose=1
         goto reParseParams
     )
-    IF "%~1"=="/h" (
+    IF /i "%~1"=="/h" (
         goto help
     )
     
@@ -160,7 +160,7 @@ GOTO :ParseParams
     
     :mainend
     endlocal
-    exit /b 0
+    exit /b %errorlevel%
 
 
 :disableTask
@@ -199,7 +199,7 @@ setlocal
 
 
 :usage
-    echo Usage: %my_name% [/c^|/d^|/e] [/n] [/v] [/h]
+    echo Usage: %my_name% [/c^|/d^|/e] [/n ^<name^>] [/v] [/h]
     exit /B 0
     
 
@@ -234,18 +234,18 @@ setlocal
     echo     PolicyConfiguration : ...
     echo.
     echo Actions:
-    echo /c : Check the services.
-    echo /d : Disable the services.
-    echo /e : Enable the services.
+    echo /c : Check the task(s).
+    echo /d : Disable the task(s).
+    echo /e : Enable the task(s).
     echo.
     echo Options:
-    echo /n : Name a specific arbitrary target.
+    echo /n : Name a specific arbitrary target task.
     echo.
     echo Other:
     echo /v: More verbose.
     echo /h: Print this.
     echo.
-    echo Defaults to disable all targets.
+    echo Defaults to check all targets.
     
     exit /B 0
     

@@ -57,7 +57,8 @@ For questions and bug reports feel free to open an issue.
 - [makeiso](#makeiso)
 - [poweroff](#poweroff)
 - [reboot](#reboot)
-- [rename](#rename)
+- [RemoveApps](#removeApps)
+- [Rename](#rename)
 - [setDNS](#setdns)
 - [setIp](#setip)
 - [startNtProg](#startntprog)
@@ -586,8 +587,22 @@ $ reboot.bat
 
 
 
+## RemoveApps
 
-## rename
+Remove some preinstalled windows apps.
+
+### Usage
+```bash
+ps> removeApps.ps1
+```
+
+### Remarks
+Removing "Microsoft.XboxGameCallableUI_xxx" may throw some "0x80070032" error.
+This is not resolved so far.
+
+
+
+## Rename
 Rename a list of files with a common pattern.
 
 ### Usage

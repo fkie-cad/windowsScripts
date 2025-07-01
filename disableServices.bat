@@ -23,7 +23,7 @@ set /a mode=%MODE_SC%
 set /a ACTION_DISABLE=1
 set /a ACTION_ENABLE=2
 set /a ACTION_CHECK=3
-set /a action=%ACTION_DISABLE%
+set /a action=%ACTION_CHECK%
 
 set /a START_TYPE_BOOT=0
 set /a START_TYPE_SYSTEM=1
@@ -46,8 +46,7 @@ set names=(^
     CDPSvc^
     cloudidsvc^
     CloudBackupRestoreSvc^
-    CloudBackupRestoreSvc_c47e5^
-    cphs^
+     cphs^
     cplspcon^
     DiagTrack^
     DialogBlockingService^
@@ -111,54 +110,54 @@ GOTO :ParseParams
     if [%1]==[/h] goto help
     if [%1]==[/help] goto help
 
-    IF "%~1"=="/c" (
+    IF /i "%~1"=="/c" (
         SET /a action=%ACTION_CHECK%
         goto reParseParams
     )
-    IF "%~1"=="/check" (
+    IF /i "%~1"=="/check" (
         SET /a action=%ACTION_CHECK%
         goto reParseParams
     )
-    IF "%~1"=="/d" (
+    IF /i "%~1"=="/d" (
         SET /a action=%ACTION_DISABLE%
         goto reParseParams
     )
-    IF "%~1"=="/disable" (
+    IF /i "%~1"=="/disable" (
         SET /a action=%ACTION_DISABLE%
         goto reParseParams
     )
-    IF "%~1"=="/e" (
+    IF /i "%~1"=="/e" (
         SET /a action=%ACTION_ENABLE%
         goto reParseParams
     )
-    IF "%~1"=="/enable" (
+    IF /i "%~1"=="/enable" (
         SET /a action=%ACTION_ENABLE%
         goto reParseParams
     )
     
-    IF "%~1"=="/r" (
+    IF /i "%~1"=="/r" (
         SET /a mode=%MODE_REG%
         goto reParseParams
     )
-    IF "%~1"=="/reg" (
+    IF /i "%~1"=="/reg" (
         SET /a mode=%MODE_REG%
         goto reParseParams
     )
-    IF "%~1"=="/s" (
+    IF /i "%~1"=="/s" (
         SET /a mode=%MODE_SC%
         goto reParseParams
     )
-    IF "%~1"=="/sc" (
+    IF /i "%~1"=="/sc" (
         SET /a mode=%MODE_SC%
         goto reParseParams
     )
     
-    IF "%~1"=="/n" (
+    IF /i "%~1"=="/n" (
         SET "name=%~2"
         SHIFT
         goto reParseParams
     )
-    IF "%~1"=="/name" (
+    IF /i "%~1"=="/name" (
         SET "name=%~2"
         SHIFT
         goto reParseParams
@@ -166,11 +165,11 @@ GOTO :ParseParams
     
     
     
-    IF "%~1"=="/v" (
+    IF /i "%~1"=="/v" (
         SET /a verbose=1
         goto reParseParams
     )
-    IF "%~1"=="/h" (
+    IF /i "%~1"=="/h" (
         goto help
     )
     
@@ -232,7 +231,7 @@ GOTO :ParseParams
     
     :mainend
     endlocal
-    exit /b 0
+    exit /b %errorlevel%
 
 
 :disableSrvc
@@ -240,7 +239,12 @@ setlocal
     set "name=%~1"
 
     if %mode% EQU %MODE_SC% (
-        sc stop "%name%" & sc config "%name%" start= disabled
+        for /F "tokens=3 delims=: " %%H in ('sc query "%name%" ^| findstr "        STATE"') do (
+            if /I "%%H" EQU "RUNNING" (
+                sc stop "%name%"
+            )
+        )
+        sc config "%name%" start= disabled
     ) else if %mode% EQU %MODE_REG% (
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\%name%" /v "Start" /t REG_DWORD /d %START_TYPE_DISABLED% /f
     )
@@ -254,7 +258,12 @@ setlocal
     set "name=%~1"
 
     if %mode% EQU %MODE_SC% (
-        sc start "%name%" & sc config "%name%" start= auto
+        for /F "tokens=3 delims=: " %%H in ('sc query "%name%" ^| findstr "        STATE"') do (
+            if /I "%%H" EQU "STOPPED" (
+                sc start "%name%"
+            )
+        )
+        sc config "%name%" start= auto
     ) else if %mode% EQU %MODE_REG% (
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\%name%" /v "Start" /t REG_DWORD /d %enable_start_type% /f
     )
@@ -268,6 +277,7 @@ setlocal
     set "name=%~1"
 
     if %mode% EQU %MODE_SC% (
+        sc query "%name%"
         sc qc "%name%"
         sc qdescription "%name%"
     ) else if %mode% EQU %MODE_REG% (
@@ -279,7 +289,7 @@ setlocal
 
 
 :usage  
-    echo Usage: %my_name% [/c^|/d^|/e] [/reg^|/sc] [/n] [/v] [/h]
+    echo Usage: %my_name% [/c^|/d^|/e] [/reg^|/sc] [/n ^<name^>] [/v] [/h]
     exit /B 0
     
 
@@ -289,7 +299,7 @@ setlocal
     echo Targets: !! Not selectable, just for info !!
     echo AppVClient : Microsoft App-V Client: Manages App-V users and virtual applications
     echo BcastDVRUserService : GameDVR and Broadcast User Service: This user service is used for Game Recordings and Live Broadcasts
-    echo Bluetooth User Support Service: The Bluetooth user service supports proper functionality of Bluetooth features relevant to each user session.
+    echo BluetoothUserService_cfa74: Bluetooth User Support Service: The Bluetooth user service supports proper functionality of Bluetooth features relevant to each user session.
     echo BTAGService: Service supporting the audio gateway role of the Bluetooth Handsfree Profile.
     echo bthserv: The Bluetooth service supports discovery and association of remote Bluetooth devices.
     echo CDPSvc: This service is used for Connected Devices Platform scenarios. The service does exactly that it checks for “ connected” devices and authenticates then so that data can be transferred between them later seamlessly. These also include any wireless printers, phones etc on the network.

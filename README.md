@@ -593,12 +593,33 @@ Remove some preinstalled windows apps.
 
 ### Usage
 ```bash
-ps> removeApps.ps1
+ps> removeApps.ps1 [<mode>] [<name>]
+```
+
+### Params
+- mode: "remove" (default) or "check".
+- name: If provided, only the given \<name\> will be handled. Wildcards are supported.
+
+### Examples
+```
+# Remove all apps in the list
+ps> removeApps.ps1 
+
+# Check all apps in the list
+ps> removeApps.ps1 check
+
+# Check app with name XboxSpeechToTextOverlay
+ps> removeApps.ps1 check *XboxSpeechToTextOverlay*
 ```
 
 ### Remarks
 Removing "Microsoft.XboxGameCallableUI_xxx" may throw some "0x80070032" error.
-This is not resolved so far.
+Checking the installed apps and then manually removing the remaining "Microsoft.XboxSpeechToTextOverlay" and "Microsoft.Xbox.TCUI" solved the issue and "Microsoft.XboxGameCallableUI" was gone too.
+```
+ps> removeApps.ps1 check 
+ps> [removeApps.ps1 check *XboxSpeechToTextOverlay*]
+ps> removeApps.ps1 remove *Microsoft.Xbox.TCUI*
+```
 
 
 

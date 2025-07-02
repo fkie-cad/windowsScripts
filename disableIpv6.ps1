@@ -10,10 +10,11 @@
 .EXAMPLE
     Disable ipv6 on all adapters
     C:\PS> disableIpv6.ps1 
+.EXAMPLE
     Enable ipv6 on adapter "Ethernet"
     C:\PS> disableIpv6.ps1 enable Ethernet
 .NOTES
-    Author: Henning Braun
+    Author: FKIE CAD
     Date:   January 17, 2024
 #>
 

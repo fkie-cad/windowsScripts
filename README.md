@@ -597,13 +597,17 @@ ps> removeApps.ps1 [<mode>] [<name>]
 ```
 
 ### Params
-- mode: "remove" (default) or "check".
-- name: If provided, only the given \<name\> will be handled. Wildcards are supported.
+- -Mode: "remove" (default) or "check".
+- -Name: If provided, only the given \<name\> will be handled. Wildcards are supported.
+- -Confirm: Skip confirmation and just remove without asking.
 
 ### Examples
 ```
-# Remove all apps in the list
+# Remove all apps in the list with confirmation
 ps> removeApps.ps1 
+
+# Remove all apps in the list already confirmed
+ps> removeApps.ps1 -Confirm
 
 # Check all apps in the list
 ps> removeApps.ps1 check
@@ -613,12 +617,13 @@ ps> removeApps.ps1 check *XboxSpeechToTextOverlay*
 ```
 
 ### Remarks
-Removing "Microsoft.XboxGameCallableUI_xxx" may throw some "0x80070032" error.
-Checking the installed apps and then manually removing the remaining "Microsoft.XboxSpeechToTextOverlay" and "Microsoft.Xbox.TCUI" solved the issue and "Microsoft.XboxGameCallableUI" was gone too.
+Removing "Microsoft.XboxGameCallableUI_xxx" or another Xbox package may throw some "0x80070032" error.
+Checking the installed apps and then manually removing the remaining "Microsoft.XboxSpeechToTextOverlay" and "Microsoft.Xbox.TCUI" and maybe more solved the issue and "Microsoft.XboxGameCallableUI" was gone too.
 ```
 ps> removeApps.ps1 check 
 ps> [removeApps.ps1 check *XboxSpeechToTextOverlay*]
 ps> removeApps.ps1 remove *Microsoft.Xbox.TCUI*
+ps> removeApps.ps1 remove ...
 ```
 
 

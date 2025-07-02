@@ -2,12 +2,19 @@
 .SYNOPSIS
     .
 .DESCRIPTION
-   Remove some preinstalled Apps or chech if they are installed.
+   Remove some preinstalled Apps or check if they are installed.
 .PARAMETER Mode
     "remove" (default) or "check" or "list" 
+.PARAMETER Name
+    A custom app name to handle.
+.PARAMETER Confirm
+    Skip confirmation and just remove without asking.
 .EXAMPLE
-    Remove all apps in the list
+    Remove all apps in the list with confirmation
     C:\PS> removeApps.ps1 
+.EXAMPLE
+    Remove all apps in the list without confirmation
+    C:\PS> removeApps.ps1 -Confirm
 .EXAMPLE
     Check all apps in the list
     C:\PS> removeApps.ps1 check
@@ -20,18 +27,20 @@
 #>
 
 Param (
-    [Parameter(Mandatory=$false, Position=0)]
+    [Parameter(Mandatory=$false)]
     [ValidateNotNull()]
     [string]$Mode="remove",
-    [Parameter(Mandatory=$false, Position=1)]
+    [Parameter(Mandatory=$false)]
     [ValidateNotNull()]
-    [string]$Name=""
+    [string]$Name,
+    [Parameter(Mandatory=$false)]
+    [switch]$Confirm
 )
 
 
 Write-Host "Mode: $Mode"
 Write-Host "Name: $Name"
-
+Write-Host "Confirm: $Confirm"
 
 #
 ## Remove an app.
@@ -60,12 +69,26 @@ function remove-app(
         if ( $child_name.Contains("_neutral_~_") )
         {
             # Get-AppxPackage -AllUsers -PackageTypeFilter Bundle -Name $Name | Remove-AppxPackage -AllUsers -Confirm | Remove-AppxProvisionedPackage -AllUsers -Online
-            Get-AppxPackage -AllUsers -PackageTypeFilter Bundle -Name $Name | Remove-AppxPackage -AllUsers -Confirm
+            if ( $Confirm )
+            {
+                Get-AppxPackage -AllUsers -PackageTypeFilter Bundle -Name $Name | Remove-AppxPackage -AllUsers
+            }
+            else
+            {
+                Get-AppxPackage -AllUsers -PackageTypeFilter Bundle -Name $Name | Remove-AppxPackage -AllUsers -Confirm
+            }
         }
         else
         {
-            # Get-AppxPackage -AllUsers -Name $Name | Remove-AppxPackage -AllUsers -Confirm | Remove-AppxProvisionedPackage -AllUsers -Online
-            Get-AppxPackage -AllUsers -Name $Name | Remove-AppxPackage -AllUsers -Confirm
+            if ( $Confirm )
+            {
+                # Get-AppxPackage -AllUsers -Name $Name | Remove-AppxPackage -AllUsers -Confirm | Remove-AppxProvisionedPackage -AllUsers -Online
+                Get-AppxPackage -AllUsers -Name $Name | Remove-AppxPackage -AllUsers
+            }
+            else
+            {
+                Get-AppxPackage -AllUsers -Name $Name | Remove-AppxPackage -AllUsers -Confirm
+            }
         }
     }
     # else
@@ -146,7 +169,12 @@ $apps = @(
 
 if ( $Mode -eq "r" -or $Mode -eq "remove" )
 {
-    if ( $Name -eq "" )
+    if ( $Name )
+    {
+        Write-Host "removing:" $Name;
+        remove-app $Name
+    }
+    else
     {
         for ( $i = 0; $i -lt $apps.Count; $i++ )
         {
@@ -154,15 +182,15 @@ if ( $Mode -eq "r" -or $Mode -eq "remove" )
             remove-app $apps[$i]
         }
     }
-    else
-    {
-        Write-Host "removing:" $Name;
-        remove-app $Name
-    }
 }
 elseif ( $Mode -eq "c" -or $Mode -eq "check" )
 {
-    if ( $Name -eq "" )
+    if ( $Name )
+    {
+        Write-Host "checking:" $Name;
+        check-app $Name
+    }
+    else
     {
         for ( $i = 0; $i -lt $apps.Count; $i++ )
         {
@@ -170,15 +198,10 @@ elseif ( $Mode -eq "c" -or $Mode -eq "check" )
             check-app $apps[$i]
         }
     }
-    else
-    {
-        Write-Host "checking:" $Name;
-        check-app $Name
-    }
 }
 else
 {
-    Write-Host "[e] Unknown mode!"
+    Write-Error "Unknown mode!"
 }
 
 

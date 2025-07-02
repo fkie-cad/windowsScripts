@@ -57,7 +57,8 @@ For questions and bug reports feel free to open an issue.
 - [makeiso](#makeiso)
 - [poweroff](#poweroff)
 - [reboot](#reboot)
-- [RemoveApps](#removeApps)
+- [RemoveApps](#removeapps)
+- [RemoveOneDrive](#removeonedrive)
 - [Rename](#rename)
 - [setDNS](#setdns)
 - [setIp](#setip)
@@ -624,6 +625,21 @@ ps> removeApps.ps1 check
 ps> [removeApps.ps1 check *XboxSpeechToTextOverlay*]
 ps> removeApps.ps1 remove *Microsoft.Xbox.TCUI*
 ps> removeApps.ps1 remove ...
+```
+
+
+
+## RemoveOneDrive
+
+Remove OneDrive and related data.
+- Kills the OneDrive process
+- Runs the OneDriveSetup uninstaller
+- removes registry settings
+- removes related folders
+
+### Usage
+```bash
+$> removeOneDriver.bat
 ```
 
 

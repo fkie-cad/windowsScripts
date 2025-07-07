@@ -473,13 +473,19 @@ $ getPid.bat <name>
 Set some Windows privacy and security related settings for setting up a system.
 Some are still missing.
 
+Not yet well documented what it's actually setting.
+Will surely be done in the near future.
+
 ### Usage
 ```bash
 $ settings.bat 
 ```
 
+### Remarks
 Has to be run as Admin.
-If current user and admin user are different, the required user id has to be set manually at `set user_sid=` and the following line has to be deleted.
+
+If the targeted user and admin user are different, the required user id has to be set manually at `set user_sid=` with the sid output by `$ whoami /user` and the following `for` loop has to be deleted.
+`user_name` is not required.
 
 
 

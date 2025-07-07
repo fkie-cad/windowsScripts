@@ -1,8 +1,17 @@
-::@echo off
+@echo off
 setlocal
 
+set user_name=
 set user_sid=
-for /f %%i in ('wmic useraccount where name^="%username%" get sid ^| findstr ^S\-d*') do set user_sid=%%i
+for /f "tokens=1,2" %%i in ('whoami /user ^| findstr ^S\-d*') do (
+    set user_name=%%i
+    set user_sid=%%j
+)
+if %errorlevel% NEQ 0 exit /b %errorlevel%
+if [%user_sid%] EQU [] exit /b %errorlevel%
+
+echo user_name: %user_name%
+echo user_sid: %user_sid%
 
 
 :main

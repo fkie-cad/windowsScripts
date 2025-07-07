@@ -333,3 +333,13 @@ reg add "%hkx%\%MSEdgePoliciesPath%" /v "NetworkPredictionOptions" /t REG_DWORD 
 :: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#composeinlineenabled
 :: Data Type: Boolean
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "ComposeInlineEnabled" /t REG_DWORD /d 0 /f
+
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/copilotpagecontext
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "CopilotPageContext" /t REG_DWORD /d 0 /f
+
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/edgeentracopilotpagecontext
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "EdgeEntraCopilotPageContext" /t REG_DWORD /d 0 /f
+
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/microsoft365copilotchaticonenabled
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "Microsoft365CopilotChatIconEnabled" /t REG_DWORD /d 0 /f
+

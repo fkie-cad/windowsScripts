@@ -33,12 +33,12 @@ set names=(^
     MicrosoftWindowsPowerShellV2Root^
     MicrosoftWindowsPowerShellV2^
     Microsoft-RemoteDesktopConnection^
-    MSRDC-Infrastructure
+    MSRDC-Infrastructure^
     Printing-XPSServices-Features^
-    SmbDirect^
     SMB1Protocol^
     SMB1Protocol-Client^
     SMB1Protocol-Server^
+    SmbDirect^
     WorkFolders-Client^
     )
 REM Printing-Foundation-Features
@@ -252,7 +252,7 @@ setlocal
 
 
 :usage  
-    echo Usage: %my_name% [/c^|/d^|/e] [/reg^|/sc] [/n ^<name^>] [/v] [/h]
+    echo Usage: %my_name% [/c^|cx^|/r^|/a] [/n ^<name^>] [/v] [/h]
     exit /B 0
     
 
@@ -260,18 +260,18 @@ setlocal
     call :usage
     echo.
     echo Targets: !! Not selectable, just for info !!
-    echo Printing-XPSServices-Features
-    echo WorkFolders-Client
     echo DirectPlay
-    echo SmbDirect
     echo LegacyComponents
     echo MediaPlabyack : Controls media features such as Windows Media Player
     echo MicrosoftWindowsPowerShellV2Root : Windows Powershell 2.0
     echo MicrosoftWindowsPowerShellV2 : Windows Powershell 2.0
     echo MSRDC-Infrastructure : Remote Differential Compression (RDC) API Support for use in third-party applications.
+    echo Printing-XPSServices-Features
     echo SMB1Protocol
     echo SMB1Protocol-Client
     echo SMB1Protocol-Server
+    echo SmbDirect
+    echo WorkFolders-Client
     echo.
     echo Actions:
     echo /a : Add the feature(s).

@@ -29,7 +29,7 @@ set name=
 set names=(^
     DirectPlay^
     LegacyComponents^
-    MediaPlabyack^
+    MediaPlayback^
     MicrosoftWindowsPowerShellV2Root^
     MicrosoftWindowsPowerShellV2^
     Microsoft-RemoteDesktopConnection^

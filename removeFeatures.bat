@@ -197,7 +197,6 @@ setlocal
         set state=%%i
     )
     echo state=%state%
-    exit /b %errorlevel%
     
     if [%state%] EQU [Enabled] (
         DISM /Online /Disable-Feature /FeatureName:"%name%"

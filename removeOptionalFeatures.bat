@@ -195,7 +195,6 @@ setlocal
     set "name=%~1"
 
     set state=
-    
 
     for /f "tokens=3" %%i in ('DISM /Online /Get-CapabilityInfo /CapabilityName:"%name%" ^| findstr /i State') do (
         set state=%%i

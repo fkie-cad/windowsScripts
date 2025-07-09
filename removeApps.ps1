@@ -132,6 +132,7 @@ $apps = @(
     # "Microsoft.Microsoft3DViewer",
     "*MixedReality.Portal*",
     # "Microsoft.MSPaint",
+    "*MicrosoftFamily*",
     "*Office.OneNote*",
     "*Microsoft.Wallet*",
     "*windowscommunicationsapps*", # People, Mail, and Calendar

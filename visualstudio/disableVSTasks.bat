@@ -112,6 +112,8 @@ GOTO :ParseParams
         schtasks /Change /TN "\Microsoft\VisualStudio\Updates\UpdateConfiguration_%user_sid%" %tcmd%
     )
     
+    echo.
+    echo.
     :mainend
     endlocal
     exit /b 0

@@ -59,6 +59,7 @@ For questions and bug reports feel free to open an issue.
 - [reboot](#reboot)
 - [RemoveApps](#removeapps)
 - [RemoveOneDrive](#removeonedrive)
+- [RemoveOptionalFeatures](#removeoptionalfeatures)
 - [Rename](#rename)
 - [setDNS](#setdns)
 - [setIp](#setip)
@@ -600,7 +601,7 @@ Remove some preinstalled windows apps.
 
 ### Usage
 ```bash
-ps> removeApps.ps1 [<mode>] [<name>]
+ps> removeApps.ps1 [<mode>] [<name>] [-Confirm]
 ```
 
 ### Params
@@ -635,6 +636,36 @@ ps> removeApps.ps1 remove ...
 
 
 
+## RemoveFeatures
+
+Remove some Windows Features.
+
+### Usage
+```bash
+ps> RemoveFeatures.bat [c|cx|r|a] [/n <name>]
+```
+
+### Params
+-/a : Add the feature(s).
+-/c : Check the feature(s) state.
+-/cx : Check the feature(s) complete info.
+-/l : List all capabilities.
+-/r : Remove the feature(s).
+
+### Examples
+```
+# Remove all features in the list
+ps> RemoveFeatures.bat /r
+
+# Check the state of all features in the list
+ps> RemoveFeatures.ps1 [/c]
+
+# Remove a specific features 
+ps> RemoveFeatures.bat /r /n MicrosoftWindowsPowerShellV2
+```
+
+
+
 ## RemoveOneDrive
 
 Remove OneDrive and related data.
@@ -646,6 +677,39 @@ Remove OneDrive and related data.
 ### Usage
 ```bash
 $> removeOneDriver.bat
+```
+
+
+
+## RemoveOptionalFeatures
+
+Remove some optional features.
+
+### Usage
+```bash
+ps> RemoveOptionalFeatures.bat [c|cx|r|a] [/n <name>]
+```
+
+### Params
+-/a : Add the feature(s).
+-/c : Check the feature(s) state.
+-/cx : Check the feature(s) complete info.
+-/l : List all capabilities.
+-/r : Remove the feature(s).
+
+### Examples
+```
+# Remove all optional features in the list
+ps> RemoveOptionalFeatures.bat /r
+
+# Check the state of all optional features in the list
+ps> RemoveOptionalFeatures.ps1 [/c]
+
+# Check full info of all optional features in the list
+ps> RemoveOptionalFeatures.ps1 /cx
+
+# Remove a specific optional features 
+ps> RemoveOptionalFeatures.bat /r /n App.StepsRecorder
 ```
 
 

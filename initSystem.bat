@@ -150,10 +150,10 @@ echo user_sid: %user_sid%
 
 :Privacy_General
         :: 0|1
-    reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /v "HasAccepted" /t REG_DWORD /d 0x00000000 /f
-    reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338393Enabled" /v "HasAccepted" /t REG_DWORD /d 0x00000000 /f
-    reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-353694Enabled" /v "HasAccepted" /t REG_DWORD /d 0x00000000 /f
-    reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-353696Enabled" /v "HasAccepted" /t REG_DWORD /d 0x00000000 /f
+    reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0x00000000 /f
+    reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338393Enabled" /t REG_DWORD /d 0x00000000 /f
+    reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-353694Enabled" /t REG_DWORD /d 0x00000000 /f
+    reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-353696Enabled" /t REG_DWORD /d 0x00000000 /f
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /v "HasAccepted" /t REG_DWORD /d 0x00000000 /f
 
     exit /b 0

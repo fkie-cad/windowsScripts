@@ -488,6 +488,7 @@ Has to be run as Admin.
 If the targeted user and admin user are different, the required user id has to be set manually at `set user_sid=` with the sid output by `$ whoami /user` and the following `for` loop has to be deleted.
 `user_name` is not required.
 
+Defender settings are possibly guarded by the Tamper Protection and will fail.
 
 
 ## iterate

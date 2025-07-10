@@ -16,7 +16,7 @@ echo user_sid: %user_sid%
 
 :main
     call :Accounts_SignInOptions
-    call :Accounts_Sync
+    call :Devices_Typing
     call :EaseOfAccess
     call :Gaming
     :: call :Network_Devices
@@ -33,7 +33,6 @@ echo user_sid: %user_sid%
     call :Security_VirusAndThreadProtection
     call :System_Clipboard
     call :System_Hiberboot
-    call :System_Notifications
     call :System_Notifications
     call :System_SharedExperience
     call :Update_DeliveryOptimization
@@ -154,11 +153,11 @@ echo user_sid: %user_sid%
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338393Enabled" /t REG_DWORD /d 0x00000000 /f
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-353694Enabled" /t REG_DWORD /d 0x00000000 /f
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-353696Enabled" /t REG_DWORD /d 0x00000000 /f
-    reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /v "HasAccepted" /t REG_DWORD /d 0x00000000 /f
+    reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /t REG_DWORD /d 0x00000000 /f
 
     exit /b 0
 
-:Privacy_Ining
+:Privacy_Inking
         :: 0|1
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\InputPersonalization" /v "RestrictImplicitInkCollection" /t REG_DWORD /d 0x00000001 /f
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\InputPersonalization" /v "RestrictImplicitTextCollection" /t REG_DWORD /d 0x00000001 /f
@@ -252,6 +251,7 @@ echo user_sid: %user_sid%
 
 :Update_DeliveryOptimization
         :: 0|1
+        :: Allow downloads from other devices => no
     reg add "HKU\S-1-5-20\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Settings" /v "DownloadMode" /t REG_DWORD /d 0x00000000 /f
     
     exit /b 0

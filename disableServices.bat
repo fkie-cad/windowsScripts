@@ -57,6 +57,7 @@ set names=(^
     igfxCUIService2.0.0.0^
     jhi_service^
     lfsvc^
+    lldpsvc^
     lms^
     MapsBroker^
     McpManagementService^

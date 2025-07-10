@@ -34,17 +34,19 @@ set names=(^
     MicrosoftWindowsPowerShellV2^
     Microsoft-RemoteDesktopConnection^
     MSRDC-Infrastructure^
+    Printing-Foundation-Features^
+    Printing-Foundation-InternetPrinting-Client^
+    Printing-Foundation-LPDPrintService^
+    Printing-Foundation-LPRPortMonitor^
     Printing-XPSServices-Features^
     SMB1Protocol^
     SMB1Protocol-Client^
     SMB1Protocol-Server^
     SmbDirect^
+    WCF-Services45^
+    WCF-TCP-PortSharing45^
     WorkFolders-Client^
     )
-REM Printing-Foundation-Features
-REM Printing-Foundation-InternetPrinting-Client
-REM Printing-Foundation-LPDPrintService
-REM Printing-Foundation-LPRPortMonitor
 
 if [%1]==[] goto main
 
@@ -259,18 +261,25 @@ setlocal
     call :usage
     echo.
     echo Targets: !! Not selectable, just for info !!
-    echo DirectPlay
-    echo LegacyComponents
-    echo MediaPlabyack : Controls media features such as Windows Media Player
+    echo LegacyComponents : Controls legacy components in Windows.
+    echo   DirectPlay : Enables the installation of DirectPlay component.
+    echo MediaPlabyack : Controls media features such as Windows Media Player,
     echo MicrosoftWindowsPowerShellV2Root : Windows Powershell 2.0
-    echo MicrosoftWindowsPowerShellV2 : Windows Powershell 2.0
+    echo   MicrosoftWindowsPowerShellV2 : Windows Powershell 2.0
+    echo Microsoft-RemoteDesktopConnection : The Remote Desktop Connection application
     echo MSRDC-Infrastructure : Remote Differential Compression (RDC) API Support for use in third-party applications.
     echo Printing-XPSServices-Features
-    echo SMB1Protocol
-    echo SMB1Protocol-Client
-    echo SMB1Protocol-Server
-    echo SmbDirect
-    echo WorkFolders-Client
+    echo Printing-Foundation-Features : Enable print, fax, and scan tasks on this computer.
+    echo   Printing-Foundation-InternetPrinting-Client : Enables clients to use HTTP to connect to printers on Web print servers.
+    echo   Printing-Foundation-LPDPrintService : Makes your Windows computer work as a Line Printer Daemon (LPD) and Remote Line Printer client.
+    echo   Printing-Foundation-LPRPortMonitor : Enables clients to print to TCP/IP printers connected to a UNIX (or VAX) server.
+    echo SmbDirect : Remote Direct Memory Access (RDMA) support for the SMB 3.x file sharing protocol.
+    echo SMB1Protocol : Support for the SMB 1.0/CIFS file sharing protocol, and the Computer Browser protocol.
+    echo   SMB1Protocol-Client : Support for the SMB 1.0/CIFS client for accessing legacy servers.
+    echo   SMB1Protocol-Server : Support for the SMB 1.0/CIFS file server for sharing data with legacy clients and browsing the network neighborhood.
+    echo WCF-Services45 : WCF-Services
+    echo   WCF-TCP-PortSharing45 : TCP Port Sharing.
+    echo WorkFolders-Client : Allows file synchronization with a configured file server.
     echo.
     echo Actions:
     echo /a : Add the feature(s).

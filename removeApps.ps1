@@ -60,15 +60,17 @@ function remove-app(
     [string]$Name
 )
 {
-    $key = Get-ChildItem HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Applications\$Name
-    if ( $key )
+    $p = Get-AppxPackage -AllUsers -Name $Name
+    if ( $p )
     {
-        $child_name = $key.PSChildName
-        # Write-Host "key: "$key $key.GetType()
-        # Write-Host "child_name: "$child_name $child_name.GetType()
-        if ( $child_name.Contains("_neutral_~_") )
+        if ( $p.NonRemovable )
         {
-            # Get-AppxPackage -AllUsers -PackageTypeFilter Bundle -Name $Name | Remove-AppxPackage -AllUsers -Confirm | Remove-AppxProvisionedPackage -AllUsers -Online
+            Write-Host "[i] NonRemovable"
+            return
+        }
+        
+        if ( $p.IsBundle )
+        {
             if ( $Confirm )
             {
                 Get-AppxPackage -AllUsers -PackageTypeFilter Bundle -Name $Name | Remove-AppxPackage -AllUsers
@@ -101,13 +103,10 @@ function check-app(
     [string]$Name
 )
 {
-    $key = Get-ChildItem HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Applications\$Name
-    if ( $key )
+    $p = Get-AppxPackage -AllUsers -Name $Name
+    if ( $p )
     {
-        $child_name = $key.PSChildName
-        # Write-Host "key: "$key $key.GetType()
-        # Write-Host "child_name: "$child_name $child_name.GetType()
-        if ( $child_name.Contains("_neutral_~_") )
+        if ( $p.IsBundle )
         {
             Get-AppxPackage -AllUsers -PackageTypeFilter Bundle -Name $Name
         }
@@ -133,6 +132,7 @@ $apps = @(
     "*MixedReality.Portal*",
     # "Microsoft.MSPaint",
     "*MicrosoftFamily*",
+    "*Copilot*",
     "*Office.OneNote*",
     "*Microsoft.Wallet*",
     "*windowscommunicationsapps*", # People, Mail, and Calendar
@@ -158,6 +158,8 @@ $apps = @(
     "*Microsoft.XboxGamingOverlay*",
     "*Microsoft.Xbox*",
     "*Microsoft.Xbox.*",
+    "*Microsoft.WidgetsPlatformRuntime*",
+    "*Microsoft.StartExperiencesApp*",
     "*WindowsFeedbackHub*",
     "*Todos*",
     "*WindowsAlarms*",
@@ -178,14 +180,14 @@ if ( $Mode -eq "r" -or $Mode -eq "remove" )
 {
     if ( $Name )
     {
-        Write-Host "removing:" $Name;
+        Write-Host "removing:" $Name
         remove-app $Name
     }
     else
     {
         for ( $i = 0; $i -lt $apps.Count; $i++ )
         {
-            Write-Host "removing:" $apps[$i];
+            Write-Host "removing:" $apps[$i]
             remove-app $apps[$i]
         }
     }
@@ -194,14 +196,14 @@ elseif ( $Mode -eq "c" -or $Mode -eq "check" )
 {
     if ( $Name )
     {
-        Write-Host "checking:" $Name;
+        Write-Host "checking:" $Name
         check-app $Name
     }
     else
     {
         for ( $i = 0; $i -lt $apps.Count; $i++ )
         {
-            Write-Host "checking:" $apps[$i];
+            Write-Host "checking:" $apps[$i]
             check-app $apps[$i]
         }
     }

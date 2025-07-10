@@ -33,7 +33,6 @@ set names=(^
     Language.Handwriting~~~en-US~0.0.1.0^
     Language.Speech~~~en-US~0.0.1.0^
     Language.TextToSpeech~~~en-US~0.0.1.0^
-    MediaPlabyack^
     Media.WindowsMediaPlayer^
     Print.Fax.Scan^
     Microsoft.Onecore.StorageManagement^

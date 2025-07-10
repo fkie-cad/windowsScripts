@@ -90,6 +90,7 @@ set names=(^
     WbioSrvc^
     WerSvc^
     WinRM^
+    whesvc^
     wlidsvc^
     WpcMonSvc^
     XboxGipSvc^
@@ -351,6 +352,7 @@ setlocal
     echo WerSvc: Allows errors to be reported when programs stop working or responding and allows existing solutions to be delivered.
     REM echo WinHTTPAutoProxySvc: WinHTTP implements the client HTTP stack and provides developers with a Win32 API and COM Automation component for sending HTTP requests and receiving responses. [Required by WLAN service!]
     echo WinRM: Windows Remote Management (WinRM) service implements the WS-Management protocol for remote management. 
+    echo whesvc : Windows Health and Optimized Experiences : Monitors the device for a better user experience
     echo wlidsvc: Enables user sign-in through Microsoft account identity services. If this service is stopped, users will not be able to logon to the computer with their Microsoft account.
     echo WpcMonSvc: Enforces parental controls for child accounts in Windows. If this service is stopped or disabled, parental controls may not be enforced.
     echo XboxGipSvc: This service manages connected Xbox Accessories.

@@ -40,7 +40,7 @@ set names=(^
     Microsoft.Wallpapers.Extended^
     Microsoft.WebDriver^
     Microsoft.Windows.Wordpad^
-    OneCoreUAP.OneSync~~~~0.0.1.0^
+    OneCoreUAP.OneSync^
     Microsoft.Windows.RemoteDesktop.Client^
     )
     REM Language.Basic~~~en-US~0.0.1.0^ not removable
@@ -200,11 +200,24 @@ setlocal
         set state=%%i
     )
     
-    if [%state%] EQU [Installed] (
-        DISM /Online /Remove-Capability /CapabilityName:"%name%"
-    ) else (
-        echo %state%
+    if [%state%] NEQ [Installed] (
+        echo [i] Not installed!
+        endlocal
+        exit /b %errorlevel%
     )
+    
+    set identity=
+    for /f "tokens=4" %%i in ('DISM /Online /Get-CapabilityInfo /CapabilityName:"%name%" ^| findstr /i "Capability Identity"') do (
+        set identity=%%i
+    )
+    
+    if ["%identity%"] EQU [""] (
+        echo [e] No identity found!
+        endlocal
+        exit /b %errorlevel%
+    )
+    
+    DISM /Online /Remove-Capability /CapabilityName:"%identity%"
     
     endlocal
     exit /b %errorlevel%

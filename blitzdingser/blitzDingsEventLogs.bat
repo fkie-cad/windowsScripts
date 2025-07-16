@@ -19,7 +19,7 @@ set /a app=0
 set /a sys=0
 set /a hvw=0
 set /a wdo=0
-set /a whc=0
+set /a wvc=0
 
 
 
@@ -53,8 +53,8 @@ GOTO :ParseParams
         SET /a wdo=1
         goto reParseParams
     )
-    IF /i "%~1"=="/whc" (
-        SET /a whc=1
+    IF /i "%~1"=="/wvc" (
+        SET /a wvc=1
         goto reParseParams
     )
     
@@ -74,7 +74,7 @@ GOTO :ParseParams
 
 :main
 
-    set /a "s=%all%+%app%+%hvw%+%sys%"
+    set /a "s=%all%+%app%+%hvw%+%sys%+%wdo%+%wvc%"
     if %s% == 0 (
         echo No option set!
         echo Doing nothing!
@@ -91,12 +91,15 @@ GOTO :ParseParams
 
 
     if [%all%]==[1] (
-        for /F "tokens=*" %%G in ('wevtutil.exe el') DO (call :clearLog "%%G")
+        for /F "tokens=*" %%G in ('wevtutil.exe el') DO (
+            call :clearLog "%%G"
+        )
+        
         set app=0
         set hvw=0
         set sys=0
         set wdo=0
-        set whc=0
+        set wvc=0
         
         goto end
     )
@@ -117,8 +120,8 @@ GOTO :ParseParams
         call :clearLog "Microsoft-Windows-Windows Defender/Operational"
     )
     
-    if %whc% == 1 (
-        call :clearLog "Microsoft-Windows-Windows Defender/WHC"
+    if %wvc% == 1 (
+        call :clearLog "Microsoft-Windows-Windows Defender/wvc"
     )
 
     ::if [%all%]==[1] (
@@ -149,7 +152,7 @@ GOTO :ParseParams
 
 
 :usage
-    echo Usage: %prog_name% [/app] [/hvw] [/sys] [/x] [/v] [/h]
+    echo Usage: %prog_name% [/all] [/app] [/hvw] [/sys] [/wdo] [/wvc] [/v] [/h]
     
     endlocal
     exit /B 0
@@ -162,8 +165,8 @@ GOTO :ParseParams
     echo /app Clear Application log. Log of user application crashes.
     echo /hvw Clear Hyper-V-Worker log. Log (on the host) of Hyper-V crashes/BSODS.
     echo /sys Clear System log. 
-    echo /hdo Windows Defender Operational.
-    echo /hvc Windows Defender HVC. 
+    echo /wdo Windows Defender Operational.
+    echo /wvc Windows Defender HVC. 
     echo.
     echo Options:
     echo /v Verbose mode

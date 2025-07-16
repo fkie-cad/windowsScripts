@@ -62,6 +62,7 @@ Found in https://www.alitajran.com/turn-off-windows-defender-windows-11-permanen
   - Scroll up and toggle "Real Time Protection" to the off position.
 - Optional: 
     Download [autoruns](https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns)
+- If bitlocker is enabled, suspend it or have your recovery key present.
 - Boot into safe mode
   - Run `bcdedit /set {current} safeboot && shutdown /r /t 0`
 - Two options
@@ -80,6 +81,7 @@ Found in https://www.alitajran.com/turn-off-windows-defender-windows-11-permanen
 - To undo the changes just reenable "Tamper Protection" and "Real Time Protection" and reboot.
     Confirm that `reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WinDefend" /v start` is set to `2`.
 - If not working yet, undo the service changes done with autorun or in the registry by again booting into "safe mode".
+- Bitlocker should "unsuspend" itself automatically.
 
 Another way is found here, but seems to not work:  
 https://www.alphr.com/disable-windows-defender-windows-11/  
@@ -91,15 +93,15 @@ Blitzdings the Windows Event Log or parts of it.
 
 ### Usage
 ```bash
-$ blitzDingsEventLogs.bat [/app] [/hvw] [/sys] [/all] [/?]
+$ blitzDingsEventLogs.bat [/all] [/app] [/hvw] [/sys] [/wdo] [/wvc] [/?]
 ```
 Targets:
 * /all Clear !all! logs (includes other selective options) and much more.
 * /app Clear Application log. Log of user application crashes.
 * /hvw Clear Hyper-V-Worker log. Log (on the host) of Hyper-V crashes/BSODS.
 * /sys Clear System log.
-* /hdo Windows Defender Operational.
-* /hvc Windows Defender HVC. 
+* /wdo Windows Defender Operational.
+* /wvc Windows Defender HVC. 
 
 Options:
 * /v: More verbose mode.

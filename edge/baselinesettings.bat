@@ -1,4 +1,4 @@
-:: @echo off
+@echo off
 
 set hkx=HKLM
 set MSEdgePoliciesPath=Software\Policies\Microsoft\Edge
@@ -16,7 +16,6 @@ rem There are still things missing.
 rem https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#textpredictionenabled
 rem Text prediction enabled by default.
 rem The Microsoft Turing service uses natural language processing to generate predictions [...]
-rem No, thanks!
 reg add "%hkx%\%MSEdgePoliciesPath%"  /v "TextPredictionEnabled" /t REG_DWORD /d "0" /f
 
 rem https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#edge3pserptelemetryenabled
@@ -343,3 +342,53 @@ reg add "%hkx%\%MSEdgePoliciesPath%" /v "EdgeEntraCopilotPageContext" /t REG_DWO
 :: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/microsoft365copilotchaticonenabled
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "Microsoft365CopilotChatIconEnabled" /t REG_DWORD /d 0 /f
 
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/defaultwindowmanagementsetting
+:: BlockWindowManagement (2) = Denies the Window Management permission on all sites by default
+:: AskWindowManagement (3) = Ask every time a site wants obtain the Window Management permission
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "DefaultWindowManagementSetting" /t REG_DWORD /d 2 /f
+
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/builtinaiapisenabled
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "BuiltInAIAPIsEnabled" /t REG_DWORD /d 0 /f
+
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/edgehistoryaisearchenabled
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "EdgeHistoryAISearchEnabled" /t REG_DWORD /d 0 /f
+
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/autofillcreditcardenabled
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "AutofillCreditCardEnabled" /t REG_DWORD /d 0 /f
+
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/paymentmethodqueryenabled
+call :setDWPolicy "PaymentMethodQueryEnabled" 0
+
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/personalizetopsitesincustomizesidebarenabled
+call :setDWPolicy "PersonalizeTopSitesInCustomizeSidebarEnabled" 0
+
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/newtabpagehidedefaulttopsites
+call :setDWPolicy "NewTabPageHideDefaultTopSites" 0
+
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/defaultnotificationssetting
+:: AllowNotifications (1) = Allow sites to show desktop notifications
+:: BlockNotifications (2) = Don't allow any site to show desktop notifications
+:: AskNotifications (3) = Ask every time a site wants to show desktop notifications
+call :setDWPolicy "DefaultNotificationsSetting" 2
+
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/spotlightexperiencesandrecommendationsenabled
+call :setDWPolicy "SpotlightExperiencesAndRecommendationsEnabled" 2
+
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/allowsystemnotifications
+call :setDWPolicy "AllowSystemNotifications" 0
+
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/showrecommendationsenabled
+call :setDWPolicy "ShowRecommendationsEnabled" 0
+
+exit /b %errorlevel%
+
+
+:setDWPolicy
+setlocal
+    set "n=%~1"
+    set /a v=%~2
+    
+    reg add "%hkx%\%MSEdgePoliciesPath%" /v "%n%" /t REG_DWORD /d %v% /f
+
+    endlocal
+    exit /b %errorlevel%

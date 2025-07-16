@@ -245,11 +245,11 @@ endlocal
 :help
     call :usage
     echo.
-    echo -n Base name of the files.
-    echo -a Algorithm: %pos_algorithms%. Default: ED25519.
-    echo -b Bits for RSA. Default: 4096.
-    echo -c Additionally convert to .der format.
-    echo -h Print this.
+    echo /n Base name of the files.
+    echo /a Algorithm: %pos_algorithms%. Default: ED25519.
+    echo /b Bits for RSA. Default: 4096.
+    echo /c Additionally convert to .der format.
+    echo /h Print this.
     
     endlocal
     exit /b %errorlevel%

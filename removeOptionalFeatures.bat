@@ -264,9 +264,9 @@ setlocal
     call :usage
     echo.
     echo Targets: !! Not selectable, just for info !!
-    echo   App.StepsRecorder : Steps Recorder : Description : Capture steps with screenshots to save or share.
+    echo   App.StepsRecorder : Steps Recorder : Capture steps with screenshots to save or share.
     echo   AzureArcSetup : Provides the services that are needed to onboard server to Azure Arc.
-    echo   Browser.InternetExplorer : Internet Explorer mode : Description : Enables Internet Explorer mode functionality in Microsoft Edge.
+    echo   Browser.InternetExplorer : Internet Explorer mode : Enables Internet Explorer mode functionality in Microsoft Edge.
     echo   Hello.Face.20134 : Facial Recognition (Windows Hello) : Facial Recognition (Windows Hello) Software Device
     REM echo   Language.Basic~~~en-US~0.0.1.0 : Language.Basic : English (US) typing : Spelling, text prediction, and document searching for English (US) [not removable]
     echo   Language.Handwriting~~~en-US~0.0.1.0 : Language.Handwriting : English (US) handwriting : Handwriting and pen for English (US)

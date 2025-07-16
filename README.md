@@ -21,6 +21,7 @@ For questions and bug reports feel free to open an issue.
 - [crypto/](#crypto)
 - [edge/](#edge)
 - [explorer/](#explorer)
+- [firewall](#firewall)
 - [hyper-v/](#hyper-v)
 - [pdb/](#pdb)
 - [Visual Studio/](#visual-studio)
@@ -84,6 +85,10 @@ Some edge related scripts.
 ## explorer/
 Set useful explorer settings.  
 [explorer/README.md](explorer/README.md)
+
+## firewall/
+Firewall settings.  
+[fw/README.md](fw/README.md)
 
 ## hyper-v/
 Some hyper-v related scripts.  

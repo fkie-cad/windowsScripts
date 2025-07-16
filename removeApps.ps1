@@ -125,32 +125,34 @@ function check-app(
 # [void] $apps.AddRange( 
 # (
 $apps = @(
+    "*Appconnector*",
+    "*bingfinance*",
     "*IntelGraphicsExperience*",
-    "*Microsoft.549981C3F5F10*", # Cortana
-    "*Microsoft.Getstarted*",
-    # "Microsoft.Microsoft3DViewer",
     "*MixedReality.Portal*",
-    # "Microsoft.MSPaint",
-    "*MicrosoftFamily*",
-    "*Copilot*",
     "*Office.OneNote*",
-    "*Microsoft.Wallet*",
-    "*windowscommunicationsapps*", # People, Mail, and Calendar
-    "*WindowsCamera*",
     "*OutlookForWindows*",
-    "*Clipchamp*",
     "*BingNews*",
     "*BingSearch*",
+    "*bingsports*",
     "*BingWeather*",
-    "*ZuneMusic*",
-    "*ZuneVideo*",
+    "*CandyCrushSaga*",
+    "*Clipchamp*",
+    "*Copilot*",
+    "*Edge.GameAssist*",
     "*MicrosoftOfficeHub*",
+    "*Messaging*",
     "*People*",
-    "*WindowsMaps*",
     "*GetHelp*",
     "*WindowsSoundRecorder*",
     "*MicrosoftStickyNotes*",
     "*PowerAutomateDesktop*",
+    "*Microsoft.549981C3F5F10*", # Cortana
+    "*Microsoft.Getstarted*",
+    # "Microsoft.Microsoft3DViewer",
+    # "Microsoft.MSPaint",
+    "*Microsoft.StartExperiencesApp*", # powers Windows Widgets My Feed so you can stay informed, entertained, and inspired!
+    "*Microsoft.Wallet*", # Shopping convenience meets data security with Wallet – one place to store your payment methods, passwords, and more.
+    "*Microsoft.WidgetsPlatformRuntime*", # enables the functionality of widgets
     "*Microsoft.XboxGameCallableUI*",
     "*Microsoft.XboxSpeechToTextOverlay*",
     "*Microsoft.Xbox.TCUI*",
@@ -158,23 +160,30 @@ $apps = @(
     "*Microsoft.XboxGamingOverlay*",
     "*Microsoft.Xbox*",
     "*Microsoft.Xbox.*",
-    "*Microsoft.WidgetsPlatformRuntime*",
-    "*Microsoft.StartExperiencesApp*",
+    "*MicrosoftFamily*",
+    "*WindowsCamera*",
+    "*windowscommunicationsapps*", # People, Mail, and Calendar
     "*WindowsFeedbackHub*",
     "*Todos*",
     "*WindowsAlarms*",
     "*Teams*",
     "*YourPhone*",
     "*SpotifyAB.SpotifyMusic*",
-    "*MicrosoftSolitaireCollection*",
+    "*SolitaireCollection*",
     "*OneDriveSync*",
+    "*soundrecorder*",
     "*SkypeApp*",
     "*GamingApp*",
-    "*Edge.GameAssist*",
-    "*Windows.DevHome*"
+    "*officehub*",
+    "*Windows.DevHome*",
+    "*WindowsMaps*",
+    "*windowsphone*",
+    "*WindowsScan*",
+    # "*windowscalculator*",
+    "*ZuneMusic*",
+    "*ZuneVideo*"
 )
 # )
-
 
 if ( $Mode -eq "r" -or $Mode -eq "remove" )
 {

@@ -237,7 +237,7 @@ endlocal
     exit /b %errorlevel%
 
 :usage
-    echo Usage: %my_name% /n ^<name^> [/a=^<algorithm^>] [/b=^<bits^>] [/c] [/h]
+    echo Usage: %my_name% /n ^<name^> [/a ^<algorithm^>] [/b ^<bits^>] [/c] [/h]
     
     exit /b %errorlevel%
 

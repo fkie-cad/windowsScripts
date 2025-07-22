@@ -33,6 +33,7 @@ For questions and bug reports feel free to open an issue.
 - [createBootStick](#createbootstick)
 - [createVHD](#createvhd)
 - [deleteFilesLT](#deletefileslt)
+- [deleteShortcutPostfix](#deleteshortcutpostfix)
 - [disableCoInstallers](#disablecoinstallers)
 - [disableErrorReporting](#disableerrorreporting)
 - [disableIpV6](#disableipv6)
@@ -781,6 +782,17 @@ Options:
 * /l List interfaces
 * /c List interface configuration
 * /v Verbose mode
+
+
+
+## shortcutPostfix
+Disable appending a " - Shortcut" to each newly created shortcut.
+
+
+### Usage
+```bash
+$ shortcutPostfix.bat
+```
 
 
 

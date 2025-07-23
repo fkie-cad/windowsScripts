@@ -12,7 +12,7 @@ set /a MODE_NONE=0
 set /a MODE_ADD=1
 set /a MODE_DEL=2
 
-set verbose=0
+set /a verbose=0
 set /a mode=%MODE_ADD%
 set pb=
 set pa=
@@ -63,7 +63,7 @@ GOTO :ParseParams
         goto reParseParams
     )
     IF "%~1"=="/v" (
-        SET verbose=1
+        SET /a verbose=1
         goto reParseParams
     )
     
@@ -81,7 +81,7 @@ GOTO :ParseParams
         goto usage
     )
 
-    if [%verbose%]==[1] (
+    if %verbose% == 1 (
         echo bin_path=%bin_path%
         echo label=%label%
     )
@@ -121,7 +121,7 @@ setlocal
 
 :deleteEntry
 setlocal
-    C:\Windows\System32\reg DELETE "HKEY_CURRENT_USER\SOFTWARE\Classes\*\shell\%label%"
+    reg DELETE "HKEY_CURRENT_USER\SOFTWARE\Classes\*\shell\%label%"
 
     endlocal
     exit /B %ERRORLEVEL%

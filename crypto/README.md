@@ -9,25 +9,28 @@ Last updated: 12.06.2023
 
 
 ## createOpensslCert
-Creates .der and .pem ssl keys and certificates in one command, i.e. public key, private key and certificate.
+Creates .der and .pem ssl keys and certificates in one command, 
+  i.e. public key, private key and certificate.
 
 **Requirements**  
 Requires an openssl.exe found in the `%PATH%` or `%ProgramFiles%\Git\usr\bin\openssl.exe`.
 
 **Remarks**  
 Somehow, it throws an error, when creating a public key out of a .der private key.
-Therefor, the default is to create the .pem keys and if needed, convert them to .der with the `/c` option.
+Therefor, there is no option to create .der keys directly.
+The default is to create the .pem keys and if needed, convert them to .der with the `/c` option.
 
 
 ### Usage
 ```bash
-$ createOpensslCert.bat /n <name> [/a=<algorithm>] [/b=<bits>] [/c] [/h]
+$ createOpensslCert.bat /n <name> [/a=<algorithm>] [/b=<bits>] [/d] [/c] [/h]
 ```
 **Options:**  
-* /n Base name of the files.
 * /a Algorithm: RSA|ED25519. Default: ED25519.
 * /b Bits for RSA. Default: 4096.
-* /c Additionally convert to .der format.
+* /c Check the created files.
+* /d Additionally convert to .der format.
+* /n Base name of the files.
 * /h Print this.
 
 

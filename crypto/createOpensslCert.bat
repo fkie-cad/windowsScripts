@@ -8,8 +8,9 @@ set "my_dir=%my_dir:~1,-2%"
 set name=
 set "pos_algorithms=RSA^|ED25519"
 set algorithm=ED25519
-set bits=4096
+set /a bits=4096
 set /a convertType=0
+set /a check=0
 set outForm=pem
 
 set /a help=0
@@ -43,12 +44,34 @@ GOTO ParseParams
         SHIFT
         goto reParseParams
     )
+    IF /i "%~1"=="/algorithm" (
+        SET algorithm=%~2
+        SHIFT
+        goto reParseParams
+    )
     IF /i "%~1"=="/b" (
-        SET bits=%~2
+        SET /a bits=%~2
+        SHIFT
+        goto reParseParams
+    )
+    IF /i "%~1"=="/bit-length" (
+        SET /a bits=%~2
         SHIFT
         goto reParseParams
     )
     IF /i "%~1"=="/c" (
+        SET /a check=1
+        goto reParseParams
+    )
+    IF /i "%~1"=="/check" (
+        SET /a check=1
+        goto reParseParams
+    )
+    IF /i "%~1"=="/d" (
+        SET /a convertType=1
+        goto reParseParams
+    )
+    IF /i "%~1"=="/der" (
         SET /a convertType=1
         goto reParseParams
     )
@@ -57,7 +80,12 @@ GOTO ParseParams
         SHIFT
         goto reParseParams
     )
-    REM IF /i "%~1"=="/t" (
+    IF /i "%~1"=="/name" (
+        SET name=%~2
+        SHIFT
+        goto reParseParams
+    )
+    REM IF /i "%~1"=="/t" ( 
         REM SET outForm=%~2
         REM SHIFT
         REM goto reParseParams
@@ -94,6 +122,7 @@ GOTO :ParseParams
         echo name: %name%
         echo algorithm: %algorithm%
         echo bits: %bits%
+        echo check: %check%
         echo type: %outForm%
         echo convert: %convertType%
         echo priv_key: %priv_key%
@@ -104,7 +133,7 @@ GOTO :ParseParams
     )
 
     set /a s=1
-    if /i [%outForm%] EQU [der] set /a s=0
+    REM if /i [%outForm%] EQU [der] set /a s=0
     if /i [%outForm%] EQU [pem] set /a s=0
     if s EQU 1 (
         echo [e] Type not supported!
@@ -121,7 +150,12 @@ GOTO :ParseParams
         call :convert %outForm%
     )
 
-:mainend
+
+    if %check% EQU 1 (
+        call :check %pem_cert% %priv_key% %pub_key%
+    )
+    
+    :mainend
     echo.
     echo exiting with code : %errorlevel%
     endlocal
@@ -138,14 +172,13 @@ setlocal
     echo generating private key %priv_key%
     if /i [%algorithm%] == [rsa] ( 
         "%openSslExe%" genpkey -algorithm rsa -pkeyopt rsa_keygen_bits:%bits% -outform %outForm% -out %priv_key%
-    ) else (
-    if /i [%algorithm%] == [ed25519] ( 
+    ) else if /i [%algorithm%] == [ed25519] ( 
         "%openSslExe%" genpkey -algorithm ED25519 -outform %outForm% -out %priv_key%
     ) else (
         echo [e] Algorithm not supported!
         call
         goto createPemEnd
-    ))
+    )
     if !errorlevel! NEQ 0 (
         echo [e] Generating private key failed.
         goto createPemEnd
@@ -158,7 +191,6 @@ setlocal
         echo [e] Generating public key failed.
         goto createPemEnd
     )
-
 
     :: create a self-signed certi)cate using that key
     echo generating self signed certificate %pem_cert%
@@ -176,8 +208,8 @@ setlocal
         goto createPemEnd
     )
 
-:createPemEnd
-endlocal
+    :createPemEnd
+    endlocal
     exit /b %errorlevel%
 
 
@@ -232,12 +264,49 @@ setlocal
         goto convertEnd
     )
     
-:convertEnd
-endlocal
+    :convertEnd
+    endlocal
     exit /b %errorlevel%
 
+
+:check
+setlocal
+    
+    set "pem_cert=%~1"
+    set "priv_key=%~2"
+    set "pub_key=%~3"
+
+    echo.
+    echo Checking
+    echo ========
+    
+    if ["%pem_cert%"] NEQ [""] (
+        echo Checking Cert
+        echo -------------
+        "%openSslExe%" x509 -noout -text -in "%pem_cert%"
+    )
+    
+    if ["%priv_key%"] NEQ [""] (
+        echo.
+        echo Checking Private key
+        echo --------------------
+        "%openSslExe%" %algorithm% -noout -text -in "%priv_key%"
+        "%openSslExe%" %algorithm% -noout -check -in "%priv_key%"
+    )
+    
+    if ["%pub_key%"] NEQ [""] (
+        echo.
+        echo Checking Public key
+        echo -------------------
+        "%openSslExe%" %algorithm% -noout -text -pubin -in "%pub_key%"
+    )
+    
+    endlocal
+    exit /b %errorlevel%
+
+
 :usage
-    echo Usage: %my_name% /n ^<name^> [/a ^<algorithm^>] [/b ^<bits^>] [/c] [/h]
+    echo Usage: %my_name% /n ^<name^> [/a ^<algorithm^>] [/b ^<bits^>] [/d] [/c] [/h]
     
     exit /b %errorlevel%
 
@@ -245,10 +314,11 @@ endlocal
 :help
     call :usage
     echo.
-    echo /n Base name of the files.
     echo /a Algorithm: %pos_algorithms%. Default: ED25519.
     echo /b Bits for RSA. Default: 4096.
-    echo /c Additionally convert to .der format.
+    echo /c Check the created files.
+    echo /d Additionally convert to .der format.
+    echo /n Base name of the files to create.
     echo /h Print this.
     
     endlocal

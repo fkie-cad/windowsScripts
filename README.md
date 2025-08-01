@@ -174,7 +174,7 @@ $ createiso.bat /i input\dir /o output\file.iso [/v] [/h]
 ```
 Options:
  * /i Path to input directory.
- * /o Path to output directory.
+ * /o Path to output file.
  * /v Verbose mode.
  * /h Print help.
 

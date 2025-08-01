@@ -58,6 +58,14 @@ GOTO :ParseParams
         echo [e] "%oscdimg%" not found!
         goto usage
     )
+    if EXIST "%out%" (
+        echo [i] "%out%" exists!
+        
+        SET /P confirm="[?] Overwrite? (Y/[N]) "
+        IF /I "!confirm!" NEQ "Y" (
+            goto exitMain
+        )
+    )
 
     if %verbose% EQU 1 (
         echo in = %in%
@@ -67,6 +75,9 @@ GOTO :ParseParams
 
     "%oscdimg%" -u2 "%in%" "%out%"
 
+    :exitMain
+    endlocal
+    echo exiting with errorlevel %errorlevel%
     exit /B 0
 
 
@@ -79,7 +90,7 @@ GOTO :ParseParams
     echo.
     echo Options:
     echo /i Path to input directory.
-    echo /o Path to output directory.
+    echo /o Path to output file.
     echo /v Verbose mode.
     echo /h Print this.
     exit /B 0

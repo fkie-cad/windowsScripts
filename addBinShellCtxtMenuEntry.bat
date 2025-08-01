@@ -34,7 +34,17 @@ GOTO :ParseParams
         SHIFT
         goto reParseParams
     )
+    IF "%~1"=="/path" (
+        SET bin_path=%~2
+        SHIFT
+        goto reParseParams
+    )
     IF "%~1"=="/l" (
+        SET label=%~2
+        SHIFT
+        goto reParseParams
+    )
+    IF "%~1"=="/label" (
         SET label=%~2
         SHIFT
         goto reParseParams
@@ -43,7 +53,15 @@ GOTO :ParseParams
         SET /a mode=%MODE_ADD%
         goto reParseParams
     )
+    IF "%~1"=="/add" (
+        SET /a mode=%MODE_ADD%
+        goto reParseParams
+    )
     IF "%~1"=="/d" (
+        SET /a mode=%MODE_DEL%
+        goto reParseParams
+    )
+    IF "%~1"=="/delete" (
         SET /a mode=%MODE_DEL%
         goto reParseParams
     )
@@ -57,7 +75,12 @@ GOTO :ParseParams
         SHIFT
         goto reParseParams
     )
-    IF "%~1"=="/ico" (
+    IF "%~1"=="/i" (
+        SET "ico=%~2"
+        SHIFT
+        goto reParseParams
+    )
+    IF "%~1"=="/icon" (
         SET "ico=%~2"
         SHIFT
         goto reParseParams
@@ -127,7 +150,7 @@ setlocal
     exit /B %ERRORLEVEL%
 
 :usage
-    echo Usage: %prog_name% /p ^<path^> /l ^<label^> [/pb ^<params^>] [/pa ^<params^>] [/ico ^<path^>] [/a^|/d] [/v] [/h]
+    echo Usage: %prog_name% /p ^<path^> /l ^<label^> [/pb ^<params^>] [/pa ^<params^>] [/i ^<path^>] [/a^|/d] [/v] [/h]
     exit /B 0
 
 :help
@@ -139,7 +162,7 @@ setlocal
     echo /d Delete entry specified by /l label.
     echo /pb Additional parameters before the file. 
     echo /pa Additional parameters after the file. 
-    echo /ico Icon to show up next to the entry.
+    echo /i Icon to show up next to the entry.
     echo /v Verbose mode.
     echo /h Print this.
     

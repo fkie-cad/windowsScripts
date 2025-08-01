@@ -31,6 +31,7 @@ For questions and bug reports feel free to open an issue.
 - [Windows Features/](#windows-features)
 - [addBinShellCtxtMenuEntry](#addBinShellCtxtMenuEntry)
 - [createBootStick](#createbootstick)
+- [createIso](#createiso)
 - [createVHD](#createvhd)
 - [deleteFilesLT](#deletefileslt)
 - [deleteShortcutPostfix](#deleteshortcutpostfix)
@@ -56,7 +57,6 @@ For questions and bug reports feel free to open an issue.
 - [killProcess](#killprocess)
 - [listDriveLetters](#listDriveLetters)
 - [listFilesGt](#listFilesGt)
-- [makeiso](#makeiso)
 - [poweroff](#poweroff)
 - [reboot](#reboot)
 - [RemoveApps](#removeapps)
@@ -161,6 +161,22 @@ Other:
 
 ### Remarks
 On UEFI you just need a (FAT32) stick with an `\EFI\BOOT\bootx64.efi` file.
+
+
+
+## createIso
+Creates an iso image of a folder.  
+Requires an "oscdimg.exe" from the [Assessment and Deployment Kit (ADK)](https://learn.microsoft.com/en-us/windows-hardware/get-started/adk-install).
+
+### Usage
+```bash
+$ createiso.bat /i input\dir /o output\file.iso [/v] [/h]
+```
+Options:
+ * /i Path to input directory.
+ * /o Path to output directory.
+ * /v Verbose mode.
+ * /h Print help.
 
 
 
@@ -558,23 +574,6 @@ Options:
 - -MinSize: Minimum Size to list.
 - -Unit: Optional Unit: Bytes (B) [default], KiloBytes (K), MegaBytes (M), GigaBytes (G)
 - -Recursive: Iterate given directory Path recursively. (Optional)
-
-
-
-
-## makeiso
-Creates an iso image of a folder.  
-Requires an "oscdimg.exe" from the [Assessment and Deployment Kit (ADK)](https://learn.microsoft.com/en-us/windows-hardware/get-started/adk-install).
-
-### Usage
-```bash
-$ makeiso.bat /i input\dir /o output\file.iso [/v] [/h]
-```
-Options:
- * /i Path to input directory.
- * /o Path to output directory.
- * /v Verbose mode.
- * /h Print help.
 
 
 

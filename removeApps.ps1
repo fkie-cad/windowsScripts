@@ -139,7 +139,6 @@ $apps = @(
     "*Clipchamp*",
     "*Copilot*",
     "*Edge.GameAssist*",
-    "*MicrosoftOfficeHub*",
     "*Messaging*",
     "*People*",
     "*GetHelp*",
@@ -153,6 +152,8 @@ $apps = @(
     "*Microsoft.StartExperiencesApp*", # powers Windows Widgets My Feed so you can stay informed, entertained, and inspired!
     "*Microsoft.Wallet*", # Shopping convenience meets data security with Wallet – one place to store your payment methods, passwords, and more.
     "*Microsoft.WidgetsPlatformRuntime*", # enables the functionality of widgets
+    "*Microsoft.Widgets*", 
+    "*WebExperience*", # widgets feeder
     "*Microsoft.XboxGameCallableUI*",
     "*Microsoft.XboxSpeechToTextOverlay*",
     "*Microsoft.Xbox.TCUI*",

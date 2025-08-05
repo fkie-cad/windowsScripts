@@ -168,16 +168,13 @@ GOTO :ParseParams
     set /a valid=1
     if [%port%] LSS [50000] (
         set /a valid=0
-    ) else (
-        if [%port%] GTR [65535] (
-            set /a valid=0
-        )
+    ) else if [%port%] GTR [65535] (
+        set /a valid=0
     )
-
     if %valid% == 0 (
         echo [e] Unsupported port value!
         call :help
-        set /a %errorlevel% -1
+        call
         goto mainend
     )
 

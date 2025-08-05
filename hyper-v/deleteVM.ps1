@@ -7,12 +7,17 @@
     The name of the VM to remove.
 .PARAMETER List
     List all existing VMs (default).
+.PARAMETER Confirm
+    Confirm all questions of deletion.
 .EXAMPLE
     List all VMs
     C:\PS> deleteVM.ps1 
 .EXAMPLE
-    # Remove VM namded vm2
+    Remove VM named vm2 with confirmation prompts
     C:\PS> deleteVM.ps1 vm2
+.EXAMPLE
+    # Remove VM named vm2 without confirmation prompts
+    C:\PS> deleteVM.ps1 vm2 -Confirm
 .NOTES
     Author: FKIE CAD
     Date:   05.08.2025
@@ -23,11 +28,14 @@ Param (
     [ValidateNotNull()]
     [string]$VmName,
     [Parameter(Mandatory=$false)]
-    [switch]$List
+    [switch]$List,
+    [Parameter(Mandatory=$false)]
+    [switch]$Confirm
 )
 
 Write-Host "VmName: $VmName"
 Write-Host "List: $List"
+Write-Host "Confirm: $Confirm"
 
 if ( $VmName -and -not $List)
 {
@@ -40,14 +48,29 @@ if ( $VmName -and -not $List)
     $Obj = Get-VM $VmName | Select-Object -ExpandProperty HardDrives
     $HDPath=$Obj.Path
 
-    Write-Output ("Removing HD " + $HDPath)
-    Remove-Item -Path "$HDPath"
-
+    foreach ( $p in $HDPath )
+    {
+        Write-Output ("Removing HD " + $HDPath)
+        if ( $Confirm ) { Remove-Item -Path "$HDPath" }
+        else { Remove-Item -Path "$HDPath" -Confirm }
+    }
+    
     Write-Output ("Removing VM " + $VmName)
-    Remove-VM $Vm -Force -WarningAction Ignore
+    if ( $Confirm ) { Remove-VM $Vm -Force -WarningAction Ignore }
+    else { Remove-VM $Vm -Confirm }
 }
 else
 {
-    Get-VM
+    Write-Host "`r`nListing VMs"
+    $VMList = Get-VM | Select-Object -ExpandProperty HardDrives
+    
+    foreach ( $vm in $VMList )
+    {
+        Write-Host $vm.VMName
+        Write-Host "  id:"$vm.VMId
+        Write-Host "  path:"$vm.Path
+        Write-Host "  snapshot id:"$vm.VMSnapshotId
+        Write-Host "  checkpoint id:"$vm.VMCheckpointId
+    }
 }
 

@@ -7,7 +7,7 @@ set type=fixed
 set format=ntfs
 set label="the label"
 set vletter=V
-set verbose=1
+set verbose=0
 
 set prog_name=%~n0%~x0
 set user_dir="%~dp0"
@@ -25,7 +25,12 @@ GOTO :ParseParams
     if [%1]==[/h] goto help
     if [%1]==[/help] goto help
 
-    IF "%~1"=="/v" (
+    IF "%~1"=="/o" (
+        SET vdisk=%2
+        SHIFT
+        goto reParseParams
+    )
+    IF "%~1"=="/of" (
         SET vdisk=%2
         SHIFT
         goto reParseParams
@@ -35,7 +40,17 @@ GOTO :ParseParams
         SHIFT
         goto reParseParams
     )
+    IF "%~1"=="/size" (
+        SET size=%~2
+        SHIFT
+        goto reParseParams
+    )
     IF "%~1"=="/t" (
+        SET type=%~2
+        SHIFT
+        goto reParseParams
+    )
+    IF "%~1"=="/type" (
         SET type=%~2
         SHIFT
         goto reParseParams
@@ -45,7 +60,17 @@ GOTO :ParseParams
         SHIFT
         goto reParseParams
     )
-    IF "%~1"=="/lbl" (
+    IF "%~1"=="/filesystem" (
+        SET format=%~2
+        SHIFT
+        goto reParseParams
+    )
+    IF "%~1"=="/n" (
+        SET label=%2
+        SHIFT
+        goto reParseParams
+    )
+    IF "%~1"=="/label" (
         SET label=%2
         SHIFT
         goto reParseParams
@@ -55,8 +80,13 @@ GOTO :ParseParams
         SHIFT
         goto reParseParams
     )
-    IF "%~1"=="/q" (
-        SET verbose=0
+    IF "%~1"=="/volume" (
+        SET vletter=%~2
+        SHIFT
+        goto reParseParams
+    )
+    IF "%~1"=="/v" (
+        SET verbose=1
         goto reParseParams
     )
     IF "%~1"=="/h" (
@@ -124,17 +154,17 @@ GOTO :ParseParams
     
     
 :usage
-    echo Usage: %prog_name% /v ve\disk.vhd [/s 1] [/t fixed^|expandable][/f ntfs^|fat^|fat32] [/lbl "the label"] [/l V]
+    echo Usage: %prog_name% /o ^<path^> [/s ^<size^>] [/t ^<type^>] [/f ^<filesystem^>] [/n ^<label^>] [/l ^<volume^>]
     exit /B 0
 
 :help
     call :usage
     echo.
     echo Options:
-    echo /v Path to the disk.vhd
+    echo /o Path to the disk.vhd
     echo /s (Maximum) size of the vhd in MB. Defaults to 10.
     echo /t Tpye of the vhd. Static size (fixed) or dynamic size (expandable). Defaults to "fixed".
     echo /f Format of the vhd: ntfs^|fat^|fat32]. Defaults to ntfs.
-    echo /lbl A string label for the vhd.
+    echo /n A string label for the vhd.
     echo /l The letter of the volume of the (mounted) vhd.
     exit /B 0

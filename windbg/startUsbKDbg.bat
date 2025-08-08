@@ -82,13 +82,11 @@ GOTO :ParseParams
         echo|set /p="type: %type% "
         if %type%==0 (
             echo kernel debugger
-        ) else (
-        if %type% == 1 (
+        ) else if %type% == 1 (
             echo kernel debugger breaking on module load
-        ) else (
-        if %type% == 2 (
+        ) else if %type% == 2 (
             echo local kernel debugger
-        )))
+        )
     )
 
     call :checkPermissions
@@ -109,13 +107,11 @@ GOTO :ParseParams
 :startNetDbg
     if %type%==0 (
         set cmd="C:\Program Files (x86)\Windows Kits\10\Debuggers\%arch%\windbg.exe" /k usb:targetname=%name%
-    ) else (
-    if %type% == 1 (
+    ) else if %type% == 1 (
         set cmd="C:\Program Files (x86)\Windows Kits\10\Debuggers\%arch%\windbg.exe" /d /k usb:targetname=%name%
-    ) else (
-    if %type% == 2 (
+    ) else if %type% == 2 (
         set cmd="C:\Program Files (x86)\Windows Kits\10\Debuggers\%arch%\windbg.exe" /kl
-    )))
+    )
     
     if %verbose% == 1 (
         echo start "" %cmd%

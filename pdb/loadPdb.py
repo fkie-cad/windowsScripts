@@ -44,10 +44,11 @@ def loadPdb(file_path, target_dir):
             target_path = f'{target_dir}/{guid}-{debug_entry.Age:x}-{file_stem}.pdb'
             print("  target_path: %s" % target_path);
             r = requests.get(url)
+            
             if r.status_code != 200:
                 print("  [e] Url not found! (%u)" % r.status_code);
                 break
-                
+            
             f = open(target_path, 'wb')
             f.write(r.content)
             f.close()

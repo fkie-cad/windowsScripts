@@ -16,18 +16,18 @@ rem There are still things missing.
 rem https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#textpredictionenabled
 rem Text prediction enabled by default.
 rem The Microsoft Turing service uses natural language processing to generate predictions [...]
-reg add "%hkx%\%MSEdgePoliciesPath%"  /v "TextPredictionEnabled" /t REG_DWORD /d "0" /f
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "TextPredictionEnabled" /t REG_DWORD /d "0" /f
 
 rem https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#edge3pserptelemetryenabled
 rem captures the searches user does on third party search providers without identifying the person 
 rem or the device and captures only if the user has consented to this collection of data.
-reg add "%hkx%\%MSEdgePoliciesPath%"  /v "Edge3PSerpTelemetryEnabled" /t REG_DWORD /d "0" /f
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "Edge3PSerpTelemetryEnabled" /t REG_DWORD /d "0" /f
 
 rem Msdn: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#browsercodeintegritysetting
 rem Disabled (0) = Do not enable code integrity guard in the browser process.
 rem Audit (1) = Enable code integrity guard audit mode in the browser process.
 rem Enabled (2) = Enable code integrity guard enforcement in the browser process.
-reg add "%hkx%\%MSEdgePoliciesPath%"  /v "BrowserCodeIntegritySetting" /t REG_DWORD /d "2" /f
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "BrowserCodeIntegritySetting" /t REG_DWORD /d "2" /f
 
 
 
@@ -215,7 +215,7 @@ rem File Editing / 2 - BlockFileSystemWrite / 3 - AskFileSystemWrite
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "DefaultFileSystemWriteGuardSetting" /t REG_DWORD /d "2" /f
 
 rem Location / 1 - AllowGeolocation / 2 - BlockGeolocation / 3 - AskGeolocation
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "DefaultGeolocationSetting" /t REG_DWORD /d "2" /f
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "DefaultGeolocationSetting" /t REG_DWORD /d "3" /f
 
 rem Insecure Content / 2 - BlockInsecureContent / 3 - AllowExceptionsInsecureContent
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "DefaultInsecureContentSetting" /t REG_DWORD /d "2" /f
@@ -224,19 +224,19 @@ rem Notifications / 1 - AllowNotifications / 2 - BlockNotifications / 3 - AskNot
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "DefaultNotificationsSetting" /t REG_DWORD /d "2" /f
 
 rem Motion or light sensors / 1 - AllowSensors / 2 - BlockSensors
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "DefaultSensorsSetting" /t REG_DWORD /d "2" /f
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "DefaultSensorsSetting" /t REG_DWORD /d "3" /f
 
 rem Serial ports / 2 - BlockSerial / 3 - AskSerial 
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "DefaultSerialGuardSetting" /t REG_DWORD /d "2" /f
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "DefaultSerialGuardSetting" /t REG_DWORD /d "3" /f
 
 rem USB Devices / 2 - BlockWebUsb / 3 - AskWebUsb
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "DefaultWebUsbGuardSetting" /t REG_DWORD /d "2" /f
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "DefaultWebUsbGuardSetting" /t REG_DWORD /d "3" /f
 
 rem Bluetooth / 2 - BlockWebBluetooth / 3 - AskWebBluetooth
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "DefaultWebBluetoothGuardSetting" /t REG_DWORD /d "2" /f
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "DefaultWebBluetoothGuardSetting" /t REG_DWORD /d "3" /f
 
 rem Access to HID devices via the WebHID API / 2 - BlockWebHid / 3 - AskWebHid
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "DefaultWebHidGuardSetting" /t REG_DWORD /d "2" /f
+reg add "%hkx%\%MSEdgePoliciesPath%" /v "DefaultWebHidGuardSetting" /t REG_DWORD /d "3" /f
 
 rem 1 - Allow extensions from other stores
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "ControlDefaultStateOfAllowExtensionFromOtherStoresSettingEnabled" /t REG_DWORD /d "0" /f
@@ -348,13 +348,13 @@ reg add "%hkx%\%MSEdgePoliciesPath%" /v "Microsoft365CopilotChatIconEnabled" /t 
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "DefaultWindowManagementSetting" /t REG_DWORD /d 2 /f
 
 :: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/builtinaiapisenabled
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "BuiltInAIAPIsEnabled" /t REG_DWORD /d 0 /f
+call :setDWPolicy "BuiltInAIAPIsEnabled" 0
 
 :: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/edgehistoryaisearchenabled
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "EdgeHistoryAISearchEnabled" /t REG_DWORD /d 0 /f
+call :setDWPolicy "EdgeHistoryAISearchEnabled" 0
 
 :: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/autofillcreditcardenabled
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "AutofillCreditCardEnabled" /t REG_DWORD /d 0 /f
+call :setDWPolicy "AutofillCreditCardEnabled" 0
 
 :: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/paymentmethodqueryenabled
 call :setDWPolicy "PaymentMethodQueryEnabled" 0

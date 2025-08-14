@@ -2,7 +2,7 @@
 .SYNOPSIS
     .
 .DESCRIPTION
-   Remove a vm from the manager and delete its VHD
+   Remove a VM from the manager and delete its VHD
 .PARAMETER VmName
     The name of the VM to remove.
 .PARAMETER List
@@ -10,14 +10,14 @@
 .PARAMETER Confirm
     Confirm all questions of deletion.
 .EXAMPLE
+    PS C:> deleteVM.ps1 
     List all VMs
-    C:\PS> deleteVM.ps1 
 .EXAMPLE
+    PS C:> deleteVM.ps1 vm2
     Remove VM named vm2 with confirmation prompts
-    C:\PS> deleteVM.ps1 vm2
 .EXAMPLE
-    # Remove VM named vm2 without confirmation prompts
-    C:\PS> deleteVM.ps1 vm2 -Confirm
+    PS C:> deleteVM.ps1 vm2 -Confirm
+    Remove VM named vm2 without confirmation prompts
 .NOTES
     Author: FKIE CAD
     Date:   05.08.2025

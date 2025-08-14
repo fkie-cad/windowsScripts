@@ -4,7 +4,6 @@ Last updated: 16.05.2023
 
 ## Contents
 - [cleanUpdateFolder](#cleanupdatefolder)
-- [showMoreOptions](#showmoreoptions)
 
 
 
@@ -13,13 +12,4 @@ Clean/Delete the windows update folder
 
 ```bash
 $ cleanUpdateFolder.bat
-```
-
-
-## showMoreOptions
-Show more options in right click context menu.
-
-
-```bash
-$ showMoreOptions.bat
 ```

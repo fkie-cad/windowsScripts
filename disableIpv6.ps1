@@ -8,11 +8,11 @@
 .PARAMETER Name
     Adapter name. Defaults to "*", i.e. all adapters
 .EXAMPLE
+    disableIpv6.ps1 
     Disable ipv6 on all adapters
-    C:\PS> disableIpv6.ps1 
 .EXAMPLE
+    disableIpv6.ps1 enable Ethernet
     Enable ipv6 on adapter "Ethernet"
-    C:\PS> disableIpv6.ps1 enable Ethernet
 .NOTES
     Author: FKIE CAD
     Date:   January 17, 2024

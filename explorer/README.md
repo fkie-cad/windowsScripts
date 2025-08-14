@@ -4,6 +4,7 @@ Last updated: 16.05.2023
 
 ## Contents
 - [setExplorerViewSettings](#setExplorerViewSettings)
+- [showMoreOptions](#showmoreoptions)
 
 
 
@@ -21,4 +22,14 @@ The options are not forced to be written, so they can be opted out, if not wante
 
 ```bash
 $ setExplorerViewSettings.bat
+```
+
+
+## showMoreOptions
+Windows11:  
+Show more options in right click context menu.
+
+
+```bash
+$ showMoreOptions.bat
 ```

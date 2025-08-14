@@ -10,17 +10,17 @@
 .PARAMETER Confirm
     Skip confirmation and just remove without asking.
 .EXAMPLE
+    PS C:> removeApps.ps1 
     Remove all apps in the list with confirmation
-    C:\PS> removeApps.ps1 
 .EXAMPLE
+    PS C:> removeApps.ps1 -Confirm
     Remove all apps in the list without confirmation
-    C:\PS> removeApps.ps1 -Confirm
 .EXAMPLE
+    PS C:> removeApps.ps1 check
     Check all apps in the list
-    C:\PS> removeApps.ps1 check
 .EXAMPLE
+    PS C:> removeApps.ps1 check *XboxSpeechToTextOverlay*
     Check app with name *XboxSpeechToTextOverlay*
-    C:\PS> removeApps.ps1 check *XboxSpeechToTextOverlay*
 .NOTES
     Author: FKIE CAD
     Date:   01.07.2025

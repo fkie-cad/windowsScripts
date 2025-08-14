@@ -13,7 +13,7 @@
 .PARAMETER Recursive
     Search Path recursively
 .EXAMPLE
-    C:\PS> listFilesGt.ps1 c:\ 1 M 1
+    PS C:> listFilesGt.ps1 c:\ 1 M 1
     List all files in C:\ greater than 1GB recursively
 .NOTES
     Author: Henning Braun

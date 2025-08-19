@@ -172,7 +172,7 @@ GOTO :ParseParams
         set /a valid=0
     )
     if %valid% == 0 (
-        echo [e] Unsupported port value!
+        echo [e] Unsupported port value^^!
         call :help
         call
         goto mainend
@@ -192,11 +192,15 @@ GOTO :ParseParams
 
     call :checkPermissions
     if not %errorlevel% == 0 (
-        echo [e] Admin rights required!
+        echo [e] Admin rights required^^!
         goto mainend
     )
     
     call :edit
+    if not %errorlevel% == 0 (
+        echo [e] Setting /dbgsettings failed^^!
+        goto mainend
+    )
     
     if %debug% EQU 1 (
         bcdedit /set debug on
@@ -224,31 +228,42 @@ GOTO :ParseParams
 
     :mainend
     ENDLOCAL
+    echo exiting with code %errorlevel%
     exit /B %errorlevel%
 
 
 :edit
-    if NOT [%ip%] EQU [] (
-        set dhcp_v=
-        if %dhcp% EQU 0 (
-            set dhcp_v=nodhcp
-        ) 
-        set key_kv=
-        if not [%key%] EQU [] (
-            set key_kv=key:%key%
-        ) else (
-            set key_kv=newkey
-        )
-        set busparams_v=
-        if [%bus%] NEQ [] (
-            set "busparams_v=busparams:%bus%"
-        )
-        set "cmd=bcdedit /dbgsettings net hostip:%ip% port:%port% !key_kv! !dhcp_v! !busparams_v!"
+setlocal
+    
+    if [%ip%] EQU [] (
+        echo [e] No host ip given^^!
+        call
+        endlocal
+        exit /B !errorlevel!
     )
+    
+    set cmd=
+    
+    set dhcp_v=
+    if %dhcp% EQU 0 (
+        set dhcp_v=nodhcp
+    ) 
+    set key_kv=
+    if not [%key%] EQU [] (
+        set key_kv=key:%key%
+    ) else (
+        set key_kv=newkey
+    )
+    set busparams_v=
+    if [%bus%] NEQ [] (
+        set "busparams_v=busparams:%bus%"
+    )
+    set "cmd=bcdedit /dbgsettings net hostip:%ip% port:%port% !key_kv! !dhcp_v! !busparams_v!"
     
     if %verbose% EQU 1 echo !cmd!
     !cmd!
     
+    endlocal
     exit /B %errorlevel%
 
 

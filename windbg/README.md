@@ -3,6 +3,7 @@ Last updated: 28.01.2023
 
 ## Contents
 - [js](#js)
+- [enableDbgPrint](#enabledbgprint)
 - [setNetKd](#setNetKd)
 - [startComKDbg](#startComKDbg)
 - [startEDbg](#startEDbg)
@@ -13,6 +14,34 @@ Last updated: 28.01.2023
 ## js
 Collection of windbg javascript extensions.  
 [windbg/js](windbg/js)
+
+
+
+## enableDbgPrint
+Enable debug print for KD WinDbg.
+
+### Usage
+```bash
+$ enableDbgPrint.bat [/c <componentId>] [/l <level>] [/v]
+```
+
+**Options:**  
+- /c: Component id of debugged module. Default: DEFAULT. 
+      Can be set to avoid spamming of other components.
+- /l: Severity of the message being sent. 
+        Can be any 32-bit integer.  
+      Numbers between 0 and 0x1F are interpreted as a bit shift (`1 << Level`). 
+        I.e. `/l 0x1f` sets the 31th bit, the bit field becomes `0x80000000`.  
+      Numbers between 0x20 and 0xFFFFFFFF set the importance bit field value itself. 
+        I.e. `/l 0x80000000 <=> /l 0x1f`.  
+
+**Other:**  
+- /v Verbose mode
+
+### Info
+https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-dbgprintex  
+https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/reading-and-filtering-debugging-messages  
+
 
 
 ## setNetKd

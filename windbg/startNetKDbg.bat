@@ -7,7 +7,7 @@
 
 @echo off
 setlocal
-    
+
 
 set prog_name=%~n0%~x0
 set user_dir="%~dp0"

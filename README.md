@@ -1,5 +1,5 @@
 # Some useful (batch) scripts
-Last updated: 18.06.2025
+Last updated: 01.09.2025
 
 Most of the scripts are used in daily work and are well tested. 
 Some of them are less tested.
@@ -33,6 +33,7 @@ For questions and bug reports feel free to open an issue.
 - [createBootStick](#createbootstick)
 - [createIso](#createiso)
 - [createVHD](#createvhd)
+- [deleteExploitProtectionSettings](#deleteexploitprotectionsettings)
 - [deleteFilesLT](#deletefileslt)
 - [deleteShortcutPostfix](#deleteshortcutpostfix)
 - [disableCoInstallers](#disablecoinstallers)
@@ -193,6 +194,23 @@ Options:
 * /f Format of the vhd: ntfs|fat|fat32]. Defaults to ntfs.
 * /lbl A string label for the vhd. Defaults to "the label"
 * /l The letter of the volume of the (mounted) vhd. Defaults to V.
+
+
+
+## deleteExploitProtectionSettings
+Delete exploit protection settings
+
+Iterates "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options" and confirms deletion for each entry.
+
+### Usage
+```bash
+$ deleteExploitProtectionSettings
+```
+After each listed entry there is a choice between 
+- continue (C)
+- delete the entry (D)
+- inspect the entry to get further info like the file path (I)
+- or quit the iteration (Q)
 
 
 

@@ -123,7 +123,7 @@ GOTO :ParseParams
     call :usage
     echo.
     echo Actions:
-    echo /a : Allow icmp requests (default)
+    echo /a : Allow icmp requests
     echo /b : Block icmp requests
     echo /c : Check fw rule
     echo /d : Delete fw rule

@@ -58,6 +58,7 @@ For questions and bug reports feel free to open an issue.
 - [listDriveLetters](#listDriveLetters)
 - [listFilesGt](#listFilesGt)
 - [poweroff](#poweroff)
+- [queryService](#queryService)
 - [reboot](#reboot)
 - [RemoveApps](#removeapps)
 - [RemoveOneDrive](#removeonedrive)
@@ -576,6 +577,24 @@ Wrapper for `shutdown -s -t 0`
 ```bash
 $ poweroff.bat
 ```
+
+
+
+
+## queryService
+Query services (`HKLM\System\CurrentControlSet\Services`) by name.
+
+
+### Usage
+```bash
+$ queryService.bat <name> [/s] [/e] [/v] [/h]
+```
+
+Options:
+- /s Iterate key recursively.
+- /e Exactly match name.
+- /v Verbose mode.
+- /h Print this.
 
 
 

@@ -51,6 +51,11 @@ $ blitzDingsDefender.bat
 - If not already automatically enabled, manually enable "Real Time Protection" in Windows Security > Virus & Thread Protection > Virus & Thread Protection Settings > Manage Settings
 - Reboot
 
+Currently it worked in 10.0.26100.6584.
+But in the mean time it didn't.
+
+If the above doesn't work or just to be sure:
+
 **Windows 11 steps**  
 Found in https://www.alitajran.com/turn-off-windows-defender-windows-11-permanently/  
 
@@ -66,11 +71,11 @@ Found in https://www.alitajran.com/turn-off-windows-defender-windows-11-permanen
 - Boot into safe mode
   - Run `bcdedit /set {current} safeboot && shutdown /r /t 0`
 - Two options
-    a. Open autoruns and deselect "WinDefend" service.
+    a) Open autoruns and deselect "WinDefend" service.
         - Select "Services" tab
         - Uncheck "Options > Hide Windows Entries"
         - Uncheck "WinDefend"
-    b. Change registry entry of Windows Defender
+    b) Change registry entry of Windows Defender
         - `reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WinDefend" /v Start /t REG_DWORD /d 4 /f`  
             4 means disabled, normally it's 2 = Auto Start.
 - Boot into normal mode

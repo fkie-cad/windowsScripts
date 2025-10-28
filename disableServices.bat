@@ -37,7 +37,7 @@ set /a verbose=0
 
 set name=
 
-set names=(^
+set common_scv=(^
     AppVClient^
     BcastDVRUserService^
     BluetoothUserService^
@@ -100,6 +100,10 @@ set names=(^
     XboxNetApiSvc^
     XTU3SERVICE^
     )
+
+set hp_svc=(^
+    HotKeyServiceDSU^
+)
 
 
 if [%1]==[] goto main
@@ -194,7 +198,7 @@ GOTO :ParseParams
             echo disabling %name%
             call :disableSrvc "%name%"
         ) else (
-            for /d %%i in %names% do (
+            for /d %%i in %common_scv% do (
                 echo disabling %%i
                 call :disableSrvc "%%i"
                 echo.
@@ -206,7 +210,7 @@ GOTO :ParseParams
             echo enabling %name%
             call :enableSrvc "%name%"
         ) else (
-            for /d %%i in %names% do (
+            for /d %%i in %common_scv% do (
                 echo enabling %%i
                 call :enableSrvc "%%i"
                 echo.
@@ -218,7 +222,7 @@ GOTO :ParseParams
             echo checking %name%
             call :checkSrvc "%name%"
         ) else (
-            for /d %%i in %names% do (
+            for /d %%i in %common_scv% do (
                 echo checking %%i
                 call :checkSrvc "%%i"
                 echo.
@@ -279,8 +283,13 @@ setlocal
     set "name=%~1"
 
     if %mode% EQU %MODE_SC% (
+        echo Status:
         sc query "%name%"
+        echo.
+        echo Configuration:
         sc qc "%name%"
+        echo.
+        echo Description:
         sc qdescription "%name%"
     ) else if %mode% EQU %MODE_REG% (
         reg query "HKLM\SYSTEM\CurrentControlSet\Services\%name%" /v "Start"
@@ -361,6 +370,12 @@ setlocal
     echo XblGameSave: This service syncs save data for Xbox Live save enabled games. If this service is stopped, game save data will not upload to or download from Xbox Live.
     echo XboxNetApiSvc: This service supports the Windows.Networking.XboxLive application programming interface.
     echo XTU3SERVICE: XTUOCDriverService: Intel(R) Overclocking Component Service
+    echo.
+    echo Known unneccessary hp services.
+    echo Could be disabled manually.
+    for /d %%i in %hp_svc% do (
+        echo - %%i
+    )
     echo.
     echo Actions:
     echo /c : Check the services.

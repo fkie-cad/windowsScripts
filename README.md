@@ -285,9 +285,9 @@ $ disableServices.bat [/c|/d|/e] [/reg|/sc] [/n] [/v] [/h]
 ```
 
 **Actions:**
-- /c : Check the services.
-- /d : Disable the services.
-- /e : Enable the services.
+- /c : Check the service(s).
+- /d : Disable the service(s).
+- /e : Enable the service(s).
 
 **Options:**
 - /n : Name a specific arbitrary target.
@@ -300,6 +300,7 @@ $ disableServices.bat [/c|/d|/e] [/reg|/sc] [/n] [/v] [/h]
 
 **Remarks:**  
 The default targets can be listed with `/h`.
+There are some not default known other targets listed as well.
 
 Enabling the services will set them to autostart (2), which might not be their original value.
 

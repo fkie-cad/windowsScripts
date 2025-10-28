@@ -2,18 +2,13 @@
 Last updated: 28.01.2023  
 
 ## Contents
-- [js](#js)
+- [js](/windbg/js)
 - [enableDbgPrint](#enabledbgprint)
 - [setNetKd](#setNetKd)
 - [startComKDbg](#startComKDbg)
 - [startEDbg](#startEDbg)
 - [startNetKDbg](#startNetKDbg)
 - [startUsbKDbg](#startUsbKDbg)
-
-
-## js
-Collection of windbg javascript extensions.  
-[windbg/js](windbg/js)
 
 
 

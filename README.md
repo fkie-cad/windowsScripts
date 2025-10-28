@@ -30,6 +30,7 @@ For questions and bug reports feel free to open an issue.
 - [WinPE/](#winpe)
 - [Windows Features/](#windows-features)
 - [addBinShellCtxtMenuEntry](#addBinShellCtxtMenuEntry)
+- [cleanUpdateFolder](#cleanupdatefolder)
 - [createBootStick](#createbootstick)
 - [createIso](#createiso)
 - [createVHD](#createvhd)
@@ -37,6 +38,7 @@ For questions and bug reports feel free to open an issue.
 - [deleteFilesLT](#deletefileslt)
 - [deleteShortcutPostfix](#deleteshortcutpostfix)
 - [disableCoInstallers](#disablecoinstallers)
+- [disableCopilot](#disablecopilot)
 - [disableErrorReporting](#disableerrorreporting)
 - [disableIpV6](#disableipv6)
     - [ps1](#ps1)
@@ -140,6 +142,13 @@ Options:
 - /h Print this.
 
 
+## cleanUpdateFolder
+Clean/Delete the windows 11 update folder
+
+```bash
+$ cleanUpdateFolder.bat
+```
+
 
 ## createBootStick
 Creates a bootable usb stick out of an iso file.
@@ -239,6 +248,17 @@ https://www.bleepingcomputer.com/news/microsoft/how-to-block-windows-plug-and-pl
 
 ```bash
 $ disableCoInstallers.bat
+```
+
+
+
+
+## disableCopilot
+Disable Windows 11 copilot.
+At least some of it.
+
+```bash
+$ disableCopilot.bat
 ```
 
 

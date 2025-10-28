@@ -13,15 +13,15 @@
 // winDbg> !exitLog()
 // winDbg> .scriptunload C:\scripts\windbg\js\deviceIoLog.js
 //
-// params:
-//   moduleName: name of the module to log
-//   moduleOffset: module offset to the DeviceControl function
-//   outFileName: [optional] output file name encapsulated in "" (quotation marks) and escaped \\ (backslash). Defaults to %tmp%\devio.log
+// Params:
+//   moduleName: Name of the module to log.
+//   moduleOffset: Module base offset to the MajorFunction[IRP_MJ_DEVICE_CONTROL] function.
+//   outFileName: [optional] Output file name encapsulated in "" (quotation marks) and escaped \\ (backslash). Defaults to %tmp%\devio.log.
 //   flags: [optional] flags.
 //            1: verbose mode
 //
-// remarks:
-// - Just logs buffered IO at the moment
+// Remarks:
+// - Just logs buffered IO at the moment.
 // - Sometimes breaks for unknown reasons and has to be manually continued by typing "g"
 //      breaks in nt!IofCallDriver+0x55
 // - Sometimes the return values are not filled, 
@@ -155,7 +155,7 @@ function init(moduleName, moduleOffset, outFileName, flags_)
     textWriter = fs.CreateTextWriter(outFile, "Utf16");
     
     // init file
-    textWriter.WriteLine("#;ioctl;inputBufferLength;inputBufferBytes;rax;outputBufferLength;outputBufferBytes");
+    textWriter.WriteLine("#;ioctl;inputBufferLength;inputBufferBytes;rax;outputBufferLength;outputBufferBytes;");
     
     
     // there seems not to be a "SetBreakpointAtModuleOffset
@@ -211,8 +211,7 @@ function onEnter()
     var registers = host.namespace.Debugger.State.DebuggerVariables.curthread.Registers.User;
     
     if ( flags & FLAG_VERBOSE )
-        dbgInfo("enter\n");
-    // textWriter.WriteLine("enter");
+        dbgInfo("onEnter()\n");
     
     // var rcx = registers.rcx
     // dbgInfo("  rcx: "+rcx.toString(16)+"\n");
@@ -229,18 +228,32 @@ function onEnter()
     var outputBufferLength = stack.Parameters.DeviceIoControl.OutputBufferLength;
     var inputBufferLength = stack.Parameters.DeviceIoControl.InputBufferLength;
     var ioctl = stack.Parameters.DeviceIoControl.IoControlCode;
-    var systemBufferBytes = new Array();
-    if ( inputBufferLength.getLowPart() )
-    {
-        systemBufferBytes = host.memory.readMemoryValues(systemBuffer, inputBufferLength.getLowPart(), 1);
-    }
+    var mjFn = stack.MajorFunction;
     
     if ( flags & FLAG_VERBOSE )
     {
         dbgInfo("  ioctl: 0x"+ioctl.toString(16)+" ("+typeof(ioctl)+")\n");
+        dbgInfo("  majorFunction: 0x"+mjFn.toString(16)+" ("+typeof(mjFn)+")\n");
         dbgInfo("  outputBufferLength: 0x"+outputBufferLength.toString(16)+" ("+typeof(outputBufferLength)+")\n");
         dbgInfo("  inputBufferLength: 0x"+inputBufferLength.toString(16)+" ("+typeof(inputBufferLength)+")\n");
         dbgInfo("  systemBuffer: "+systemBuffer.toString(16)+" ("+typeof(systemBuffer)+")\n");
+    }
+    
+    // skipping non DeviceControl majors
+    if ( mjFn != 0xE )
+    {
+        if ( flags & FLAG_VERBOSE )
+        {
+            dbgInfo("[i]: Skipping major function 0x"+mjFn.toString(16)+"\n");
+            return false;
+        }
+    }
+    
+    // copying systembuffer into array
+    var systemBufferBytes = new Array();
+    if ( systemBuffer && inputBufferLength.getLowPart() )
+    {
+        systemBufferBytes = host.memory.readMemoryValues(systemBuffer, inputBufferLength.getLowPart(), 1);
     }
     
     //
@@ -248,7 +261,7 @@ function onEnter()
     // counter;ioctl;inputBufferLength;inputBuffer;
     //
     textWriter.Write(counter.toString(10)+";0x"+ioctl.toString(16)+";0x"+inputBufferLength.toString(16)+";");
-    if ( inputBufferLength.getLowPart() )
+    if ( systemBuffer && inputBufferLength.getLowPart() )
     {
         if ( flags & FLAG_VERBOSE )
         {
@@ -263,8 +276,10 @@ function onEnter()
         {
             textWriter.Write(paddedByte(systemBufferBytes[i])+" ");
         }
-        textWriter.Write(";");
     }
+    // always create col
+    textWriter.Write(";");
+    
     counter++;
     
     // create one time bp at return address

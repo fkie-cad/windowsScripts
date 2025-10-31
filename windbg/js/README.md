@@ -11,8 +11,8 @@ Logs the (buffered) input and output params of a DevieControl function, given by
 The created file has csv format.
 It looks like:
 ```
-#;ioctl;inputBufferLength;inputBufferBytes;rax;outputBufferLength;outputBufferBytes
-0;<ioctl>;<inputBufferLength>;<inputBufferBytes>;<rax>;<outputBufferLength>;<outputBufferBytes>
+#;ioctl;inputBufferLength;inputBufferBytes;rax;outputBufferLength;outputBufferBytes;
+0;<ioctl>;<inputBufferLength>;<inputBufferBytes>;<rax>;<outputBufferLength>;<outputBufferBytes>;
 1;<ioctl>;...
 ...
 ```
@@ -35,7 +35,7 @@ kd> .scriptunload deviceIoLog.js
 ### Example
 ```bash
 kd> .scriptload deviceIoLog.js
-kd> !initLog("Beep", 0x1290)
+kd> !initLog("Beep", 0x1290)    # offset may be different
 kd> g
 <target>$ powershell [console]::beep(500,1000)
 kd> !exitLog()

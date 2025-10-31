@@ -245,8 +245,8 @@ function onEnter()
         if ( flags & FLAG_VERBOSE )
         {
             dbgInfo("[i]: Skipping major function 0x"+mjFn.toString(16)+"\n");
-            return false;
         }
+        return false;
     }
     
     // copying systembuffer into array

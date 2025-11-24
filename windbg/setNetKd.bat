@@ -149,35 +149,6 @@ GOTO :ParseParams
 
 :main
 
-    if %clear% EQU 1 (
-        echo deleting debug settings...
-        
-        bcdedit /deletevalue debug >nul 2>&1 
-        bcdedit /deletevalue bootdebug >nul 2>&1 
-        bcdedit /deletevalue {dbgsettings} hostip >nul 2>&1 
-        bcdedit /deletevalue {dbgsettings} port >nul 2>&1 
-        bcdedit /deletevalue {dbgsettings} busparams >nul 2>&1 
-        bcdedit /deletevalue {dbgsettings} key >nul 2>&1 
-        bcdedit /deletevalue {dbgsettings} debugtype >nul 2>&1 
-        bcdedit /deletevalue {dbgsettings} dhcp >nul 2>&1 
-        
-        echo done
-        goto reboot
-    )
-
-    set /a valid=1
-    if [%port%] LSS [50000] (
-        set /a valid=0
-    ) else if [%port%] GTR [65535] (
-        set /a valid=0
-    )
-    if %valid% == 0 (
-        echo [e] Unsupported port value^^!
-        call :help
-        call
-        goto mainend
-    )
-
     if [%verbose%] == [1] (
         echo ip=%ip%
         echo port=%port%
@@ -195,11 +166,29 @@ GOTO :ParseParams
         echo [e] Admin rights required^^!
         goto mainend
     )
+
+    if %clear% EQU 1 (
+        echo deleting debug settings...
+        
+        bcdedit /deletevalue debug >nul 2>&1 
+        bcdedit /deletevalue bootdebug >nul 2>&1 
+        bcdedit /deletevalue {dbgsettings} hostip >nul 2>&1 
+        bcdedit /deletevalue {dbgsettings} port >nul 2>&1 
+        bcdedit /deletevalue {dbgsettings} busparams >nul 2>&1 
+        bcdedit /deletevalue {dbgsettings} key >nul 2>&1 
+        bcdedit /deletevalue {dbgsettings} debugtype >nul 2>&1 
+        bcdedit /deletevalue {dbgsettings} dhcp >nul 2>&1 
+        
+        echo done
+        goto reboot
+    )
     
-    call :edit
-    if not %errorlevel% == 0 (
-        echo [e] Setting /dbgsettings failed^^!
-        goto mainend
+    if NOT ["%ip%"] EQU [""] (
+        call :edit
+        if not !errorlevel! == 0 (
+            echo [e] Setting /dbgsettings failed^^!
+            goto mainend
+        )
     )
     
     if %debug% EQU 1 (
@@ -240,6 +229,19 @@ setlocal
         call
         endlocal
         exit /B !errorlevel!
+    )
+    
+    set /a valid=1
+    if [%port%] LSS [50000] (
+        set /a valid=0
+    ) else if [%port%] GTR [65535] (
+        set /a valid=0
+    )
+    if %valid% == 0 (
+        echo [e] Unsupported port value^^!
+        call :help
+        call
+        goto mainend
     )
     
     set cmd=

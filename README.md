@@ -842,6 +842,8 @@ $ startNtProg.bat [/h]
 - /v Verbose mode.
 - /h Print this.
 
+### Remarks
+Since 25.H2 this kind of `psexec` usage seems to be blocked.
 
 
 ## copyright, credits & contact

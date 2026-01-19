@@ -136,10 +136,16 @@ Options:
 - /p Path to the binary. Must not have spaces at the moment!
 - /l Label to show up in the context menu.
 - /d Delete entry specified by /l label.
-- /pb Additional parameters before the file. 
-- /pa Additional parameters after the file. 
+- /pb Additional parameters before the file %1 parameter 
+- /pa Additional parameters after the file %1 parameter. 
 - /v Verbose mode.
 - /h Print this.
+
+Example
+```bash
+addBinShellCtxtMenuEntry.bat /p "c:\myAwesome.exe" /l "Open in myAwesome.exe" /pb "-inPath" /pa "-awesomeize"
+```
+
 
 
 ## cleanUpdateFolder

@@ -30,22 +30,22 @@ GOTO :ParseParams
     if [%1]==[/help] goto help
 
     IF "%~1"=="/p" (
-        SET bin_path=%~2
+        SET "bin_path=%~2"
         SHIFT
         goto reParseParams
     )
     IF "%~1"=="/path" (
-        SET bin_path=%~2
+        SET "bin_path=%~2"
         SHIFT
         goto reParseParams
     )
     IF "%~1"=="/l" (
-        SET label=%~2
+        SET "label=%~2"
         SHIFT
         goto reParseParams
     )
     IF "%~1"=="/label" (
-        SET label=%~2
+        SET "label=%~2"
         SHIFT
         goto reParseParams
     )

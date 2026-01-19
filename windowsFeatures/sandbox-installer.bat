@@ -31,13 +31,12 @@ cls
 GOTO:menu
 :menu
 Title Sandbox Installer
-echo Backup wird dringend empfohlen!
-echo um u.a. die Sandbox spurenlos und sicher zu entfernen.
+echo Backing up your system is strongly recommanded!
 echo --------------------------------------------------
-echo Was soll das Setup tun?
-echo 1 Installieren
-echo 2 Deinstallieren
-echo 3 Beenden
+echo Choose an option?
+echo 1 Install
+echo 2 Uninstall
+echo 3 Quit
 set /p uni= Option in Zahl eintippen:
 if %uni% ==1 goto :in
 if %uni% ==2 goto :un
@@ -77,9 +76,9 @@ goto :remenu
 
 :remenu
 cls
-echo Möchten Sie den Computer jetzt neu starten?
-echo 1 Ja
-echo 2 Nein
+echo Restart now?
+echo 1 Yes
+echo 2 No
 set /p uni= Option in Zahl eintippen:
 if %uni% ==1 goto :re
 if %uni% ==2 goto :ex

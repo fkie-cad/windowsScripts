@@ -20,14 +20,14 @@ echo .
 GOTO menu
 
 :menu
-GPEdit Installer
-echo Backup wird dringend empfohlen!
+Title GPEdit Installer
+echo Backing up your system is strongly recommanded!
 echo --------------------------------------------------
-echo Was soll das Setup tun?
-echo 1 Installieren
-echo 2 Deinstallieren
-echo 3 Beenden
-set /p uni= Option in Zahl eintippen:
+echo Choose an option?
+echo 1 Install
+echo 2 Uninstall
+echo 3 Quit
+set /p uni= Type a number:
 if %uni% ==1 goto :in
 if %uni% ==2 goto :un
 if %uni% ==3 goto :ex
@@ -50,9 +50,6 @@ Title Uninstall GPEdit
 
 pushd "%~dp0"
 
-echo Dism /online /disable-feature /featurename:GPEDit /NoRestart
-
-
 FOR %%F IN ("%SystemRoot%\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientTools-Package~*.mum") DO (DISM /Online /NoRestart /Remove-Package:"%%F")
 
 FOR %%F IN ("%SystemRoot%\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientExtensions-Package~*.mum") DO (DISM /Online /NoRestart /Remove-Package:"%%F")
@@ -61,10 +58,10 @@ goto :remenu
 
 :remenu
 cls
-echo Computer jetzt neu starten?
-echo 1 Ja
-echo 2 Nein
-set /p uni= Option in Zahl eintippen:
+echo Restart now?
+echo 1 Yes
+echo 2 No
+set /p uni= Type a number:
 if %uni% ==1 goto :re
 if %uni% ==2 goto :ex
 

@@ -1,3 +1,5 @@
+REM originated from deskmodder.de
+
 @echo off
 
 :check_Permissions

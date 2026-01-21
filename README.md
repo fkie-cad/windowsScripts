@@ -792,8 +792,8 @@ Set dns server and alternative of a network device.
 $ setDNS.bat /d <dnsIp> [/n <name>] [/a <altIp>] [/6] [/c] [/l] [/v] [/h]
 ```
 Options:
-* /d The preferred DNS server ip address as dotted string.
-* /a The alternative DNS server ip address as dotted string. 
+* /d The preferred DNS server ip address as a dotted string. Use 'auto' to automatically obtain dns server (dhcp), 'clear' to clear all dns servers for the specified interface. 
+* /a The alternative DNS server ip address as a dotted string. 
 * /n The interface name. Default: "Ethernet". If name does not work (Element not found), try replacing the name with the index found with /l.
 * /c Validate the settings.
 * /6 Set ip version to ipv6.

@@ -10,7 +10,7 @@ set /a list_interfaces=0
 
 set prog_name=%~n0%~x0
 set user_dir="%~dp0"
-set verbose=0
+set /a verbose=0
 
 
 GOTO :ParseParams
@@ -102,7 +102,7 @@ GOTO :ParseParams
         call :checkDns %ipv% %iname%
     )
     
-:mainend
+    :mainend
     endlocal
     exit /B %errorlevel%
 
@@ -122,6 +122,8 @@ setlocal
     
     if [%dns%] == [auto] (
         set command=netsh interface %ipv% set dns name=%iname% dhcp validate=%validate%
+    ) else if [%dns%] == [clear] (
+        set command=netsh interface %ipv% delete dns name=%iname% address=all validate=%validate%
     ) else (
         set command=netsh interface %ipv% set dns name=%iname% static %dns% validate=%validate%
     )
@@ -133,11 +135,11 @@ setlocal
     if not [%alt%] == [] (
         netsh interface %ipv% add dns name=%iname% %alt% index=2 validate=%validate%
     )
-    if [%verbose%]==[1] (
+    if %verbose% == 1 (
         call :checkDns %ipv% %iname%
     )
     
-endlocal
+    endlocal
     exit /B %errorlevel%
     
 
@@ -152,7 +154,7 @@ setlocal
         netsh interface %ipv% show dns name=%iname%
     )
     
-endlocal
+    endlocal
     exit /B %errorlevel%
     
 :usage
@@ -163,8 +165,8 @@ endlocal
     call :usage
     echo.
     echo Options:
-    echo /d The preferred DNS server ip address as dotted string. Or 'auto' to automatically obtain dns server (dhcp). 
-    echo /a The alternative DNS server ip address as dotted string. 
+    echo /d The preferred DNS server ip address as a dotted string. Use 'auto' to automatically obtain dns server (dhcp), 'clear' to clear all dns servers for the specified interface. 
+    echo /a The alternative DNS server ip address as a dotted string. 
     echo /n The interface name. If name does not work (Element not found), try replacing the name with the index found by listing (/l) the interfaces.
     echo /c Validate the settings.
     echo /6 Set ip version to ipv6.

@@ -5,7 +5,11 @@ net stop bits
 net stop appidsvc
 net stop cryptsvc
 
+echo "removing C:\Windows\SoftwareDistribution"
 rmdir /s /q C:\Windows\SoftwareDistribution
+
+echo "checking"
+dir /s C:\Windows\SoftwareDistribution
 
 net start wuauserv
 net start bits

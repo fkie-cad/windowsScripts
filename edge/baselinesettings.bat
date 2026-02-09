@@ -299,9 +299,6 @@ reg add "%hkx%\%MSEdgePoliciesPath%" /v "PersonalizationReportingEnabled" /t REG
 rem Enable full-tab promotional content
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "PromotionalTabsEnabled" /t REG_DWORD /d "0" /f
 
-rem Allow recommendations and promotional notifications from Microsoft Edge
-reg add "%hkx%\%MSEdgePoliciesPath%" /v "ShowRecommendationsEnabled" /t REG_DWORD /d "0" /f
-
 rem Choose whether users can receive customized background images and text, suggestions, notifications, and tips for Microsoft services)
 rem Under investigation.
 reg add "%hkx%\%MSEdgePoliciesPath%" /v "SpotlightExperiencesAndRecommendationsEnabled" /t REG_DWORD /d "0" /f
@@ -379,6 +376,19 @@ call :setDWPolicy "AllowSystemNotifications" 0
 
 :: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/showrecommendationsenabled
 call :setDWPolicy "ShowRecommendationsEnabled" 0
+
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/
+call :setDWPolicy "GenAILocalFoundationalModelSettings" 1
+
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/
+call :setDWPolicy "CopilotCDPPageContext" 0
+
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/userfeedbackallowed
+call :setDWPolicy "UserFeedbackAllowed" 0
+
+:: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/walletdonationenabled
+call :setDWPolicy "WalletDonationEnabled" 0
+
 
 exit /b %errorlevel%
 

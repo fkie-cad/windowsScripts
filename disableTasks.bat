@@ -15,6 +15,8 @@ set "my_dir=%my_dir:~1,-2%"
 set /a ACTION_DISABLE=1
 set /a ACTION_ENABLE=2
 set /a ACTION_CHECK=3
+set /a ACTION_DELTE=4
+
 set /a action=%ACTION_CHECK%
 
 set /a verbose=0
@@ -41,6 +43,7 @@ set names=(^
     \Microsoft\Windows\Maps\MapsUpdateTask^
     "\Microsoft\Windows\User Profile Service\HiveUploadTask"^
     "\Microsoft\Windows\Windows Error Reporting\QueueReporting"^
+    \Microsoft\Windows\UsageAndQualityInsights\UsageAndQualityInsights-MaintenanceTask^
     \Microsoft\Windows\WindowsAI\Recall\InitialConfiguration^
     \Microsoft\Windows\WindowsAI\Recall\PolicyConfiguration^
     )
@@ -78,6 +81,14 @@ GOTO :ParseParams
     )
     IF /i "%~1"=="/enable" (
         SET /a action=%ACTION_ENABLE%
+        goto reParseParams
+    )
+    IF /i "%~1"=="/x" (
+        SET /a action=%ACTION_DELETE%
+        goto reParseParams
+    )
+    IF /i "%~1"=="/delete" (
+        SET /a action=%ACTION_DELETE%
         goto reParseParams
     )
     
@@ -140,6 +151,18 @@ GOTO :ParseParams
                 echo.
             )
         )
+    ) else if %action% EQU %ACTION_DELETE% (
+        if ["%name%"] NEQ [""] (
+            echo deleting %name%
+            call :deleteTask "%name%"
+        ) else (
+            for /d %%i in %names% do (
+                echo deleting %%i
+                call :deleteTask "%%i"
+                echo.
+                echo.
+            )
+        )
     ) else if %action% EQU %ACTION_CHECK% (
         if ["%name%"] NEQ [""] (
             echo checking %name%
@@ -183,6 +206,17 @@ setlocal
 
     schtasks /Change /TN "%name%" /Enable
     schtasks /Run /TN "%name%"
+
+    endlocal
+    exit /b %errorlevel%
+
+
+:deleteTask
+setlocal
+    set "name=%~1"
+
+    schtasks /End /TN "%name%"
+    schtasks /Delete /TN "%name%" /f
 
     endlocal
     exit /b %errorlevel%
@@ -237,6 +271,7 @@ setlocal
     echo /c : Check the task(s).
     echo /d : Disable the task(s).
     echo /e : Enable the task(s).
+    echo /x : Delete the task(s). Some task can't be disabled but deleted.
     echo.
     echo Options:
     echo /n : Name a specific arbitrary target task.

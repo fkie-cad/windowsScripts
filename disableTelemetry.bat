@@ -38,7 +38,7 @@ setlocal
     set "key=HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-User Experience Virtualization-SQM Uploader"
     REM forward slash is not a typo!!
     reg add "%key%/Analytic" /v "Enabled" /t REG_DWORD /d 0 /f
-    reg add "%key%/Debzg" /v "Enabled" /t REG_DWORD /d 0 /f
+    reg add "%key%/Debug" /v "Enabled" /t REG_DWORD /d 0 /f
     reg add "%key%/Operational" /v "Enabled" /t REG_DWORD /d 0 /f
 
     :: AllowTelemetry : minimal data  1 on windows home/pro, 0 on enterprise

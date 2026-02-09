@@ -46,7 +46,7 @@ set common_scv=(^
     CDPSvc^
     cloudidsvc^
     CloudBackupRestoreSvc^
-     cphs^
+    cphs^
     cplspcon^
     DiagTrack^
     DialogBlockingService^

@@ -37,11 +37,14 @@ For questions and bug reports feel free to open an issue.
 - [deleteExploitProtectionSettings](#deleteexploitprotectionsettings)
 - [deleteFilesLT](#deletefileslt)
 - [deleteShortcutPostfix](#deleteshortcutpostfix)
+- [disableAiRecall](#disableairecall)
 - [disableCoInstallers](#disablecoinstallers)
 - [disableCopilot](#disablecopilot)
 - [disableErrorReporting](#disableerrorreporting)
 - [disableIpV6](#disableipv6)
     - [ps1](#ps1)
+- [disableNotepadAI](#disablenotepadai)
+- [diablePaintAI](#disablepaintai)
 - [disableSearchSuggestions](#disableSearchSuggestions)
 - [disableServices](#disableServices)
 - [disableSuperFetch](#disablesuperfetch)
@@ -66,6 +69,7 @@ For questions and bug reports feel free to open an issue.
 - [RemoveOneDrive](#removeonedrive)
 - [RemoveOptionalFeatures](#removeoptionalfeatures)
 - [Rename](#rename)
+- [setASR](#setasr)
 - [setDNS](#setdns)
 - [setIp](#setip)
 - [startNtProg](#startntprog)
@@ -248,6 +252,15 @@ Options:
 
 
 
+## disableAiRecall
+Disable [AI Recall](https://learn.microsoft.com/en-us/windows/apps/develop/windows-integration/recall/])
+
+```bash
+$ disableAiRecall.bat
+```
+
+
+
 ## disableCoInstallers
 Blocking Windows driver co-installer applications  
 https://www.bleepingcomputer.com/news/microsoft/how-to-block-windows-plug-and-play-auto-installing-insecure-apps/  
@@ -286,6 +299,25 @@ ps> disableIpv6.ps1 [<mode>] [<name>]
 Options:
 - mode: Disable ("disable"), enable ("enable") or list ("list") specified adapters. Default: disable
 - name: Specify an adapter name. Default: "\*", i.e. all adapters.
+
+
+
+## disableNotpadAi
+Disable Notepad AI stuff
+
+```bash
+$ disableNotepadAi.bat
+```
+
+
+
+## disablePaintAi
+Disable Paint AI stuff
+
+```bash
+$ disablePaintAi.bat
+```
+
 
 
 ## disableSearchSuggestions
@@ -782,6 +814,19 @@ $ rename.bat /f %tmp%\*.txt /p .txt /r .bin
 # remove all .bck parts of file names
 $ rename.bat /f %tmp%\*.bck.txt /p .bck
 ```
+
+
+## setASR
+Add some Attack Surface Reduction (ASR) Rules.
+```
+ps> setAsr.ps1 [-Adobe] [-Basic] [-Office] [-Status]
+```
+
+Options:
+* -Basic: Add some basic rules for js/vb wmi, psexec usb and lsass
+* -Adobe: Add some rules for Adobe Reader
+* -Office: Add some rules for Office applications
+* -Status: Check currently set rules
 
 
 ## setDNS

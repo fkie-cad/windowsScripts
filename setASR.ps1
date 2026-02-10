@@ -8,7 +8,7 @@
 .PARAMETER Adobe
     Add some rules for Adobe Reader
 .PARAMETER Office
-    Add some rules for Office applications
+    Add some rules for MS Office applications
 .PARAMETER Status
     Check currently set rules
 .EXAMPLE

@@ -825,7 +825,7 @@ ps> setAsr.ps1 [-Adobe] [-Basic] [-Office] [-Status]
 Options:
 * -Basic: Add some basic rules for js/vb wmi, psexec usb and lsass
 * -Adobe: Add some rules for Adobe Reader
-* -Office: Add some rules for Office applications
+* -Office: Add some rules for MS Office applications
 * -Status: Check currently set rules
 
 

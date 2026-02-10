@@ -1,5 +1,5 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
 
 set /a enable=1
 :: Download the Local Security Authority (LSA) Protected Process Opt-out / LSAPPLConfig.efi tool files from the download center

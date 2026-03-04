@@ -1,5 +1,5 @@
 # Some useful (batch) scripts
-Last updated: 01.09.2025
+Last updated: 04.03.2026
 
 Most of the scripts are used in daily work and are well tested. 
 Some of them are less tested.
@@ -72,6 +72,8 @@ For questions and bug reports feel free to open an issue.
 - [setASR](#setasr)
 - [setDNS](#setdns)
 - [setIp](#setip)
+- [setNx](#setnx)
+- [shortcutPostfix](#shortcutPostfix)
 - [startNtProg](#startntprog)
 - [copyright, credits & contact](#copyright,-credits-&-contact)
 
@@ -862,6 +864,31 @@ Options:
 * /l List interfaces
 * /c List interface configuration
 * /v Verbose mode
+
+
+
+## setNx
+Set DEP level.
+
+Can be controlled via "Control Panel > Advanced System Settings > Performance Settings > Data Execution Prevention".
+Per default it is set to "Turn on DEP for essential Windows programs and services only" (OptIn).
+The better choice would be "Turn on DEP for all programs and services except those I select" (OptOut).
+This settings seems to be reset some times due to Windows updates.
+So it can forcefully be set with BcdEdit to "AlwaysOn".
+Then the UI options are greyed out.
+It's not tested yet, if this option set with bcdedit survives a major Windows update.
+
+### Usage
+```bash
+$ setnx.bat [/on|/off|/in|/out] [/v] [/h]
+```
+Options:
+- /on Set DEP to always on.
+- /off Set DEP to always off.
+- /in Set DEP to opt in.
+- /out Set DEP to opt out.
+- /v Verbose mode.
+- /h Print this.
 
 
 

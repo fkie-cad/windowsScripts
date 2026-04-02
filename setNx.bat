@@ -76,7 +76,7 @@ GOTO :ParseParams
 :help
     call :usage
     echo.
-    echo /on Set DEP to always on.
+    echo /on Set DEP to always on. (default)
     echo /off Set DEP to always off.
     echo /in Set DEP to opt in.
     echo /out Set DEP to opt out.

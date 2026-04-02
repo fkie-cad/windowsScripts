@@ -15,7 +15,7 @@ set "my_dir=%my_dir:~1,-2%"
 set /a ACTION_DISABLE=1
 set /a ACTION_ENABLE=2
 set /a ACTION_CHECK=3
-set /a ACTION_DELTE=4
+set /a ACTION_DELETE=4
 
 set /a action=%ACTION_CHECK%
 
@@ -124,7 +124,6 @@ GOTO :ParseParams
 
     if %verbose% EQU 1 (
         echo action: %action%
-        echo mode: %mode%
     )
 
     if %action% EQU %ACTION_DISABLE% (
@@ -176,7 +175,7 @@ GOTO :ParseParams
             )
         )
     ) else (
-        echo [e] Mode %mode% is not supported!
+        echo [e] Action %action% is not supported!
         goto mainend
     )
     
@@ -193,8 +192,8 @@ setlocal
     echo disableTask
     echo   name: %name%
 
-    schtasks /End /TN "%name%"
-    schtasks /Change /TN "%name%" /Disable
+    REM schtasks /End /TN "%name%"
+    REM schtasks /Change /TN "%name%" /Disable
     
     endlocal
     exit /b %errorlevel%
@@ -204,8 +203,8 @@ setlocal
 setlocal
     set "name=%~1"
 
-    schtasks /Change /TN "%name%" /Enable
-    schtasks /Run /TN "%name%"
+    REM schtasks /Change /TN "%name%" /Enable
+    REM schtasks /Run /TN "%name%"
 
     endlocal
     exit /b %errorlevel%
@@ -215,8 +214,8 @@ setlocal
 setlocal
     set "name=%~1"
 
-    schtasks /End /TN "%name%"
-    schtasks /Delete /TN "%name%" /f
+    REM schtasks /End /TN "%name%"
+    REM schtasks /Delete /TN "%name%" /f
 
     endlocal
     exit /b %errorlevel%

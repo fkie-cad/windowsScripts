@@ -253,13 +253,17 @@ setlocal
 :disableLockedVBS
 setlocal
     set "guid={0cb3b571-2f2e-4343-a879-d86a476d7215}"
+    
     mountvol X: /s
+    
     copy %WINDIR%\System32\SecConfig.efi X:\EFI\Microsoft\Boot\SecConfig.efi /Y
+    
     bcdedit /create %guid% /d "DebugTool" /application osloader
     bcdedit /set %guid% path "\EFI\Microsoft\Boot\SecConfig.efi"
     bcdedit /set {bootmgr} bootsequence %guid%
     bcdedit /set %guid% loadoptions DISABLE-VBS,DISABLE-LSA-ISO
     bcdedit /set %guid% device partition=X:
+    
     mountvol X: /d
     
     endlocal
@@ -269,7 +273,8 @@ setlocal
 :usage
     echo Usage: %prog_name% [/e] [/d] [/l] [/u] [/f] [/c] [/r] [/v] [/h]
     exit /B 0
-    
+
+
 :help
     call :usage
     echo.

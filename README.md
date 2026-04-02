@@ -17,6 +17,7 @@ Mostly there are pure batch scripts, some are ps1 some are py.
 For questions and bug reports feel free to open an issue.
 
 ## Contents
+- [ai/](#ai)
 - [blitzDingser/](#blitzdingser)
 - [crypto/](#crypto)
 - [edge/](#edge)
@@ -37,14 +38,11 @@ For questions and bug reports feel free to open an issue.
 - [deleteExploitProtectionSettings](#deleteexploitprotectionsettings)
 - [deleteFilesLT](#deletefileslt)
 - [deleteShortcutPostfix](#deleteshortcutpostfix)
-- [disableAiRecall](#disableairecall)
 - [disableCoInstallers](#disablecoinstallers)
 - [disableCopilot](#disablecopilot)
 - [disableErrorReporting](#disableerrorreporting)
 - [disableIpV6](#disableipv6)
     - [ps1](#ps1)
-- [disableNotepadAI](#disablenotepadai)
-- [diablePaintAI](#disablepaintai)
 - [disableSearchSuggestions](#disableSearchSuggestions)
 - [disableServices](#disableServices)
 - [disableSuperFetch](#disablesuperfetch)
@@ -79,6 +77,10 @@ For questions and bug reports feel free to open an issue.
 
 
 
+
+## ai/
+Some ai related scripts
+[ai/README.md](ai/README.md)
 
 ## blitzDingser/
 Some useful blintzDings scripts to clean up log entries or other stuff.  
@@ -254,14 +256,6 @@ Options:
 
 
 
-## disableAiRecall
-Disable [AI Recall](https://learn.microsoft.com/en-us/windows/apps/develop/windows-integration/recall/])
-
-```bash
-$ disableAiRecall.bat
-```
-
-
 
 ## disableCoInstallers
 Blocking Windows driver co-installer applications  
@@ -302,23 +296,6 @@ Options:
 - mode: Disable ("disable"), enable ("enable") or list ("list") specified adapters. Default: disable
 - name: Specify an adapter name. Default: "\*", i.e. all adapters.
 
-
-
-## disableNotpadAi
-Disable Notepad AI stuff
-
-```bash
-$ disableNotepadAi.bat
-```
-
-
-
-## disablePaintAi
-Disable Paint AI stuff
-
-```bash
-$ disablePaintAi.bat
-```
 
 
 

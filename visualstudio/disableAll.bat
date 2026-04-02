@@ -17,5 +17,17 @@ CALL  "%my_dir%\disableVSTasks.bat" /vsy %vsy%
 echo ========== disableVSTelemetryAndFeedback
 CALL "%my_dir%\disableVSTelemetryAndFeedback.bat"
 
+
+
+set /a vsy=18
+
+echo ========== disableVSNetConnections
+CALL "%my_dir%\disableBuildToolsNetConnections.bat" /vsy %vsy%
+CALL "%my_dir%\disableVSNetConnections.bat" /vsy %vsy%
+
+echo ========== disableVSTasks
+CALL  "%my_dir%\disableVSTasks.bat" /vsy %vsy%
+
+
 endlocal
 exit /b %errorlevel%

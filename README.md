@@ -38,6 +38,7 @@ For questions and bug reports feel free to open an issue.
 - [deleteExploitProtectionSettings](#deleteexploitprotectionsettings)
 - [deleteFilesLT](#deletefileslt)
 - [deleteShortcutPostfix](#deleteshortcutpostfix)
+- [disableAutomaticRestartSignOn](#disableAutomaticRestartSignOn)
 - [disableCoInstallers](#disablecoinstallers)
 - [disableCopilot](#disablecopilot)
 - [disableErrorReporting](#disableerrorreporting)
@@ -254,6 +255,20 @@ Options:
  * /v Verbose mode.
 
 
+
+
+
+## disableAutomaticRestartSignOn
+https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/component-updates/winlogon-automatic-restart-sign-on--arso-  
+
+If you disable this policy setting, 
+  the device doesn't configure automatic sign in. 
+The user's lock screen apps aren't restarted after the system restarts.
+
+
+```bash
+$ disableAutomaticRestartSignOn.bat
+```
 
 
 

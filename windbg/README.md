@@ -5,6 +5,7 @@ Last updated: 28.01.2023
 - [js](/windbg/js)
 - [enableDbgPrint](#enabledbgprint)
 - [setNetKd](#setNetKd)
+- [setUsbKd](#setUsbKd)
 - [startComKDbg](#startComKDbg)
 - [startEDbg](#startEDbg)
 - [startNetKDbg](#startNetKDbg)
@@ -52,6 +53,25 @@ $ setNetKd.bat [/i <ip>] [/p <port>] [/k <key>] [/b <param>] [/dhcp] [/d] [/bd] 
 * /k The connection key. If not set, a random key will be generated.
 * /b The bus param of the network device. Usually works without setting it. If not: Use kdnet.exe or open the property page for the network adapter :: details > Location information.
 * /dhcp For DHCP.
+* /r Reboot system with prompt.
+* /d Set debug on.
+* /bd Set bootdebug on.
+* /c Clear all debug settings.
+* /r: Reboot system with confirmation prompt.
+* /v Verbose mode
+* /h Print this
+
+
+## setUsbKd
+Set guest system up for usb kd. `BcdEdit` wrapper.
+
+### Usage
+```bash
+$ setUsbKd.bat [/n <name>] [/b <param>] [/d] [/bd] [/c] [/r] [/v] [/h]
+```
+**Options:**
+* n The target name.
+* /b The bus param of the network device. Use usbview.exe to get it. Commonly its "0.20.0".
 * /r Reboot system with prompt.
 * /d Set debug on.
 * /bd Set bootdebug on.

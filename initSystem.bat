@@ -39,13 +39,16 @@ echo user_sid: %user_sid%
     call :Update_DeliveryOptimization
     
     endlocal
+	echo done
     exit /b 0
 
 :Accounts_SignInOptions
+	echo Accounts_SignInOptions
     reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\UserARSO\%user_sid%" /v "OptOut" /t REG_DWORD /d 0x00000001 /f
     exit /b 0
     
 :Devices_Typing
+	echo Devices_Typing
         :: 0|1
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Input\Settings" /v "EnableHwkbTextPrediction" /t REG_DWORD /d 0x00000000 /f
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Input\Settings" /v "EnableHwkbAutocorrection2" /t REG_DWORD /d 0x00000000 /f
@@ -58,16 +61,19 @@ echo user_sid: %user_sid%
     exit /b 0
 
 :EaseOfAccess
+	echo EaseOfAccess
     exit /b 0
 
 :Gaming
         :: 0|1
+	echo Gaming
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\GameBar" /v "AutoGameModeEnabled" /t REG_DWORD /d 0x00000000 /f
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR" /v "AppCaptureEnabled" /t REG_DWORD /d 0x00000000 /f
     reg add "HKU\%user_sid%\System\GameConfigStore" /v "GameDVR_Enabled" /t REG_DWORD /d 0x00000000 /f
     exit /b 0
 
 :Network_Devices
+	echo Network_Devices
         :: 0|2
     reg add "HKLM\SYSTEM\ControlSet001\Services\BthEnum\Enum" /v "Count" /t REG_DWORD /d 0x00000000 /f
     reg add "HKLM\SYSTEM\ControlSet001\Services\BthEnum\Enum" /v "NextInstance" /t REG_DWORD /d 0x00000000 /f
@@ -100,6 +106,7 @@ echo user_sid: %user_sid%
     exit /b 0
 
 :Personalization_Start
+	echo Personalization_Start
         :: 0|1
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338388Enabled" /t REG_DWORD /d 0x00000000 /f
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackDocs" /t REG_DWORD /d 0x00000000 /f
@@ -107,6 +114,7 @@ echo user_sid: %user_sid%
     exit /b 0
     
 :Personalization_Taskbar
+	echo Personalization_Taskbar
         :: 1|2
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarGlomLevel: 0x00000001 /f
         :: 0|1
@@ -122,12 +130,14 @@ echo user_sid: %user_sid%
     exit /b 0
     
 :Privacy_ActivityHistory
+	echo Privacy_ActivityHistory
     exit /b 0
 
 ::
 :: Privacy & Security > App permissions
 ::
 :Privacy_AppPermissions
+	echo Privacy_AppPermissions
     :: TODO : better walk children of ConsentStore and deny value
         :: "Allow" | "Deny"
     REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics" /v "Value" /t REG_SZ /d "Deny" /f
@@ -162,6 +172,7 @@ echo user_sid: %user_sid%
     exit /b 0
 
 :Privacy_General
+	echo Privacy_General
         :: 0|1
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0x00000000 /f
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338393Enabled" /t REG_DWORD /d 0x00000000 /f
@@ -172,6 +183,7 @@ echo user_sid: %user_sid%
     exit /b 0
 
 :Privacy_Inking
+	echo Privacy_Inking
         :: 0|1
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\InputPersonalization" /v "RestrictImplicitInkCollection" /t REG_DWORD /d 0x00000001 /f
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\InputPersonalization" /v "RestrictImplicitTextCollection" /t REG_DWORD /d 0x00000001 /f
@@ -181,18 +193,21 @@ echo user_sid: %user_sid%
     exit /b 0
 
 :Privacy_Mic
+	echo Privacy_Mic
         :: "Allow" | "Deny"
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone" /v "Value" /t REG_SZ /d "Deny" /f
 
     exit /b 0
     
 :Privacy_Speech
+	echo Privacy_Speech
         :: 0|1
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy" /v "HasAccepted" /t REG_DWORD /d 0x00000000 /f
     
     exit /b 0
     
 :Privacy_VoiceActivation
+	echo Privacy_VoiceActivation
         :: 0|1
     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\MMDevices\Audio\Render\{d659e114-6def-4a3a-8a52-8366c703fe42}\FxProperties" /v "{3BA0CD54-830F-4551-A6EB-F3EAB68E3700},26" /t REG_DWORD /d 0x00000000 /f
     :: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\LastTaskOperationHandle" /t REG_DWORD /d 0x00000058 | 0x0000000F
@@ -212,6 +227,7 @@ echo user_sid: %user_sid%
     exit /b 0
 
 :Search_PermissionAndHistory
+	echo Search_PermissionAndHistory
         :: 0|1
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings" /v "SafeSearchMode" /t REG_DWORD /d 0x00000000 /f
         :: 0|1
@@ -224,6 +240,7 @@ echo user_sid: %user_sid%
     exit /b 0
 
 :Security_VirusAndThreadProtection
+	echo Security_VirusAndThreadProtection
         :: 0|2
     reg add "HKLM\SOFTWARE\Microsoft\Windows Defender\Spynet" /v "SpyNetReporting" /t REG_DWORD /d 0x00000000 /f
         :: 0|1
@@ -232,6 +249,7 @@ echo user_sid: %user_sid%
     exit /b 0
 
 :System_Clipboard
+	echo System_Clipboard
         :: A|B
     :: reg add "HKLM\SOFTWARE\Microsoft\Windows Search\Gather\Windows\SystemIndex\NewClientID: 0x0000000B
     :: reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows Search\Gather\Windows\SystemIndex\NewClientID: 0x0000000B
@@ -241,6 +259,7 @@ echo user_sid: %user_sid%
     exit /b 0
 
 :System_Hiberboot
+	echo System_Hiberboot
         :: 0|1
     :: reg add "HKLM\SYSTEM\ControlSet001\Control\Session Manager\Power" /v "HiberbootEnabled" /t REG_DWORD /d 0x00000000
         :: 0|1
@@ -257,6 +276,7 @@ echo user_sid: %user_sid%
 :: 
 :System_NearbySharing
 setlocal
+	echo System_NearbySharing
     set "key=HKU\%user_sid%\Software\Microsoft\Windows\CurrentVersion\CDP"
     
     call :setDWValue "%key%" RomeSdkChannelUserAuthzPolicy 0
@@ -273,11 +293,13 @@ setlocal
     exit /b 0
 
 :System_Notifications
+	echo System_Notifications
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\PushNotifications" /v "ToastEnabled" /t REG_DWORD /d 0x00000000 /f
     
     exit /b 0
 
 :System_SharedExperience
+	echo System_SharedExperience
         :: 0|1
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CDP" /v "RomeSdkChannelUserAuthzPolicy" /t REG_DWORD /d 0x00000001 /f
         :: 0|2
@@ -288,6 +310,7 @@ setlocal
     exit /b 0
 
 :Update_DeliveryOptimization
+	echo Update_DeliveryOptimization
         :: 0|1
         :: Allow downloads from other devices => no
     reg add "HKU\S-1-5-20\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Settings" /v "DownloadMode" /t REG_DWORD /d 0x00000000 /f

@@ -10,8 +10,30 @@ for /f "tokens=1,2" %%i in ('whoami /user ^| findstr ^S\-d*') do (
 if %errorlevel% NEQ 0 exit /b %errorlevel%
 if [%user_sid%] EQU [] exit /b %errorlevel%
 
-echo user_name: %user_name%
+
+SET /a user_name_cch=0
+FOR /L %%A IN (0,1,8100) DO (
+    IF "!user_name:~%%A,1!"=="" (
+        set /a user_name_cch=%%A
+        goto breakUserNameCchLoop
+    )
+)
+:breakUserNameCchLoop
+
+SET /a user_sid_cch=0
+FOR /L %%A IN (0,1,8100) DO (
+    IF "!user_sid:~%%A,1!"=="" (
+        set /a user_sid_cch=%%A
+        goto breakUserSidCchLoop
+    )
+)
+:breakUserSidCchLoop
+
+ECHO user_name: %user_name%
+ECHO user_name_cch: %user_name_cch%
 echo user_sid: %user_sid%
+echo user_sid_cch: %user_sid_cch%
+
 
 
 :main
@@ -19,7 +41,7 @@ echo user_sid: %user_sid%
     call :Devices_Typing
     call :EaseOfAccess
     call :Gaming
-    :: call :Network_Devices
+    REM call :Network_Devices
     call :Personalization_Start
     call :Personalization_Taskbar
     call :Privacy_ActivityHistory
@@ -29,6 +51,9 @@ echo user_sid: %user_sid%
     call :Privacy_Mic
     call :Privacy_Speech
     call :Privacy_VoiceActivation
+    call :Privacy_Recommendations_offers
+    REM call :Privacy_Screenshots_Screenrecording # already done in Privacy_AppPermissions
+    REM call :Privacy_Text_image_generation # already done in Privacy_AppPermissions
     call :Search_PermissionAndHistory
     call :Security_VirusAndThreadProtection
     call :System_Clipboard
@@ -39,16 +64,16 @@ echo user_sid: %user_sid%
     call :Update_DeliveryOptimization
     
     endlocal
-	echo done
+    echo done
     exit /b 0
 
 :Accounts_SignInOptions
-	echo Accounts_SignInOptions
+    echo Accounts_SignInOptions
     reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\UserARSO\%user_sid%" /v "OptOut" /t REG_DWORD /d 0x00000001 /f
     exit /b 0
     
 :Devices_Typing
-	echo Devices_Typing
+    echo Devices_Typing
         :: 0|1
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Input\Settings" /v "EnableHwkbTextPrediction" /t REG_DWORD /d 0x00000000 /f
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Input\Settings" /v "EnableHwkbAutocorrection2" /t REG_DWORD /d 0x00000000 /f
@@ -61,19 +86,19 @@ echo user_sid: %user_sid%
     exit /b 0
 
 :EaseOfAccess
-	echo EaseOfAccess
+    echo EaseOfAccess
     exit /b 0
 
 :Gaming
         :: 0|1
-	echo Gaming
+    echo Gaming
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\GameBar" /v "AutoGameModeEnabled" /t REG_DWORD /d 0x00000000 /f
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR" /v "AppCaptureEnabled" /t REG_DWORD /d 0x00000000 /f
     reg add "HKU\%user_sid%\System\GameConfigStore" /v "GameDVR_Enabled" /t REG_DWORD /d 0x00000000 /f
     exit /b 0
 
 :Network_Devices
-	echo Network_Devices
+    echo Network_Devices
         :: 0|2
     reg add "HKLM\SYSTEM\ControlSet001\Services\BthEnum\Enum" /v "Count" /t REG_DWORD /d 0x00000000 /f
     reg add "HKLM\SYSTEM\ControlSet001\Services\BthEnum\Enum" /v "NextInstance" /t REG_DWORD /d 0x00000000 /f
@@ -106,7 +131,7 @@ echo user_sid: %user_sid%
     exit /b 0
 
 :Personalization_Start
-	echo Personalization_Start
+    echo Personalization_Start
         :: 0|1
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338388Enabled" /t REG_DWORD /d 0x00000000 /f
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackDocs" /t REG_DWORD /d 0x00000000 /f
@@ -114,7 +139,7 @@ echo user_sid: %user_sid%
     exit /b 0
     
 :Personalization_Taskbar
-	echo Personalization_Taskbar
+    echo Personalization_Taskbar
         :: 1|2
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarGlomLevel: 0x00000001 /f
         :: 0|1
@@ -130,49 +155,42 @@ echo user_sid: %user_sid%
     exit /b 0
     
 :Privacy_ActivityHistory
-	echo Privacy_ActivityHistory
+    echo Privacy_ActivityHistory
     exit /b 0
 
 ::
 :: Privacy & Security > App permissions
+:: Iterating through all ConsentStore keys and denying them.
+:: May be too strict for some scenarios.
 ::
 :Privacy_AppPermissions
-	echo Privacy_AppPermissions
-    :: TODO : better walk children of ConsentStore and deny value
-        :: "Allow" | "Deny"
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics" /v "Value" /t REG_SZ /d "Deny" /f
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appointments" /v "Value" /t REG_SZ /d "Deny" /f
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\bluetoothSync" /v "Value" /t REG_SZ /d "Deny" /f
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\broadFileSystemAccess" /v "Value" /t REG_SZ /d "Deny" /f
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\chat" /v "Value" /t REG_SZ /d "Deny" /f
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\contacts" /v "Value" /t REG_SZ /d "Deny" /f
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\documentsLibrary" /v "Value" /t REG_SZ /d "Deny" /f
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\email" /v "Value" /t REG_SZ /d "Deny" /f
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone" /v "Value" /t REG_SZ /d "Deny" /f
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\phoneCall" /v "Value" /t REG_SZ /d "Deny" /f
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\phoneCallHistory" /v "Value" /t REG_SZ /d "Deny" /f
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\picturesLibrary" /v "Value" /t REG_SZ /d "Deny" /f
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\radios" /v "Value" /t REG_SZ /d "Deny" /f
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation" /v "Value" /t REG_SZ /d "Deny" /f
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userDataTasks" /v "Value" /t REG_SZ /d "Deny" /f
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userNotificationListener" /v "Value" /t REG_SZ /d "Deny" /f
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\videosLibrary" /v "Value" /t REG_SZ /d "Deny" /f
-    REM reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam" /v "Value" /t REG_SZ /d "Deny" /f
+setlocal
+    echo Privacy_AppPermissions
 
+    set /a keyNameStart=%user_sid_cch%+91
     for /F "tokens=1 delims= " %%H in ('reg query HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore /s') do (
         
         set "needle=%%H"
         SET "needle=!needle:~0,10!"
 
         if ["!needle!"] EQU ["HKEY_USERS"] (
-            echo reg add %%H /v "Value" /t REG_SZ /d "Deny" /f
+        
+            set "pp=%%H"
+            set un=
+            REM substr(pp, user_name_cch)
+            CALL SET "un=!!pp:~%keyNameStart%!!"
+        
+            echo - deny !un!
+            reg add "%%H" /v "Value" /t REG_SZ /d "Deny" /f
+            
         )
     )
 
+    endlocal
     exit /b 0
 
 :Privacy_General
-	echo Privacy_General
+    echo Privacy_General
         :: 0|1
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0x00000000 /f
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338393Enabled" /t REG_DWORD /d 0x00000000 /f
@@ -183,7 +201,7 @@ echo user_sid: %user_sid%
     exit /b 0
 
 :Privacy_Inking
-	echo Privacy_Inking
+    echo Privacy_Inking
         :: 0|1
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\InputPersonalization" /v "RestrictImplicitInkCollection" /t REG_DWORD /d 0x00000001 /f
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\InputPersonalization" /v "RestrictImplicitTextCollection" /t REG_DWORD /d 0x00000001 /f
@@ -193,21 +211,21 @@ echo user_sid: %user_sid%
     exit /b 0
 
 :Privacy_Mic
-	echo Privacy_Mic
+    echo Privacy_Mic
         :: "Allow" | "Deny"
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone" /v "Value" /t REG_SZ /d "Deny" /f
 
     exit /b 0
     
 :Privacy_Speech
-	echo Privacy_Speech
+    echo Privacy_Speech
         :: 0|1
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy" /v "HasAccepted" /t REG_DWORD /d 0x00000000 /f
     
     exit /b 0
     
 :Privacy_VoiceActivation
-	echo Privacy_VoiceActivation
+    echo Privacy_VoiceActivation
         :: 0|1
     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\MMDevices\Audio\Render\{d659e114-6def-4a3a-8a52-8366c703fe42}\FxProperties" /v "{3BA0CD54-830F-4551-A6EB-F3EAB68E3700},26" /t REG_DWORD /d 0x00000000 /f
     :: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\LastTaskOperationHandle" /t REG_DWORD /d 0x00000058 | 0x0000000F
@@ -226,8 +244,46 @@ echo user_sid: %user_sid%
     
     exit /b 0
 
+REM
+REM some (except the last two) are already done on other places too
+REM
+:Privacy_Recommendations_offers
+    echo Privacy_Recommendations_offers
+    
+    reg add "HKU\%user_sid%\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SubscribedContent-338393Enabled /t REG_DWORD /d 0x00000000 /f
+
+    reg add "HKU\%user_sid%\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SubscribedContent-353694Enabled /t REG_DWORD /d 0x00000000 /f
+
+    reg add "HKU\%user_sid%\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SubscribedContent-353696Enabled /t REG_DWORD /d 0x00000000 /f
+
+    reg add "HKU\%user_sid%\Software\Microsoft\Windows\CurrentVersion\CPSS\Store\AdvertisingInfo" /v Value /t REG_DWORD /d 0x00000000 /f
+
+    reg add "HKU\%user_sid%\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v Enabled /t REG_DWORD /d 0x00000000 /f
+
+    reg add "HKU\%user_sid%\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v Start_TrackProgs /t REG_DWORD /d 0x00000000 /f
+
+    reg add "HKU\%user_sid%\Software\Microsoft\Windows\CurrentVersion\Privacy" /v PersonalizedOffersEnabled /t REG_DWORD /d 0x00000000 /f
+
+    reg add "HKU\%user_sid%\Software\Microsoft\Windows\CurrentVersion\SystemSettings\AccountNotifications" /v EnableAccountNotifications /t REG_DWORD /d 0x00000000 /f
+
+    exit /b 0
+    
+:Privacy_Screenshots_Screenrecording
+    echo Privacy_Screenshots_Screenrecording
+    exit /b 0
+    
+:Privacy_Text_image_generation
+    echo Privacy_Text_image_generation
+    
+    reg add "HKU\%user_sid%\\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\systemAIModels" /v "Value" /t REG_SZ /d "Deny" /f
+    reg add "HKU\%user_sid%\\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\systemAIModels\Microsoft.ScreenSketch_8wekyb3d8bbwe" /v "Value" /t REG_SZ /d "Deny" /f
+    reg add "HKU\%user_sid%\\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\systemAIModels\Microsoft.Windows.Photos_8wekyb3d8bbwe" /v "Value" /t REG_SZ /d "Deny" /f
+    reg add "HKU\%user_sid%\\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\systemAIModels\Microsoft.WindowsNotepad_8wekyb3d8bbwe" /v "Value" /t REG_SZ /d "Deny" /f
+
+    exit /b 0
+
 :Search_PermissionAndHistory
-	echo Search_PermissionAndHistory
+    echo Search_PermissionAndHistory
         :: 0|1
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings" /v "SafeSearchMode" /t REG_DWORD /d 0x00000000 /f
         :: 0|1
@@ -240,7 +296,7 @@ echo user_sid: %user_sid%
     exit /b 0
 
 :Security_VirusAndThreadProtection
-	echo Security_VirusAndThreadProtection
+    echo Security_VirusAndThreadProtection
         :: 0|2
     reg add "HKLM\SOFTWARE\Microsoft\Windows Defender\Spynet" /v "SpyNetReporting" /t REG_DWORD /d 0x00000000 /f
         :: 0|1
@@ -249,7 +305,7 @@ echo user_sid: %user_sid%
     exit /b 0
 
 :System_Clipboard
-	echo System_Clipboard
+    echo System_Clipboard
         :: A|B
     :: reg add "HKLM\SOFTWARE\Microsoft\Windows Search\Gather\Windows\SystemIndex\NewClientID: 0x0000000B
     :: reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows Search\Gather\Windows\SystemIndex\NewClientID: 0x0000000B
@@ -259,7 +315,7 @@ echo user_sid: %user_sid%
     exit /b 0
 
 :System_Hiberboot
-	echo System_Hiberboot
+    echo System_Hiberboot
         :: 0|1
     :: reg add "HKLM\SYSTEM\ControlSet001\Control\Session Manager\Power" /v "HiberbootEnabled" /t REG_DWORD /d 0x00000000
         :: 0|1
@@ -276,7 +332,7 @@ echo user_sid: %user_sid%
 :: 
 :System_NearbySharing
 setlocal
-	echo System_NearbySharing
+    echo System_NearbySharing
     set "key=HKU\%user_sid%\Software\Microsoft\Windows\CurrentVersion\CDP"
     
     call :setDWValue "%key%" RomeSdkChannelUserAuthzPolicy 0
@@ -293,13 +349,13 @@ setlocal
     exit /b 0
 
 :System_Notifications
-	echo System_Notifications
+    echo System_Notifications
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\PushNotifications" /v "ToastEnabled" /t REG_DWORD /d 0x00000000 /f
     
     exit /b 0
 
 :System_SharedExperience
-	echo System_SharedExperience
+    echo System_SharedExperience
         :: 0|1
     reg add "HKU\%user_sid%\SOFTWARE\Microsoft\Windows\CurrentVersion\CDP" /v "RomeSdkChannelUserAuthzPolicy" /t REG_DWORD /d 0x00000001 /f
         :: 0|2
@@ -310,7 +366,7 @@ setlocal
     exit /b 0
 
 :Update_DeliveryOptimization
-	echo Update_DeliveryOptimization
+    echo Update_DeliveryOptimization
         :: 0|1
         :: Allow downloads from other devices => no
     reg add "HKU\S-1-5-20\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Settings" /v "DownloadMode" /t REG_DWORD /d 0x00000000 /f

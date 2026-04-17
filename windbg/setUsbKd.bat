@@ -1,8 +1,8 @@
 ::::::::::::::::::::::::::::::
 :: set up usb debugging     ::
 ::                          ::
-:: vs 1.0.0                 ::
-:: changed: 14.04.2026      ::
+:: vs 1.0.1                 ::
+:: changed: 16.04.2026      ::
 ::::::::::::::::::::::::::::::
 
 @echo off
@@ -19,7 +19,6 @@ set /a debug=0
 set /a reboot=0
 set name=
 set bus=
-
 
 
 
@@ -135,6 +134,7 @@ GOTO :ParseParams
         
         bcdedit /deletevalue debug >nul 2>&1 
         bcdedit /deletevalue bootdebug >nul 2>&1 
+        bcdedit /deletevalue {dbgsettings} targetname >nul 2>&1 
         bcdedit /deletevalue {dbgsettings} hostip >nul 2>&1 
         bcdedit /deletevalue {dbgsettings} port >nul 2>&1 
         bcdedit /deletevalue {dbgsettings} busparams >nul 2>&1 
@@ -142,12 +142,14 @@ GOTO :ParseParams
         bcdedit /deletevalue {dbgsettings} debugtype >nul 2>&1 
         bcdedit /deletevalue {dbgsettings} dhcp >nul 2>&1 
         
+        call 
+        
         echo done
         goto reboot
     )
     
     if NOT ["%name%"] EQU [""] (
-        call :edit
+        call :setupUSB
         if not !errorlevel! == 0 (
             echo [e] Setting /dbgsettings failed^^!
             goto mainend
@@ -184,7 +186,7 @@ GOTO :ParseParams
     exit /B %errorlevel%
 
 
-:edit
+:setupUSB
 setlocal
     
     if [%name%] EQU [] (

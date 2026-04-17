@@ -61,6 +61,14 @@ $ setNetKd.bat [/i <ip>] [/p <port>] [/k <key>] [/b <param>] [/dhcp] [/d] [/bd] 
 * /v Verbose mode
 * /h Print this
 
+### Remarks
+If if does not work after the reboot, 
+    i.e. debugger is not attached, 
+    most likely the IP of the Network Adapter has changed.
+Now it's called "Ethernet (Kernel Debugger)".
+If the IP is adjusted to the former value or some other correct ip in the network it should connect after a reboot.
+
+
 
 ## setUsbKd
 Set guest system up for usb kd. `BcdEdit` wrapper.

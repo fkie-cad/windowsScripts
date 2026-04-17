@@ -1,8 +1,8 @@
 ::::::::::::::::::::::::::::::
-:: set up network debugging ::
+:: set up usb eem debugging ::
 ::                          ::
-:: vs 1.0.2                 ::
-:: changed: 16.04.2026      ::
+:: vs 1.0.0                 ::
+:: changed: 17.04.2026      ::
 ::::::::::::::::::::::::::::::
 
 @echo off
@@ -18,7 +18,8 @@ set /a check=0
 set /a debug=0
 set /a reboot=0
 set /a dhcp=0
-set ip=
+REM static ip
+set ip=169.254.255.255
 set /a port=50000
 set key=
 set bus=
@@ -79,17 +80,6 @@ GOTO :ParseParams
     )
     IF /i "%~1"=="/bootdebug" (
         SET /a bootdebug=1
-        goto reParseParams
-    )
-    
-    IF /i "%~1"=="/i" (
-        SET ip=%~2
-        SHIFT
-        goto reParseParams
-    )
-    IF /i "%~1"=="/ip" (
-        SET ip=%~2
-        SHIFT
         goto reParseParams
     )
     
@@ -172,6 +162,7 @@ GOTO :ParseParams
         
         bcdedit /deletevalue debug >nul 2>&1 
         bcdedit /deletevalue bootdebug >nul 2>&1 
+        bcdedit /deletevalue loadoptions >nul 2>&1 
         bcdedit /deletevalue {dbgsettings} targetname >nul 2>&1 
         bcdedit /deletevalue {dbgsettings} hostip >nul 2>&1 
         bcdedit /deletevalue {dbgsettings} port >nul 2>&1 
@@ -187,7 +178,7 @@ GOTO :ParseParams
     )
     
     if NOT ["%ip%"] EQU [""] (
-        call :setupNET
+        call :setupUSBEEM
         if not !errorlevel! == 0 (
             echo [e] Setting /dbgsettings failed^^!
             goto mainend
@@ -224,15 +215,10 @@ GOTO :ParseParams
     exit /B %errorlevel%
 
 
-:setupNET
+:setupUSBEEM
 setlocal
     
-    if [%ip%] EQU [] (
-        echo [e] No host ip given^^!
-        call
-        endlocal
-        exit /B !errorlevel!
-    )
+    bcdedit /set loadoptions EEM
     
     set /a valid=1
     if [%port%] LSS [50000] (
@@ -249,10 +235,6 @@ setlocal
     
     set cmd=
     
-    set dhcp_v=
-    if %dhcp% EQU 0 (
-        set dhcp_v=nodhcp
-    ) 
     set key_kv=
     if not [%key%] EQU [] (
         set key_kv=key:%key%
@@ -263,7 +245,7 @@ setlocal
     if [%bus%] NEQ [] (
         set "busparams_v=busparams:%bus%"
     )
-    set "cmd=bcdedit /dbgsettings net hostip:%ip% port:%port% !key_kv! !dhcp_v! !busparams_v!"
+    set "cmd=bcdedit /dbgsettings net hostip:%ip% port:%port% !key_kv! nodhcp !busparams_v!"
     
     if %verbose% EQU 1 echo !cmd!
     !cmd!
@@ -278,18 +260,16 @@ setlocal
 
 
 :usage
-    echo Usage: %prog_name% [/i ^<ip^>] [/p ^<port^>] [/k ^<key^>] [/b ^<param^>] [/dhcp] [/d] [/bd] [/c] [/t] [/r] [/v] [/h]
+    echo Usage: %prog_name% [/p ^<port^>] [/k ^<key^>] [/b ^<param^>] [/d] [/bd] [/c] [/t] [/r] [/v] [/h]
     exit /B 0
     
 :help
     call :usage
     echo.
     echo Options:
-    echo /i The host ip.
     echo /p The connection port. Default: 50000.
     echo /k The connection key. If not set, a random key will be generated.
     echo /b The bus param of the network device. Usually works without setting it. If not: Use kdnet.exe or open the property page for the network adapter :: details ^> Location information. 
-    echo /dhcp For DHCP.
     echo /r Reboot system with prompt.
     echo /d Set debug on.
     echo /bd Set bootdebug on.

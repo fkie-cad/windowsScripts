@@ -5,7 +5,7 @@ setlocal
 
     call :updateRegistry
     call :disableTasks
-    REM call :disableServices
+    call :disableServices
     REM call :blockIps
     REM call :updateHosts
 

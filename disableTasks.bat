@@ -192,8 +192,8 @@ setlocal
     echo disableTask
     echo   name: %name%
 
-    REM schtasks /End /TN "%name%"
-    REM schtasks /Change /TN "%name%" /Disable
+    schtasks /End /TN "%name%"
+    schtasks /Change /TN "%name%" /Disable
     
     endlocal
     exit /b %errorlevel%
@@ -203,8 +203,8 @@ setlocal
 setlocal
     set "name=%~1"
 
-    REM schtasks /Change /TN "%name%" /Enable
-    REM schtasks /Run /TN "%name%"
+    schtasks /Change /TN "%name%" /Enable
+    schtasks /Run /TN "%name%"
 
     endlocal
     exit /b %errorlevel%
@@ -214,8 +214,8 @@ setlocal
 setlocal
     set "name=%~1"
 
-    REM schtasks /End /TN "%name%"
-    REM schtasks /Delete /TN "%name%" /f
+    schtasks /End /TN "%name%"
+    schtasks /Delete /TN "%name%" /f
 
     endlocal
     exit /b %errorlevel%

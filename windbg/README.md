@@ -14,25 +14,41 @@ Last updated: 28.01.2023
 
 
 ## enableDbgPrint
-Enable debug print for KD WinDbg.
+Statically enable debug print for KD WinDbg by setting a registry key.
+Takes effect only after a reboot.
 
 ### Usage
 ```bash
-$ enableDbgPrint.bat [/c <componentId>] [/l <level>] [/v]
+$ enableDbgPrint.bat [/i <componentId>] [/l <level>] [/c] [/d] [/v]
 ```
 
 **Options:**  
-- /c: Component id of debugged module. Default: DEFAULT. 
-      Can be set to avoid spamming of other components.
+- /i: Component id of debugged module. Default: DEFAULT. 
+      Can be set to other values to avoid spamming of components.
 - /l: Severity of the message being sent. 
         Can be any 32-bit integer.  
       Numbers between 0 and 0x1F are interpreted as a bit shift (`1 << Level`). 
         I.e. `/l 0x1f` sets the 31th bit, the bit field becomes `0x80000000`.  
       Numbers between 0x20 and 0xFFFFFFFF set the importance bit field value itself. 
         I.e. `/l 0x80000000 <=> /l 0x1f`.  
+- /c: Check current debug filters.
+- /d: Delete setting of specified component.
 
 **Other:**  
 - /v Verbose mode
+
+### Remarks
+**ComponentId**
+
+Specifies the component calling this routine (i.e. DbgPrint(Ex)). 
+This must be one of the component name filter IDs defined in the Dpfilter.h header file. 
+To avoid mixing your driver's output with the output of Windows components, 
+  you should use only the following values for ComponentId:
+`DPFLTR_IHVVIDEO_ID`, `DPFLTR_IHVAUDIO_ID`, `DPFLTR_IHVNETWORK_ID`, `DPFLTR_IHVSTREAMING_ID`, `DPFLTR_IHVBUS_ID`, `DPFLTR_IHVDRIVER_ID`.
+The name used as the registry values seems to skip the prefix and suffix.
+So the values would be: `IHVVIDEO`, `IHVAUDIO`, `IHVNETWORK`, `IHVSTREAMING`, `IHVBUS`, `IHVDRIVER`.
+
+All messages sent by DbgPrint and KdPrint are associated with the DEFAULT component.
 
 ### Info
 https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-dbgprintex  
@@ -41,7 +57,8 @@ https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/reading-and-
 
 
 ## setNetKd
-Set guest system up for net kd. `BcdEdit` wrapper.
+Set guest system up for net kd. 
+`BcdEdit` wrapper.
 
 ### Usage
 ```bash
@@ -66,12 +83,14 @@ If if does not work after the reboot,
     i.e. debugger is not attached, 
     most likely the IP of the Network Adapter has changed.
 Now it's called "Ethernet (Kernel Debugger)".
-If the IP is adjusted to the former value or some other correct ip in the network it should connect after a reboot.
+The IP has to be corrected to the former value or some other correct ip in the network/subnet.
+After a reboot it should connect.
 
 
 
 ## setUsbKd
-Set guest system up for usb kd. `BcdEdit` wrapper.
+Set guest system up for usb kd. 
+`BcdEdit` wrapper.
 
 ### Usage
 ```bash

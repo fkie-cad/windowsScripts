@@ -30,8 +30,8 @@ set names=(^
     \Microsoft\Windows\CloudRestore\Backup^
     "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator"^
     "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip"^
-    \Microsoft\Windows\EnterpriseMgmt\MDMMaintenenceTask^
     \Microsoft\Windows\Flighting\FeatureConfig\BootstrapUsageDataReporting^
+    \Microsoft\Windows\Flighting\FeatureConfig\GovernedFeatureUsageProcessing^
     \Microsoft\Windows\Flighting\FeatureConfig\ReconcileConfigs^
     \Microsoft\Windows\Flighting\FeatureConfig\ReconcileFeatures^
     \Microsoft\Windows\Flighting\FeatureConfig\UsageDataFlushing^
@@ -46,6 +46,7 @@ set names=(^
     \Microsoft\Windows\UsageAndQualityInsights\UsageAndQualityInsights-MaintenanceTask^
     \Microsoft\Windows\WindowsAI\Recall\InitialConfiguration^
     \Microsoft\Windows\WindowsAI\Recall\PolicyConfiguration^
+    \Microsoft\Windows\WindowsAI\Settings\InitialConfiguration^
     )
 
 
@@ -249,6 +250,7 @@ setlocal
     echo \Microsoft\Windows\Flighting\ : Flighting is the process of running Windows Insider Preview Builds on your device. When you run these early versions of Windows and give us feedback, you can help us shape the future of Windows. Once you've registered for the program, you can run Insider Preview builds on as many devices as you want, each in the channel of your choice.
     echo     FeatureConfig\
     echo         BootstrapUsageDataReporting: Task periodically logging feature usage reports
+    echo         GovernedFeatureUsageProcessing: Task periodically reconciling feature configurations
     echo         ReconcileConfigs: Task periodically reconciling feature configurations
     echo         ReconcileFeatures: Task periodically reconciling feature configurations
     echo         UsageDataFlushing: Task persisting feature usage data to disk
@@ -263,8 +265,10 @@ setlocal
     echo \Microsoft\Windows\User Profile Service\HiveUploadTask : This task will automatically upload a roaming user profile's registry hive to its network location.
     echo \Microsoft\Windows\Windows Error Reporting\QueueReporting : Windows Error Reporting task to process queued reports.
     echo \Microsoft\Windows\WindowsAI\Recall\
-    echo     InitialConfiguration : ...
-    echo     PolicyConfiguration : ...
+    echo     InitialConfiguration : ??
+    echo     PolicyConfiguration : ??
+    echo \Microsoft\Windows\WindowsAI\Settings\
+    echo     InitialConfiguration: ??
     echo.
     echo Actions:
     echo /c : Check the task(s).

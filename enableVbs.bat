@@ -152,36 +152,44 @@ GOTO :ParseParams
         )
         
         REM 1: HVCI and Credential Guard can be configured
+        echo Setting Virtualization Based Security to %enabled%
         reg add "%deviceGuard%" /v "EnableVirtualizationBasedSecurity" /t REG_DWORD /d %enabled% /f
 
         REM Flags
         REM  1: Secure Boot is required
         REM  2: DMA Protection is required 
+        echo Setting Platform Security Feature Requirements to %rpsf%
         reg add "%deviceGuard%" /v "RequirePlatformSecurityFeatures" /t REG_DWORD /d %rpsf% /f
 
         REM 0: Enabled without UEFI lock for HVCI and Credential Guard is enabled
         REM 1: Enabled with UEFI lock for HVCI and Credential Guard is enabled 
+        echo Setting Device Guard locked mode to %locked% 
         reg add "%deviceGuard%" /v "Locked" /t REG_DWORD /d %locked% /f
 
         REM This registry key may have the value of 0 or 1. 
         REM The impact of these values is not documented. The value of this key is evaluated during system initialization
+        echo Setting Microsoft Signed Boot Chain Requirements to %enabled%
         reg add %deviceGuard% /v "RequireMicrosoftSignedBootChain" /t REG_DWORD /d %enabled% /f
         
         REM 0: HVCI is disabled 
         REM 1: HVCI is enabled
+        echo Setting Hypervisor Enforced Code Integrity to %enabled%
         reg add "%hypervisorEnforcedCodeIntegrity%" /v "Enabled" /t REG_DWORD /d %enabled% /f
 
         REM 0: Enabled without UEFI lock for HVCI is enabled
         REM 1: Enabled with UEFI lock for HVCI is enabled 
+        echo Setting Hypervisor Enforced Code Integrity locked mode to %enabled%
         reg add "%hypervisorEnforcedCodeIntegrity%" /v "Locked" /t REG_DWORD /d %locked% /f
         
         REM 0: Disabled is enabled - credentialGuard is disabled 
         REM 1: credentialGuard is enabled
+        echo Setting Credential Guard to %enabled%
         reg add "%credentialGuard%" /v "Enabled" /t REG_DWORD /d %enabled% /f
         
         REM To gray out the memory integrity UI and display the message "This setting is managed by your administrator"
         set /a "s=%disabled%+%locked%"
         if %s% NEQ 0 (
+            echo Deleting HypervisorEnforcedCodeIntegrity WasEnabledBy key 
             reg delete HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity /v "WasEnabledBy" /f >nul 2>&1 
             REM set errorlevel to 0
             call 
@@ -189,11 +197,14 @@ GOTO :ParseParams
         
         if %enabled% EQU 1 (
             if %locked% EQU 1 (
+                echo LsaCfgFlags to 1
                 reg add "%lsa%" /v "LsaCfgFlags" /t REG_DWORD /d 1 /f
             ) else (
+                echo LsaCfgFlags to 2
                 reg add "%lsa%" /v "LsaCfgFlags" /t REG_DWORD /d 2 /f
             )
         ) else (
+            echo LsaCfgFlags to 0
             reg add "%lsa%" /v "LsaCfgFlags" /t REG_DWORD /d 0 /f
         )
         
@@ -203,16 +214,49 @@ GOTO :ParseParams
     )
 
     if %check% EQU 1 (
+        echo -- Checking device guard -- 
         reg query %deviceGuard%
+        echo ----
+        echo.
+        
+        echo -- Checking HVCI -- 
         reg query %hypervisorEnforcedCodeIntegrity%
+        echo ----
+        echo.
+        
+        echo -- Checking Credential Guard -- 
         reg query %credentialGuard%
+        echo ----
+        echo.
+        
+        echo -- Checking LSA -- 
         reg query %lsa% /v LsaCfgFlags
-        reg query %ciStateKey% /v HVCIEnabled >nul 2>&1 
+        echo ----
+        echo.
         
+        echo -- Checking CI State --
+        reg query %ciStateKey% /v HVCIEnabled
+        echo ----
+        echo.
+        
+        echo -- Checking "Microsoft-Windows-Wininit" events --
         wevtutil qe System /c:3 /f:Text "/q:*[System[Provider[@Name='Microsoft-Windows-Wininit']]]" /rd:true
-        wevtutil qe System /c:1 /f:Text "/q:*[System[Provider[@Name='LsaSrv']]]" /rd:true
+        echo ----
+        echo.
         
+        echo -- Checking "Credential Guard auto enablement status." events --
+        wevtutil qe System /c:1 /f:Text "/q:*[System[EventID=6156]]" /rd:true
+        echo ----
+        echo.
+        
+        echo -- Checking "Credential Guard not licensed" warnings --
+        wevtutil qe System /c:1 /f:Text "/q:*[System[EventID=6147]]" /rd:true
+        echo ----
+        echo.
+        
+        echo -- Checking Device Guard Properties --
         powershell -c "Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\Microsoft\Windows\DeviceGuard"
+        echo ----
     )
     
     :: if %errorlevel% EQU 0 (
@@ -252,6 +296,8 @@ setlocal
 
 :disableLockedVBS
 setlocal
+    echo disabling locked VBS
+    
     set "guid={0cb3b571-2f2e-4343-a879-d86a476d7215}"
     
     mountvol X: /s

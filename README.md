@@ -72,7 +72,6 @@ For questions and bug reports feel free to open an issue.
 - [setDNS](#setdns)
 - [setIp](#setip)
 - [setNx](#setnx)
-- [shortcutPostfix](#shortcutPostfix)
 - [startNtProg](#startntprog)
 - [copyright, credits & contact](#copyright,-credits-&-contact)
 
@@ -881,17 +880,6 @@ Options:
 - /out Set DEP to opt out.
 - /v Verbose mode.
 - /h Print this.
-
-
-
-## shortcutPostfix
-Disable appending a " - Shortcut" to each newly created shortcut.
-
-
-### Usage
-```bash
-$ shortcutPostfix.bat
-```
 
 
 

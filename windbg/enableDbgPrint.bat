@@ -117,6 +117,7 @@ GOTO :ParseParams
     echo.
     echo Options:
     echo /i: Component id of debugged module. Default: DEFAULT. Can be set to other values to avoid spamming of components.
+    echo     I.e.: IHVVIDEO, IHVAUDIO, IHVNETWORK, IHVSTREAMING, IHVBUS, IHVDRIVER
     echo /l: Severity of the message being sent. Can be any 32-bit integer. 
     echo     Numbers between 0 and 0x1F are interpreted as a bit shift (1 ^<^< Level). I.e. /l 0x1f sets the 31th bit, the bit field becomes 0x80000000.
     echo     Numbers between 0x20 and 0xFFFFFFFF set the importance bit field value itself. I.e. /l 0x80000000 ^<=^> /l 0x1f.

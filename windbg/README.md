@@ -48,6 +48,14 @@ To avoid mixing your driver's output with the output of Windows components,
 The name used as the registry values seems to skip the prefix and suffix.
 So the values would be: `IHVVIDEO`, `IHVAUDIO`, `IHVNETWORK`, `IHVSTREAMING`, `IHVBUS`, `IHVDRIVER`.
 
+Predefined levels are 
+```
+#define   DPFLTR_ERROR_LEVEL     0
+#define   DPFLTR_WARNING_LEVEL   1
+#define   DPFLTR_TRACE_LEVEL     2
+#define   DPFLTR_INFO_LEVEL      3
+```
+
 All messages sent by DbgPrint and KdPrint are associated with the DEFAULT component.
 
 ### Info

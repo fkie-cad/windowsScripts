@@ -10,8 +10,8 @@
 :: CredentialGuard is only "licensed"    ::
 :: in Windows Enterprise or Education    ::
 ::                                       ::
-:: vs: 1.0.4                             ::
-:: changed: 13.05.2024                   ::
+:: vs: 1.0.5                             ::
+:: changed: 28.04.2026                   ::
 ::                                       ::
 :::::::::::::::::::::::::::::::::::::::::::
 

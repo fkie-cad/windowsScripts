@@ -474,7 +474,7 @@ Otherwise it will start with a "WinInit" Event 13:
 "Credential Guard was started and will protect LSA credentials."  
 But after that there occurs an "Lsa (LsaSrv)" warning 6147: 
 "Credential Guard is configured to run, but is not licensed. Credential Guard was not started."
-Even though it is shown as running in the registry and msinfo32 app.
+Even though it is shown as active in the registry and msinfo32 app.
 
 Disabling an uefi locked VBS system requires some Windows efi driver (SecConfig.efi) to be booted with, to disable the locked vbs system.
 Just setting the registry values to 0 does not work.

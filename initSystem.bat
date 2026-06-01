@@ -62,6 +62,7 @@ echo user_sid_cch: %user_sid_cch%
     call :System_Notifications
     call :System_SharedExperience
     call :Update_DeliveryOptimization
+    call :UAC
     
     endlocal
     echo done
@@ -373,12 +374,46 @@ setlocal
     
     exit /b 0
 
+:UAC
+    echo UAC Prompts
+    
+    set "key=HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
+    
+    REM Behavior of the elevation prompt for administrators in Admin Approval Mode
+    REM 0 = Elevate without prompting
+    REM 1 = Prompt for credentials on the secure desktop
+    REM 2 = Prompt for consent on the secure desktop 
+    REM 3 = Prompt for credentials
+    REM 4 = Prompt for consent
+    REM 5 (Default) = Prompt for consent for non-Windows binaries
+    call :setDWValue "%key%" ConsentPromptBehaviorAdmin 2
+    
+    REM Switch to the secure desktop when prompting for elevation
+    call :setDWValue "%key%" PromptOnSecureDesktop 1
+    
+    REM Run all administrators in Admin Approval Mode
+    call :setDWValue "%key%" EnableLUA 1
+    
+    REM already default
+    REM Behavior of the elevation prompt for standard users
+    REM 0 = Automatically deny elevation requests, 1 = Prompt for credentials on the secure desktop   3 (Default) = Prompt for credentials
+    REM "ConsentPromptBehaviorUser"=dword:00000003
+    REM Detect application installations and prompt for elevation
+    REM "EnableInstallerDetection"=dword:00000001
+    REM Virtualize file and registry write failures to per-user locations
+    REM "EnableVirtualization"=dword:00000001
+    REM Only elevate executables that are signed and validated
+    REM "ValidateAdminCodeSignatures"=dword:00000000
+    REM Admin Approval Mode for the Built-in Administrator account
+    REM "FilterAdministratorToken"=dword:00000000
+
+    exit /b 0
 
 
 
 
 
-:setDWValue
+
 setlocal
     set "key=%~1"
     set "value=%~2"

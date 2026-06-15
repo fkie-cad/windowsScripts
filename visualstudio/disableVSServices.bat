@@ -2,11 +2,8 @@
 :: Disable or Enable scheduled VS tasks.
 :: All found scheduled tasks are autoupdate tasks.
 ::
-:: Last change: 10.03.2022
-:: Version: 1.0.0
-::
-:: 
-:: 
+:: Last change: 15.06.2026
+:: Version: 1.1.0
 ::
 
 @echo off
@@ -24,15 +21,22 @@ set /a all=0
 set /a installerElevation=0
 set /a collector=0
 
-set /a START_BOOT=0
-set /a START_SYSTEM=1
-set /a START_AUTO=2
-set /a START_DEMAND=3
-set /a START_DISABLED=4
+set /a REG_START_BOOT=0
+set /a REG_START_SYSTEM=1
+set /a REG_START_AUTO=2
+set /a REG_START_DEMAND=3
+set /a REG_START_DISABLED=4
+
+set SC_START_BOOT="boot"
+set SC_START_SYSTEM="system"
+set SC_START_AUTO="auto"
+set SC_START_DEMAND="demand"
+set SC_START_DISABLED="disabled"
 
 set /a START_DELETE=5
 
-set /a startValue=%START_DISABLED%
+set /a regStartValue=%REG_START_DISABLED%
+set scStartValue=%SC_START_DISABLED%
 
 
 GOTO :ParseParams
@@ -60,15 +64,18 @@ GOTO :ParseParams
     )
 
     IF /i "%~1"=="/e" (
-        SET startValue=%START_DEMAND%
+        SET /a regStartValue=%REG_START_DEMAND%
+        SET scStartValue=%SC_START_DEMAND%
         goto reParseParams
     )
     IF /i "%~1"=="/d" (
-        SET startValue=%START_DISABLED%
+        SET /a regStartValue=%REG_START_DISABLED%
+        SET scStartValue=%SC_START_DISABLED%
         goto reParseParams
     )
     IF /i "%~1"=="/x" (
-        SET startValue=%START_DELETE%
+        SET /a regStartValue=%START_DELETE%
+        SET scStartValue=%START_DELETE%
         goto reParseParams
     )
     
@@ -96,7 +103,7 @@ GOTO :ParseParams
 
     set /a "s=%installerElevation%+%collector%"
     if %s% == 0 (
-        echo setting all
+        REM echo setting all
         set /a all=1
     )
 
@@ -108,25 +115,26 @@ GOTO :ParseParams
     if %verbose% == 1 (
         echo VSInstallerElevationService : %installerElevation%
         echo VSStandardCollectorService150 : %collector%
+        echo regStartValue : %regStartValue%
+        echo scStartValue : %scStartValue%
     )
-
             
     if %installerElevation% EQU 1 (
-        if %startValue% EQU %START_DELETE% (
-            reg delete "%installerElevationKey%"
-            call :disableSc VSInstallerElevationService
+        if %regStartValue% EQU %START_DELETE% (
+            call :deleteReg "%installerElevationKey%"
+            call :deleteSc VSInstallerElevationService
         ) else (
-            reg add "%installerElevationKey%" /v "Start" /t REG_DWORD /d %startValue% /f
-            call :enableSc VSInstallerElevationService
+            call :updateReg "%installerElevationKey%" %regStartValue%
+            call :updateSc VSInstallerElevationService %scStartValue%
         )
     )      
     if %collector% EQU 1 (
-        if %startValue% EQU %START_DELETE% (
-            reg delete "%collectorKey%"
-            call :disableSc VSStandardCollectorService150
+        if %regStartValue% EQU %START_DELETE% (
+            call :deleteReg "%collectorKey%"
+            call :deleteSc VSStandardCollectorService150
         ) else (
-            reg add "%collectorKey%" /v "Start" /t REG_DWORD /d %startValue% /f
-            call :enableSc VSStandardCollectorService150
+            call :updateReg "%collectorKey%" %regStartValue%
+            call :updateSc VSStandardCollectorService150 %scStartValue%
         )
     )   
     
@@ -135,29 +143,54 @@ GOTO :ParseParams
     exit /b 0
 
 
+:updateReg
+setlocal
+    set "key=%~1"
+    set /a "startType=%~2"
+
+    reg add "%key%" /v "Start" /t REG_DWORD /d %startType% /f
+
+    endlocal
+    exit /b %errorlevel%
+
+
+:deleteReg
+setlocal
+    set "key=%~1"
+    
+    reg delete "%key%" /f
+
+    endlocal
+    exit /b %errorlevel%
+    
+    
+:updateSc
+setlocal
+    set "name=%~1"
+    set "startType=%~2"
+
+    sc stop "%name%"
+    sc config "%name%" start= %startType%
+
+    endlocal
+    exit /b %errorlevel%
+    
+    
+:deleteSc
+setlocal
+    set "name=%~1"
+    set "startType=%~2"
+
+    sc stop "%name%"
+    sc delete "%name%"
+
+    endlocal
+    exit /b %errorlevel%
+    
+
 :usage
-    echo Usage: %prog_name% [/all] [/ctr] [/ie] [/e|/d|/x] [/h] [/v]
+    echo Usage: %prog_name% [/all] [/ctr] [/ie] [/e^|/d^|/x] [/h] [/v]
     exit /B 0
-
-
-:disableSc
-setlocal
-    set "name=%~1"
-
-    sc stop "%name%" & sc config "%name%" start= disabled
-
-    endlocal
-    exit /b %errorlevel%
-
-
-:enableSc
-setlocal
-    set "name=%~1"
-
-    sc start "%name%" & sc config "%name%" start= auto
-
-    endlocal
-    exit /b %errorlevel%
 
 
 :help

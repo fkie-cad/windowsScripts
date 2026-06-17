@@ -2,8 +2,11 @@
 :: Disable or Enable scheduled VS tasks.
 :: All found scheduled tasks are autoupdate tasks.
 ::
-:: Last change: 15.06.2026
-:: Version: 1.1.0
+:: Last change: 10.03.2022
+:: Version: 1.0.0
+::
+:: 
+:: 
 ::
 
 @echo off
@@ -33,7 +36,8 @@ set SC_START_AUTO="auto"
 set SC_START_DEMAND="demand"
 set SC_START_DISABLED="disabled"
 
-set /a START_DELETE=5
+set /a DELETE=5
+set /a CHECK=6
 
 set /a regStartValue=%REG_START_DISABLED%
 set scStartValue=%SC_START_DISABLED%
@@ -63,6 +67,11 @@ GOTO :ParseParams
         goto reParseParams
     )
 
+    IF /i "%~1"=="/c" (
+        SET /a regStartValue=%CHECK%
+        SET scStartValue=%CHECK%
+        goto reParseParams
+    )
     IF /i "%~1"=="/e" (
         SET /a regStartValue=%REG_START_DEMAND%
         SET scStartValue=%SC_START_DEMAND%
@@ -74,8 +83,8 @@ GOTO :ParseParams
         goto reParseParams
     )
     IF /i "%~1"=="/x" (
-        SET /a regStartValue=%START_DELETE%
-        SET scStartValue=%START_DELETE%
+        SET /a regStartValue=%DELETE%
+        SET scStartValue=%DELETE%
         goto reParseParams
     )
     
@@ -94,19 +103,21 @@ GOTO :ParseParams
 :main
 
     :: Admin check
-    fltmc >nul 2>&1 || (
-        echo [e] Administrator privileges required.
-        call
-        goto mainend
+    if %regStartValue% NEQ %CHECK% (
+        fltmc >nul 2>&1 || (
+            echo [e] Administrator privileges required.
+            call
+            goto mainend
+        )
     )
-
-
+    
+    
     set /a "s=%installerElevation%+%collector%"
     if %s% == 0 (
         REM echo setting all
         set /a all=1
     )
-
+    
     if %all% == 1 (
         set /a installerElevation=1
         set /a collector=1
@@ -118,25 +129,37 @@ GOTO :ParseParams
         echo regStartValue : %regStartValue%
         echo scStartValue : %scStartValue%
     )
-            
+    
     if %installerElevation% EQU 1 (
-        if %regStartValue% EQU %START_DELETE% (
+        if %regStartValue% EQU %DELETE% (
+            ECHO deleting "%installerElevationKey%"
             call :deleteReg "%installerElevationKey%"
             call :deleteSc VSInstallerElevationService
+        ) else if %regStartValue% EQU %CHECK% (
+            ECHO checking "%installerElevationKey%"
+            call :checkReg "%installerElevationKey%"
+            call :checkSc VSInstallerElevationService
         ) else (
+            ECHO updating "%installerElevationKey%"
             call :updateReg "%installerElevationKey%" %regStartValue%
             call :updateSc VSInstallerElevationService %scStartValue%
         )
-    )      
+    )
     if %collector% EQU 1 (
-        if %regStartValue% EQU %START_DELETE% (
+        if %regStartValue% EQU %DELETE% (
+            ECHO deleting "%collectorKey%"
             call :deleteReg "%collectorKey%"
             call :deleteSc VSStandardCollectorService150
+        ) else if %regStartValue% EQU %CHECK% (
+            ECHO checking "%collectorKey%"
+            call :checkReg "%collectorKey%"
+            call :checkSc VSStandardCollectorService150
         ) else (
+            ECHO updating "%collectorKey%"
             call :updateReg "%collectorKey%" %regStartValue%
             call :updateSc VSStandardCollectorService150 %scStartValue%
         )
-    )   
+    )
     
     :mainend
     endlocal
@@ -146,7 +169,7 @@ GOTO :ParseParams
 :updateReg
 setlocal
     set "key=%~1"
-    set /a "startType=%~2"
+    set "startType=%~2"
 
     reg add "%key%" /v "Start" /t REG_DWORD /d %startType% /f
 
@@ -159,6 +182,16 @@ setlocal
     set "key=%~1"
     
     reg delete "%key%" /f
+
+    endlocal
+    exit /b %errorlevel%
+
+
+:checkReg
+setlocal
+    set "key=%~1"
+    
+    reg query "%key%"
 
     endlocal
     exit /b %errorlevel%
@@ -179,10 +212,26 @@ setlocal
 :deleteSc
 setlocal
     set "name=%~1"
-    set "startType=%~2"
 
     sc stop "%name%"
     sc delete "%name%"
+
+    endlocal
+    exit /b %errorlevel%
+    
+    
+:checkSc
+setlocal
+    set "name=%~1"
+
+    echo Status:
+    sc query "%name%"
+    echo.
+    echo Configuration:
+    sc qc "%name%"
+    echo.
+    echo Description:
+    sc qdescription "%name%"
 
     endlocal
     exit /b %errorlevel%

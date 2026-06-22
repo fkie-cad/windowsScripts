@@ -1,5 +1,5 @@
 # Some useful (batch) scripts
-Last updated: 04.03.2026
+Last updated: 22.06.2026
 
 Most of the scripts are used in daily work and are well tested. 
 Some of them are less tested.
@@ -31,6 +31,7 @@ For questions and bug reports feel free to open an issue.
 - [WinPE/](#winpe)
 - [Windows Features/](#windows-features)
 - [addBinShellCtxtMenuEntry](#addBinShellCtxtMenuEntry)
+- [checkSecBootCert](#checksecbootcert)
 - [cleanUpdateFolder](#cleanupdatefolder)
 - [createBootStick](#createbootstick)
 - [createIso](#createiso)
@@ -152,6 +153,15 @@ Options:
 Example
 ```bash
 addBinShellCtxtMenuEntry.bat /p "c:\myAwesome.exe" /l "Open in myAwesome.exe" /pb "-inPath" /pa "-awesomeize"
+```
+
+
+
+## checkSecBootCert
+Check various events related to the secure boot updating status on the device.
+
+```bash
+$ checkSecBootCert.bat
 ```
 
 

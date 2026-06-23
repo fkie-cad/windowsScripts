@@ -2,13 +2,14 @@
 
 Batch scripts to silence visual studio and build tools network communication
 
-**Should be rerun after each update of them**
+**Should be rerun after each update of vs or build tools**
 
 Last updated: 06.06.2025  
 
 
 ## Contents
 - [disableBuildToolsNetConnections](#disableBuildToolsNetConnections)
+- [disablePerfWatson](#disableperfwatson)
 - [disableVSNetConnections](#disableVSNetConnections)
 - [disableVSTasks](#disableVSTasks)
 - [disableVSTelemetryAndFeedback](#disableVSTelemetryAndFeedback)
@@ -39,6 +40,17 @@ $ disableBuildToolsNetConnections.bat [/all] [/t] [/x] [/vsy <year>] [/h] [/v]
 
 Defaults to set all targets.  
 
+
+
+## disablePerfWatson
+Renaming all occurrences of PerfWatson2 found in ("C:\Program Files (x86)\" and "C:\Program Files\") to disable them.
+At least in VS 2026 (18) PerfWatson2 throws annoying errors at each startup because of not found (disabled) services.
+Which is circumvented this way.
+
+### Usage
+```bash
+$ disablePerfWatson.bat
+```
 
 
 ## disableVSNetConnections
@@ -115,7 +127,8 @@ Defaults to `/d` (Disable) all targets.
 
 
 ## disableVSTelemetryAndFeedback
-Disable VisualStudio telemetry and feedback (currently, feedback disabling is commented out) by registry modification and cleaning folders, files.
+Disable VisualStudio telemetry and feedback by registry modification and cleaning folders, files.
+(Currently, feedback disabling is commented out.)
 
 Mostly just copy-and-pasted from somewhere else.
 

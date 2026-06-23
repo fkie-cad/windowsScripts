@@ -12,6 +12,9 @@ CALL "%my_dir%\disableVSTelemetryAndFeedback.bat"
 echo ========== disable services
 CALL  "%my_dir%\disableVSServices.bat" /vsy %vsy%
 
+echo ========== PerfWatson2
+CALL  "%my_dir%\disablePerfWatson.bat"
+
 
 set /a vsy=2022
 

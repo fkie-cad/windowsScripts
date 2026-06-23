@@ -2,17 +2,20 @@
 
 Batch scripts to silence visual studio and build tools network communication
 
-**Should be rerun after each update of vs or build tools**
+**Should be rerun after each update of vs and/or build tools**
 
-Last updated: 06.06.2025  
+Last updated: 23.06.2026  
 
 
 ## Contents
-- [disableBuildToolsNetConnections](#disableBuildToolsNetConnections)
+- [disableBuildToolsNetConnections](#disablebuildtoolsnetconnections)
+- [disableHosts](#disablehosts)
+- [disableMsBuildNetConnections](#disablemsbuildnetconnections)
 - [disablePerfWatson](#disableperfwatson)
-- [disableVSNetConnections](#disableVSNetConnections)
-- [disableVSTasks](#disableVSTasks)
-- [disableVSTelemetryAndFeedback](#disableVSTelemetryAndFeedback)
+- [disableVSNetConnections](#disablevsnetconnections)
+- [disableVSServices](#disablevsservices)
+- [disableVSTasks](#disablevstasks)
+- [disableVSTelemetryAndFeedback](#disablevstelemetryandfeedback)
 
 
 
@@ -42,8 +45,32 @@ Defaults to set all targets.
 
 
 
+## disableHosts
+Adds entries of known hosts to C:\Windows\System32\drivers\etc\hosts.
+Just one direction (add active entries).
+
+### Usage
+```bash
+$ disableHosts.bat
+```
+
+
+
+## disableMsBuildNetConnections
+Adds (blocking) firewall entries for all found MsBuild.exe in "C:\Program Files (x86)\" and "C:\Program Files\".
+
+### Usage
+```bash
+$ disableMsBuildNetConnections.bat [/x]
+```
+
+**Flags:**
+- /x: Delete the specified rule(s) (instead of adding them).
+
+
+
 ## disablePerfWatson
-Renaming all occurrences of PerfWatson2 found in ("C:\Program Files (x86)\" and "C:\Program Files\") to disable them.
+Renaming all occurrences of PerfWatson2 found in "C:\Program Files (x86)\" and "C:\Program Files\" to disable them.
 At least in VS 2026 (18) PerfWatson2 throws annoying errors at each startup because of not found (disabled) services.
 Which is circumvented this way.
 
@@ -57,13 +84,10 @@ $ disablePerfWatson.bat
 Disabling Visual Studio internet connections from 
 - %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\IDE\devenv.exe
 - %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\IDE\PerfWatson2.exe
-- %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\IDE\PrivateAssemblies\Microsoft.Alm.Shared.Remoting.RemoteContainer.dll
 - %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\ServiceHub.VSDetouredHost.exe
 - %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\ServiceHub.IdentityHost.exe
 - %ProgramFiles% (x86)\Microsoft Visual Studio\Installer\resources\app\ServiceHub\Services\Microsoft.VisualStudio.Setup.Service\BackgroundDownload.exe
 - %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\\%vs_edition%\VC\Tools\MSVC\\...\HostXX\xx\vctip.exe
-
-Running this script is considered more reliable then `disableVSTelemetryAndFeedback.bat`.
 
 ### Usage
 ```bash
@@ -94,6 +118,34 @@ Defaults to set all targets.
 ### Remarks 
 Some local connections of devenv.exe seem to remain.
 
+
+
+## disableVSServices
+Disabling Visual Studio 
+- VSInstallerElevationService
+- VSStandardCollectorService150
+
+### Usage
+```bash
+$ disableVSServices.bat [/all] [/ctr] [/ie] [/c|/e|/d|/x] [/h] [/v]
+```
+**Targets:**
+- /ie: Disable "VSInstallerElevationService"
+- /ctr: Disable "VSStandardCollectorService150"
+
+**Options:**
+- /c: Check specified services
+- /d: Disable specified services
+- /e: Enable specified services
+- /x: Delete specified services
+
+
+**Other:**
+- /v: More verbose.
+- /h: Print this.
+
+Defaults to disable all targets.
+Be sure to rerun especially for /ubdl after each update.
 
 
 ## disableVSTasks

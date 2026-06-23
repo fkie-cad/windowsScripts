@@ -110,6 +110,11 @@ GOTO :ParseParams
         echo vctip : %vctip%
     )
 
+    REM msbuild
+    if %msbuild% == 1 (
+        call :disableMsBuild %block%
+    )
+    
     REM service hub hosts
     if %vctip% == 1 (
         if ["%bt_path%"] NEQ [] call :disableVctip "%bt_path%" %block%
@@ -167,6 +172,26 @@ setlocal
             call :makeRule "bt vctip (!counter!) !name!" "%%p" %block%
             set /a counter+=1
         )
+    )
+    
+    endlocal
+    exit /b %errorlevel%
+    
+REM block all msbuild.exe 
+REM params:
+REM 1 block boolean block or unblock rule
+:disableMsBuild
+setlocal
+    
+    set /a block=%~1
+    set /a counter=0
+    
+    for /F "tokens=1 delims=" %%H in ('where /r "%ProgramFiles(x86)%\Microsoft Visual Studio" *msbuild.exe') do (
+        
+        echo setting rule for "%%H"
+        call :makeRule "msbuild (!counter!)" "%%H" %block%
+        set /a counter+=1
+        
     )
     
     endlocal

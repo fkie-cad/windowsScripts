@@ -19,7 +19,6 @@ set /a all=0
 set /a bgdl=0
 set /a devenv=0
 set /a perfwatson=0
-set /a remoteContainer=0
 set /a shub=0
 set /a vctip=0
 
@@ -56,10 +55,6 @@ GOTO :ParseParams
     )
     IF /i "%~1"=="/p" (
         SET /a perfwatson=1
-        goto reParseParams
-    )
-    IF /i "%~1"=="/r" (
-        SET /a remoteContainer=1
         goto reParseParams
     )
     IF /i "%~1"=="/s" (
@@ -128,14 +123,13 @@ GOTO :ParseParams
     )
 
 
-    set /a "s=%bgdl%+%devenv%+%perfwatson%+%remoteContainer%+%shub%+%vctip%"
+    set /a "s=%bgdl%+%devenv%+%perfwatson%+%shub%+%vctip%"
     if %s% == 0 set /a all=1
 
     if %all% == 1 (
         set /a bgdl=1
         set /a devenv=1
         set /a perfwatson=1
-        set /a remoteContainer=1
         set /a shub=1
         REM set /a tlmtr=1
         set /a vctip=1
@@ -148,7 +142,6 @@ GOTO :ParseParams
         echo bgdl : %bgdl%
         echo devenv : %devenv%
         echo perfwatson : %perfwatson%
-        echo remoteContainer : %remoteContainer%
         echo shub : %shub%
         REM echo tlmtr : %tlmtr%
         echo vctip : %vctip%
@@ -169,11 +162,6 @@ GOTO :ParseParams
         call :makeRule "VS PerfWatson2" "%vs_path%\Common7\IDE\PerfWatson2.exe" %block%
     )
 
-    REM RemoteContainer.dll
-    if %remoteContainer% == 1 (
-        call :makeRule "VS RemoteContainer" "%vs_path%\Common7\IDE\PrivateAssemblies\Microsoft.Alm.Shared.Remoting.RemoteContainer.dll" %block%
-    )
-
     REM service hub hosts
     if %shub% == 1 (
     
@@ -182,20 +170,6 @@ GOTO :ParseParams
         call :disableServiceHubHosts %block%
     )
     
-    REM set tlmtr_dll=Microsoft.VisualStudio.Telemetry.dll
-    REM telemetry
-    REM if %tlmtr% == 1 (
-        REM call :makeRule "VS Telemetry01" "C:\Windows\assembly\NativeImages_v4.0.30319_32\Microsoft.*****#\*****\Microsoft.VisualStudio.Telemetry.ni.dll" %block%
-        REM call :makeRule "VS Telemetry02" "%vs_path%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x64\PrivateHost\%tlmtr_dll%" %block%
-        REM call :makeRule "VS Telemetry03" "%vs_path%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\PrivateHost\%tlmtr_dll%" %block%
-        REM call :makeRule "VS Telemetry04" "%vs_base%\%vs_year%\BuildTools\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x64\PrivateHost\%tlmtr_dll%" %block%
-        REM call :makeRule "VS Telemetry05" "%vs_base%\%vs_year%\BuildTools\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\PrivateHost\%tlmtr_dll%" %block%
-        REM call :makeRule "VS Telemetry06" "%vs_path%\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64\%tlmtr_dll%" %block%
-        REM call :makeRule "VS Telemetry07" "%vs_path%\VC\Tools\MSVC\14.29.30133\bin\Hostx86\x86\%tlmtr_dll%" %block%
-        REM call :makeRule "VS Telemetry08" "%vs_base%\%vs_year%\BuildTools\VC\Tools\MSVC\14.16.27023\bin\HostX64\x64\%tlmtr_dll%" %block%
-        REM call :makeRule "VS Telemetry09" "%vs_base%\%vs_year%\BuildTools\VC\Tools\MSVC\14.16.27023\bin\HostX86\x86\%tlmtr_dll%" %block%
-    REM )
-
     :: C:\Program Files (x86)\Microsoft Visual Studio\%vs_year%\%vs_edition%\Common7\IDE\VC\vcpackages\VCPkgSrv.exe
     :: C:\Program Files (x86)\Microsoft Visual Studio\%vs_year%\%vs_edition%\Common7\IDE\PrivateAssemblies\Microsoft.Alm.Shared.Remoting.RemoteContainer.dll
 
@@ -287,7 +261,7 @@ setlocal
     exit /b %errorlevel%
 
 :usage
-    echo Usage: %prog_name% [/all] [/b] [/d] [/p] [/r] [/s] [/t] [/x] [/vse ^<edition^>] [/vsy ^<year^>] [/h] [/v]
+    echo Usage: %prog_name% [/all] [/b] [/d] [/p] [/s] [/t] [/x] [/vse ^<edition^>] [/vsy ^<year^>] [/h] [/v]
     exit /B 0
     
 :help
@@ -298,7 +272,6 @@ setlocal
     echo /b: Microsoft Visual Studio\Installer\resources\app\ServiceHub\Services\Microsoft.VisualStudio.Setup.Service\BackgroundDownload.exe
     echo /d: %vs_path%\Common7\IDE\devenv.exe
     echo /p: %vs_path%\Common7\IDE\PerfWatson2.exe
-    echo /r: %vs_path%\Common7\IDE\PrivateAssemblies\Microsoft.Alm.Shared.Remoting.RemoteContainer.dll
     echo /s: %vs_path%\Common7\ServiceHub\Hosts\*\*.exe
     echo /t: VisualStudio vctip.exe
     echo.

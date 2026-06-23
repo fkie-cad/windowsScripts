@@ -238,7 +238,7 @@ setlocal
     
 
 :usage
-    echo Usage: %prog_name% [/all] [/ctr] [/ie] [/e^|/d^|/x] [/h] [/v]
+    echo Usage: %prog_name% [/all] [/ctr] [/ie] [/c^|/e^|/d^|/x] [/h] [/v]
     exit /B 0
 
 
@@ -250,6 +250,7 @@ setlocal
     echo /ctr: Change %collectorKey%
     echo.
     echo Options:
+    echo /c: Check specified service
     echo /e: Enable specified service
     echo /d: Disable specified service
     echo /x: Delete specified service

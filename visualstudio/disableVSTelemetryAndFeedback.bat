@@ -31,6 +31,9 @@ REM reg add "%VS_POLICIES_FEEDBACK_KEY%" /v DisableScreenshotCapture /t REG_DWOR
 rem Disable PerfWatson
 reg add "%VS_POLICIES_SQM_KEY%" /v OptIn /t REG_DWORD /d 0 /f
 
+rem disable copilot
+reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\Copilot" /v DisableCopilot /t REG_DWORD /d 1 /f
+
 rem Disable telemetry
 reg add "%VS_TELEMETRY_KEY%" /v TurnOffSwitch /t REG_DWORD /d 1 /f
 
@@ -85,40 +88,3 @@ setlocal
     echo ^[^<^] optOutSqm
     endlocal
     exit /b %errorlevel%
-
-
-
-rem Also considering adding these hostnames to your C:\Windows\system32\drivers\etc\hosts
-REM ################################
-REM #   Windows Customer experience telemetry
-    REM 0.0.0.0       settings-win.data.microsoft.com
-REM ################################
-REM #   Visual Studio Community telemetry from:- https://gist.github.com/zeffy/f0fe4be391a2f1a4246d0482bbf57c1a
-    REM 0.0.0.0       vortex.data.microsoft.com
-    REM 0.0.0.0       dc.services.visualstudio.com
-    REM 0.0.0.0       visualstudio-devdiv-c2s.msedge.net
-    REM 0.0.0.0       az667904.vo.msecnd.net
-    REM 0.0.0.0       az700632.vo.msecnd.net
-    REM 0.0.0.0       sxpdata.microsoft.com
-    REM 0.0.0.0       sxp.microsoft.com
-REM ################################
-REM # More telemetry from:- https://www.reddit.com/r/pihole/comments/a12zwl/does_anyone_have_an_extensive_list_of_microsoft/
-    REM 0.0.0.0       geo.settings-win.data.microsoft.com.akadns.net
-    REM 0.0.0.0       db5-eap.settings-win.data.microsoft.com.akadns.net
-    REM 0.0.0.0       db5.settings-win.data.microsoft.com.akadns.net
-    REM 0.0.0.0       db5.vortex.data.microsoft.com.akadns.net
-    REM 0.0.0.0       asimov-win.settings.data.microsoft.com.akadns.net
-    REM 0.0.0.0       v10-win.vortex.data.microsft.com.akadns.net
-    REM 0.0.0.0       v10.vortex-win.data.microsft.com
-    REM 0.0.0.0       geo.vortex.data.microsoft.com.akadns.net
-    REM 0.0.0.0       us.vortex-win.data.microsft.com
-    REM 0.0.0.0       eu.vortex-win.data.microsft.com
-    REM 0.0.0.0       vortex-win-sandbox.data.microsoft.com
-    REM 0.0.0.0       alpha.telemetry.microsft.com
-    REM 0.0.0.0       oca.telemetry.microsft.com
-    REM 0.0.0.0       weus2watcab02.blob.core.windows.net
-    REM 0.0.0.0       weus2watcab01.blob.core.windows.net
-    REM 0.0.0.0       eaus2watcab02.blob.core.windows.net
-    REM 0.0.0.0       eaus2watcab01.blob.core.windows.net
-    REM 0.0.0.0       ceuswatcab02.blob.core.windows.net
-    REM 0.0.0.0       ceuswatcab01.blob.core.windows.net

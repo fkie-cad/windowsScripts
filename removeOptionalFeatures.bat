@@ -3,8 +3,8 @@
 ::
 :: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/dism-capabilities-package-servicing-command-line-options?view=windows-11
 ::
-:: vs 1.0.0
-:: date 16.06.2025
+:: vs 1.0.1
+:: date 24.06.2026
 ::
 
 @echo off
@@ -139,6 +139,7 @@ GOTO :ParseParams
         echo action: %action%
     )
 
+    set /a reboot=0
     if %action% EQU %ACTION_REMOVE% (
         if ["%name%"] NEQ [""] (
             echo removing %name%
@@ -151,6 +152,7 @@ GOTO :ParseParams
                 echo.
             )
         )
+        set /a reboot=1
     ) else if %action% EQU %ACTION_ADD% (
         if ["%name%"] NEQ [""] (
             echo adding %name%
@@ -163,6 +165,7 @@ GOTO :ParseParams
                 echo.
             )
         )
+        set /a reboot=1
     ) else if %action% EQU %ACTION_CHECK% (
         if ["%name%"] NEQ [""] (
             echo checking %name%
@@ -183,6 +186,12 @@ GOTO :ParseParams
         goto mainend
     )
     
+    if %reboot% EQU 1 (
+        SET /P confirm="[?] Reboot now? (Y/[N])?"
+        IF /I "!confirm!" EQU "Y" (
+            shutdown /r /t 0
+        )
+    )
     
     :mainend
     endlocal
@@ -216,7 +225,7 @@ setlocal
         exit /b %errorlevel%
     )
     
-    DISM /Online /Remove-Capability /CapabilityName:"%identity%"
+    DISM /Online /Remove-Capability /CapabilityName:"%identity%" /NoRestart
     
     endlocal
     exit /b %errorlevel%
@@ -226,7 +235,7 @@ setlocal
 setlocal
     set "name=%~1"
 
-    DISM /Online /Add-Capability /CapabilityName:"%name%"
+    DISM /Online /Add-Capability /CapabilityName:"%name%" /NoRestart
 
     endlocal
     exit /b %errorlevel%

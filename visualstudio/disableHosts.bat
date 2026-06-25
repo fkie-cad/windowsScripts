@@ -21,16 +21,34 @@ setlocal
 
 set "hosts=%SystemRoot%\System32\drivers\etc\hosts"
 
-REM real wireshark capture of vs2022, vs2026
+REM real wireshark capture of vs2022, vs2026, msbuild
 REM all other disabling scripts already run
 REM to be rerun and extended with less disabling soon 
 set wsc_names=(^
     settings.visualstudio.microsoft.com^
-    go.microsoft.com^
-    aka.ms^
     telemetry.visualstudio.microsoft.com^
     targetednotifications-tm.trafficmanager.net^
-    aka.ms^
+    mobile.events.data.microsoft.com^
+    mobile.events.data.trafficmanager.net^
+    onedscolprdeus20.eastus.cloudapp.azure.com^
+    a81.dscd.akamai.net^
+    a1077.dscd.akamai.net^
+    default.exp-tas.com^
+)
+
+REM not captured but suspicious names
+REM maybe move to other script
+set suspected_vs=(^
+    perfwatson.visualstudio.com^
+    tfs-l0.trafficmanager.net^
+    tfs.bx-0007.bx-msedge.net^
+    dc.services.visualstudio.com^
+    dc.applicationinsights.azure.com^
+    dc.applicationinsights.microsoft.com^
+    rt.services.visualstudio.com^
+    vortex.data.microsoft.com^
+    browser.events.data.microsoft.com^
+    vsfeedback.visualstudio.com^
 )
 
 REM suspected copilot names
@@ -42,10 +60,30 @@ set copilot_names=(^
     github.copilot.githubassets.com^
 )
 
+REM more global ms ones
+REM maybe move to other general script
+set ms_names=(^
+    mobile.events.data.microsoft.com^
+    self.events.data.microsoft.com^
+    v10.events.data.microsoft.com^
+    v20.events.data.microsoft.com^
+    telecommand.telemetry.microsoft.com^
+    telemetry.microsoft.com^
+    vortex.data.microsoft.com^
+    vortex-win.data.microsoft.com^
+    settings-win.data.microsoft.com^
+    watson.telemetry.microsoft.com^
+    watson.microsoft.com^
+    umwatsonc.events.data.microsoft.com^
+    ceuswatcab01.blob.core.windows.net^
+    ceuswatcab02.blob.core.windows.net^
+)
+REM safe to block but may break some minor usability
+REM go.microsoft.com
+REM aks.ms
+
 REM Visual Studio Community telemetry from:- https://gist.github.com/zeffy/f0fe4be391a2f1a4246d0482bbf57c1a
 set zeffy_names=(^
-    vortex.data.microsoft.com^
-    dc.services.visualstudio.com^
     visualstudio-devdiv-c2s.msedge.net^
     az667904.vo.msecnd.net^
     az700632.vo.msecnd.net^
@@ -54,9 +92,8 @@ set zeffy_names=(^
 )
 
 REM More telemetry from:- https://www.reddit.com/r/pihole/comments/a12zwl/does_anyone_have_an_extensive_list_of_microsoft/
-REM maybe move to other script
+REM maybe move to other other general script
 set pihole_names=(^
-    settings-win.data.microsoft.com^
     geo.settings-win.data.microsoft.com.akadns.net^
     db5-eap.settings-win.data.microsoft.com.akadns.net^
     db5.settings-win.data.microsoft.com.akadns.net^
@@ -74,8 +111,6 @@ set pihole_names=(^
     weus2watcab01.blob.core.windows.net^
     eaus2watcab02.blob.core.windows.net^
     eaus2watcab01.blob.core.windows.net^
-    ceuswatcab02.blob.core.windows.net^
-    ceuswatcab01.blob.core.windows.net^
 )
 
 :main
@@ -95,7 +130,15 @@ set pihole_names=(^
         call :addEntry "%%n"
     )
 
+    for /d %%n in %suspected_vs% do (
+        call :addEntry "%%n"
+    )
+    
     for /d %%n in %copilot_names% do (
+        call :addEntry "%%n"
+    )
+    
+    for /d %%n in %ms_names% do (
         call :addEntry "%%n"
     )
 
@@ -117,7 +160,8 @@ set pihole_names=(^
 setlocal
     set "host=%~1"
     
-    findstr /i /c:"%host%" "%hosts%" >nul 2>&1
+    rem added whitespace to prevent subdomain skipping
+    findstr /i /c:" %host%" "%hosts%" >nul 2>&1
     
     if %errorlevel% NEQ 0 (
         echo Adding %host%

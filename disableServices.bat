@@ -52,6 +52,7 @@ set common_scv=(^
     DialogBlockingService^
     GameInputSvc^
     HfcDisableService^
+    hpsvcsscan^
     icssvc^
     igccservice^
     igfxCUIService2.0.0.0^
@@ -323,6 +324,7 @@ setlocal
     REM echo DoSvc: Delivery Optimization: Performs content delivery optimization tasks. [Windows Updates depend on it!]
     echo GameInputSvc: Enables keyboards, mice, gamepads, and other input devices to be used with the GameInput API.
     echo HfcDisableService: Intel(R) RST HFC Disable Service: Turns off hiberfile caching in Intel(R) RST driver.
+    echo hpsvcsscan: HP Services Scan checks for entitlement on each hardware device to determine HP Service entitlements and downloads applicable software automatically to enable the service.
     echo icssvc: Provides the ability to share a cellular data connection with another device.
     echo igccservice: Service for Intel(R) Graphics Command Center.
     echo igfxCUIService2.0.0.0: Service for Intel(R) HD Graphics Control Panel.

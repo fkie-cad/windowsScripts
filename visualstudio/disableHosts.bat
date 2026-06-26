@@ -7,12 +7,12 @@
 :: powershell -Command "(Get-Content ...) -replace ..."
 :: logic to disable/comment entries too
 ::
+:: Triggers a "SettingsModifier:Win32/PossibleHostsFileHijack"[1] Windows Defender warning on the host file itself after reboot.
+::
 :: https://docs.github.com/en/copilot/reference/copilot-allowlist-reference
 :: https://learn.microsoft.com/en-us/visualstudio/ide/visual-studio-experience-improvement-program?view=visualstudio
 :: https://github.com/StevenBlack/hosts
 :: https://github.com/hagezi/dns-blocklists
-::
-::
 ::
 ::
 
@@ -22,8 +22,6 @@ setlocal
 set "hosts=%SystemRoot%\System32\drivers\etc\hosts"
 
 REM real wireshark capture of vs2022, vs2026, msbuild
-REM all other disabling scripts already run
-REM to be rerun and extended with less disabling soon 
 set wsc_names=(^
     settings.visualstudio.microsoft.com^
     telemetry.visualstudio.microsoft.com^

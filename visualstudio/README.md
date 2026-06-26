@@ -46,13 +46,19 @@ Defaults to set all targets.
 
 
 ## disableHosts
-Adds entries of known hosts to C:\Windows\System32\drivers\etc\hosts.
+Adds entries of known visual studio (and some other) telemetry hosts to C:\Windows\System32\drivers\etc\hosts.
 Just one direction (add active entries).
+
+!!!  
+**Triggers a "SettingsModifier:Win32/PossibleHostsFileHijack"[1] Windows Defender warning on the host file itself after reboot.**  
+!!!  
 
 ### Usage
 ```bash
 $ disableHosts.bat
 ```
+
+[1] https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?name=SettingsModifier%3AWin32%2FPossibleHostsFileHijack&threatid=14994  
 
 
 

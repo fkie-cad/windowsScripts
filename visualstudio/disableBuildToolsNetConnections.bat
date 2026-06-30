@@ -2,8 +2,8 @@
 :: Block or reset Build tools network connections.
 :: Be sure to rerun after each update.
 ::
-:: Last change: 06.06.2025
-:: Version: 1.1.0
+:: Last change: 30.06.2026
+:: Version: 1.1.1
 ::
 
 @echo off
@@ -17,6 +17,7 @@ set verbose=0
 
 set /a all=0
 set /a vctip=0
+set /a msbuild=0
 
 set /a block=1
 
@@ -40,6 +41,10 @@ GOTO :ParseParams
         goto reParseParams
     )
     
+    IF /i "%~1"=="/m" (
+        SET /a msbuild=1
+        goto reParseParams
+    )
     IF /i "%~1"=="/t" (
         SET /a vctip=1
         goto reParseParams
@@ -97,11 +102,12 @@ GOTO :ParseParams
     )
 
 
-    set /a "s=%vctip%"
+    set /a "s=%vctip%+%msbuild%"
     if %s% == 0 set /a all=1
 
     if %all% == 1 (
         set /a vctip=1
+        set /a msbuild=1
     )
 
     if %verbose% == 1 (
@@ -198,7 +204,7 @@ setlocal
     exit /b %errorlevel%
 
 :usage
-    echo Usage: %prog_name% [/all] [/t] [/x] [/vsy ^<year^>] [/h] [/v]
+    echo Usage: %prog_name% [/all] [/m] [/t] [/x] [/vsy ^<year^>] [/h] [/v]
     exit /B 0
     
 :help
@@ -206,6 +212,7 @@ setlocal
     echo.
     echo Block Targets:
     echo /all: All following targets (default).
+    echo /m: MSBuild itself
     echo /t: BuildTools vctip.exe
     echo.
     echo /x: Delete the specified rule(s), i.e. unblock target(s).

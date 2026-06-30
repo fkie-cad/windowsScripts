@@ -8,10 +8,10 @@ Last updated: 23.06.2026
 
 
 ## Contents
-- [disableBuildToolsNetConnections](#disablebuildtoolsnetconnections)
 - [disableHosts](#disablehosts)
 - [disableMsBuildNetConnections](#disablemsbuildnetconnections)
 - [disablePerfWatson](#disableperfwatson)
+- [disableVctipNetConnections](#disablebuildtoolsnetconnections)
 - [disableVSNetConnections](#disablevsnetconnections)
 - [disableVSServices](#disablevsservices)
 - [disableVSTasks](#disablevstasks)
@@ -19,33 +19,9 @@ Last updated: 23.06.2026
 
 
 
-## disableBuildToolsNetConnections
-Disabling Build Tools internet connections from 
-- %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\Build Tools\VC\Tools\MSVC\\...\HostXX\xx\vctip.exe
-
-### Usage
-```bash
-$ disableBuildToolsNetConnections.bat [/all] [/t] [/x] [/vsy <year>] [/h] [/v]
-```
-**Targets:**
-- /all: All following targets (default).
-- /t: Block BuildTools vctip.exe
-    
-**VS flavour:**
-- /vsy: Year. Default: 2022
-
-**Flags:**
-- /x: Delete the specified rule(s) (instead of adding them).
-
-**Other:**
-- /v: More verbose.
-- /h: Print this.
-
-Defaults to set all targets.  
-
-
-
 ## disableHosts
+VisualStudio / (BuildTools)
+
 Adds entries of known visual studio (and some other) telemetry hosts to C:\Windows\System32\drivers\etc\hosts.
 Just one direction (add active entries).
 
@@ -63,19 +39,26 @@ $ disableHosts.bat
 
 
 ## disableMsBuildNetConnections
+VisualStudio / BuildTools
+
 Adds (blocking) firewall entries for all found MsBuild.exe in "C:\Program Files (x86)\" and "C:\Program Files\".
 
 ### Usage
 ```bash
-$ disableMsBuildNetConnections.bat [/x]
+$ disableVctipNetConnections.bat [/x] [/b <path>] [/h] [/v]
 ```
 
 **Flags:**
 - /x: Delete the specified rule(s) (instead of adding them).
 
+**Options:**
+- /b: Optional custom path to the VS or BuildTools installation other than the default one.
+
 
 
 ## disablePerfWatson
+VisualStudio
+
 Renaming all occurrences of PerfWatson2 found in "C:\Program Files (x86)\" and "C:\Program Files\" to disable them.
 At least in VS 2026 (18) PerfWatson2 throws annoying errors at each startup because of not found (disabled) services.
 Which is circumvented this way.
@@ -86,7 +69,28 @@ $ disablePerfWatson.bat
 ```
 
 
+
+## disableVctipNetConnections
+VisualStudio / BuildTools
+
+Adds (blocking) firewall entries for all found Vctip.exe in "C:\Program Files (x86)\" and "C:\Program Files\".
+
+### Usage
+```bash
+$ disableVctipNetConnections.bat [/x] [/b <path>] [/h] [/v]
+```
+
+**Flags:**
+- /x: Delete the specified rule(s) (instead of adding them).
+
+**Options:**
+- /b: Optional custom path to the VS or BuildTools installation other than the default one.
+
+
+
 ## disableVSNetConnections
+VisualStudio
+
 Disabling Visual Studio internet connections from 
 - %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\IDE\devenv.exe
 - %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\IDE\PerfWatson2.exe
@@ -127,6 +131,8 @@ Some local connections of devenv.exe seem to remain.
 
 
 ## disableVSServices
+VisualStudio
+
 Disabling Visual Studio 
 - VSInstallerElevationService
 - VSStandardCollectorService150
@@ -155,6 +161,8 @@ Be sure to rerun especially for /ubdl after each update.
 
 
 ## disableVSTasks
+VisualStudio
+
 Disabling Visual Studio auto update tasks
 - \Microsoft\VisualStudio\VSIX Auto Update
 - \Microsoft\VisualStudio\Updates\BackgroundDownload
@@ -185,6 +193,8 @@ Defaults to `/d` (Disable) all targets.
 
 
 ## disableVSTelemetryAndFeedback
+VisualStudio / (BuildTools)
+
 Disable VisualStudio telemetry and feedback by registry modification and cleaning folders, files.
 (Currently, feedback disabling is commented out.)
 

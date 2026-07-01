@@ -159,7 +159,7 @@ setlocal
     call :usage
     echo.
     echo /x: Delete the specified rule(s), i.e. unblock target(s).
-    echo /b: Optional custom path to the VS or BuildTools installation other than the default one.
+    echo /b: Optional custom path to the VS or BuildTools installation other than the default one. No "\" at the end allowed.
     echo.
     echo Other:
     echo /v: More verbose.

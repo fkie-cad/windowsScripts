@@ -4,7 +4,7 @@ Batch scripts to silence visual studio and build tools network communication
 
 **Should be rerun after each update of vs and/or build tools**
 
-Last updated: 23.06.2026  
+Last updated: 01.07.2026  
 
 
 ## Contents
@@ -41,7 +41,7 @@ $ disableHosts.bat
 ## disableMsBuildNetConnections
 VisualStudio / BuildTools
 
-Adds (blocking) firewall entries for all found MsBuild.exe in "C:\Program Files (x86)\" and "C:\Program Files\".
+Adds (blocking) firewall entries for all found MsBuild.exe in "C:\Program Files (x86)" and "C:\Program Files".
 
 ### Usage
 ```bash
@@ -52,7 +52,7 @@ $ disableVctipNetConnections.bat [/x] [/b <path>] [/h] [/v]
 - /x: Delete the specified rule(s) (instead of adding them).
 
 **Options:**
-- /b: Optional custom path to the VS or BuildTools installation other than the default one.
+- /b: Optional custom path to the VS or BuildTools installation other than the default one. No "\" at the end allowed.
 
 
 
@@ -84,7 +84,7 @@ $ disableVctipNetConnections.bat [/x] [/b <path>] [/h] [/v]
 - /x: Delete the specified rule(s) (instead of adding them).
 
 **Options:**
-- /b: Optional custom path to the VS or BuildTools installation other than the default one.
+- /b: Optional custom path to the VS or BuildTools installation other than the default one. No "\" at the end allowed.
 
 
 
@@ -92,29 +92,27 @@ $ disableVctipNetConnections.bat [/x] [/b <path>] [/h] [/v]
 VisualStudio
 
 Disabling Visual Studio internet connections from 
-- %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\IDE\devenv.exe
-- %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\IDE\PerfWatson2.exe
-- %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\ServiceHub.VSDetouredHost.exe
-- %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\ServiceHub.IdentityHost.exe
+- \*\Common7\IDE\devenv.exe
+- \*\Common7\IDE\PerfWatson2.exe
+- \*\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\ServiceHub.VSDetouredHost.exe
+- \*\Common7\ServiceHub\Hosts\ServiceHub.Host.CLR.x86\ServiceHub.IdentityHost.exe
 - %ProgramFiles% (x86)\Microsoft Visual Studio\Installer\resources\app\ServiceHub\Services\Microsoft.VisualStudio.Setup.Service\BackgroundDownload.exe
-- %ProgramFiles% (x86)\Microsoft Visual Studio\\%vs_year%\\%vs_edition%\VC\Tools\MSVC\\...\HostXX\xx\vctip.exe
+- \*\VC\Tools\MSVC\\...\HostXX\xx\vctip.exe
 
 ### Usage
 ```bash
-$ disableVSNetConnections.bat [/all] [/b] [/d] [/p] [/r] [/s] [/t] [/x] [/vse <edition>] [/vsy <year>] [/h] [/v]
+$ disableVSNetConnections.bat [/all] [/b] [/d] [/p] [/s] [/t] [/x] [/cb <path>] [/h] [/v]
 ```
 **Targets:**
 - /all: All following targets (default).
 - /b: Block Microsoft Visual Studio\Installer\resources\app\ServiceHub\Services\Microsoft.VisualStudio.Setup.Service\BackgroundDownload.exe
-- /d: Block Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\IDE\devenv.exe
-- /p: Block Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\IDE\PerfWatson2.exe
-- /r: Block Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\IDE\PrivateAssemblies\Microsoft.Alm.Shared.Remoting.RemoteContainer.dll
-- /s: Microsoft Visual Studio\\%vs_year%\\%vs_edition%\Common7\ServiceHub\Hosts\xx\xx.exe
-- /t: Block Visual Studio vctip.exe
-    
-**VS flavour:**
-- /vse: Edition. Default: Professional
-- /vsy: Year. Default: 2022
+- /d: Block \*\*\devenv.exe
+- /p: Block \*\*\PerfWatson2.exe
+- /s: Block \*\*\Common7\ServiceHub\Hosts\xx\xx.exe
+- /s: Block \*\*\Team Tools\xx\xx.exe
+
+**Options:**
+- /cb: Optional custom path to the VS or BuildTools installation other than the default one. No "\" at the end allowed.
 
 **Flags:**
 - /x: Delete the specified rule(s) (instead of adding them).

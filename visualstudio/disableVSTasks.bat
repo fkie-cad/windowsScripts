@@ -22,8 +22,18 @@ set /a ucfg=0
 set tcmd=/Disable
 
 set user_sid=
-for /f %%i in ('wmic useraccount where name^="%username%" get sid ^| findstr ^S\-d*') do set user_sid=%%i
 
+REM wmic sometimes not installed or disabled
+REM wmicc /? >nul 2>&1
+REM if %errorlevel% NEQ 9009 (
+    REM for /f %%i in ('wmic useraccount where name^="%username%" get sid ^| findstr ^S\-d*') do set user_sid=%%i
+    REM GOTO :ParseParams
+REM )
+
+REM /USER Displays information on the current user along with the security identifier (SID).
+for /F "tokens=2 delims= " %%H in ('whoami /user') do (
+    set user_sid=%%H
+)
 
 
 GOTO :ParseParams
@@ -73,7 +83,7 @@ GOTO :ParseParams
 
 :main
 
-    :: Admin check
+    :: Admin check, seems to work without admin, though
     fltmc >nul 2>&1 || (
         echo [e] Administrator privileges required.
         call
@@ -94,9 +104,12 @@ GOTO :ParseParams
     )
 
     if %verbose% == 1 (
+        echo user_sid : %user_sid%
         echo \Microsoft\VisualStudio\VSIX Auto Update : %vsau%
         echo \Microsoft\VisualStudio\Updates\BackgroundDownload : %ubdl%
-        echo \Microsoft\VisualStudio\Updates\UpdateConfiguration_%user_sid% : %ucfg%
+        if ["%user_sid%"] NEQ [""] (
+            echo \Microsoft\VisualStudio\Updates\UpdateConfiguration_%user_sid% : %ucfg%
+        )
     )
 
             
@@ -109,7 +122,11 @@ GOTO :ParseParams
         schtasks /Change /TN "\Microsoft\VisualStudio\Updates\BackgroundDownload" %tcmd%
     )   
     if %ucfg% == 1 (
-        schtasks /Change /TN "\Microsoft\VisualStudio\Updates\UpdateConfiguration_%user_sid%" %tcmd%
+        if ["%user_sid%"] NEQ [""] (
+            schtasks /Change /TN "\Microsoft\VisualStudio\Updates\UpdateConfiguration_%user_sid%" %tcmd%
+        ) else (
+            echo [e] Could not get user id, skipping \Microsoft\VisualStudio\Updates\UpdateConfiguration_^<user_sid%^>^!
+        )
     )
     
     echo.

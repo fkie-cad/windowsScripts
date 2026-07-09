@@ -134,7 +134,7 @@ GOTO :ParseParams
         :checkPermissions
             net session >nul 2>&1
             if %errorlevel% NEQ 0 (
-                echo [e] Admin permissions required!
+                echo [e] Admin permissions required^!
                 exit /B 1
             )
         

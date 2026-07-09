@@ -45,7 +45,6 @@ GOTO :ParseParams
     if [%1]==[/h] goto help
     if [%1]==[/help] goto help
 
-
     IF /i "%~1"=="/all" (
         SET /a all=1
         goto reParseParams
@@ -90,7 +89,6 @@ GOTO :ParseParams
         goto mainend
     )
 
-
     set /a "s=%vsau%+%ubdl%+%ucfg%"
     if %s% == 0 (
     echo set all
@@ -112,9 +110,8 @@ GOTO :ParseParams
         )
     )
 
-            
     REM schtasks /Change /TN "<task folder path>\<task name>" /Disable
-            
+    
     if %vsau% == 1 (
         schtasks /Change /TN "\Microsoft\VisualStudio\VSIX Auto Update" %tcmd%
     )      

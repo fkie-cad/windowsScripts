@@ -1,0 +1,1 @@
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem"  /v "LongPathsEnabled" /t REG_DWORD /d 0x00000001 /f

@@ -18,7 +18,7 @@
     Enable all rule with "XBox" in their name
 .NOTES
     Author: FKIE CAD
-    Date:   09.07.2026
+    Date:   10.07.2026
 #>
 
 Param (
@@ -91,10 +91,6 @@ $displayNames = @(
 )
 
 $activeSwitches = [int][bool]$Allow + [int][bool]$Block + [int][bool]$Disable + [int][bool]$Enable  + [int][bool]$Remove  + [int][bool]$Show
-
-Write-Host "activeSwitches: $activeSwitches"
-
-
 if ($activeSwitches -gt 1) {
     Write-Error "[e] Just one switch is allowed!"
     exit 1
@@ -107,7 +103,6 @@ if ($activeSwitches -eq 0) {
 # Check if multiple are set (not empty/null)
 $nameParams = @($Name, $DisplayName, $Package)
 $nameParamsCount = $params.Where({ $_ -ne '' -and $_ -ne $null }).Count
-
 if ($nameParamsCount -gt 1) {
     Write-Error "[e] Just one name parameter is allowed!"
     exit 1
@@ -129,14 +124,14 @@ if ( $Allow )
     elseif ( $Package )
     {
         Write-Host "Allow:" $Package
-        Set-NetFirewallRule -Package $Package -Action Allow
+        Get-NetFirewallRule -Package $Package | Set-NetFirewallRule -Action Allow
     }
     else
     {
         for ( $i = 0; $i -lt $packages.Count; $i++ )
         {
             Write-Host "Allow:" $packages[$i]
-            Set-NetFirewallRule -Package $packages[$i] -Action Allow
+            Get-NetFirewallRule -Package $packages[$i] | Set-NetFirewallRule -Action Allow
         }
         for ( $i = 0; $i -lt $names.Count; $i++ )
         {
@@ -165,14 +160,14 @@ elseif ( $Block )
     elseif ( $Package )
     {
         Write-Host "Block:" $Package
-        Set-NetFirewallRule -Package $Package -Action Block
+        Get-NetFirewallRule -Package $Package | Set-NetFirewallRule -Action Block
     }
     else
     {
         for ( $i = 0; $i -lt $packages.Count; $i++ )
         {
             Write-Host "Block:" $packages[$i]
-            Set-NetFirewallRule -Package $packages[$i] -Action Block
+            Get-NetFirewallRule -Package $packages[$i] | Set-NetFirewallRule -Action Block
         }
         for ( $i = 0; $i -lt $names.Count; $i++ )
         {

@@ -92,11 +92,11 @@ $displayNames = @(
 
 $activeSwitches = [int][bool]$Allow + [int][bool]$Block + [int][bool]$Disable + [int][bool]$Enable  + [int][bool]$Remove  + [int][bool]$Show
 if ($activeSwitches -gt 1) {
-    Write-Error "[e] Just one switch is allowed!"
+    Write-Error "Just one switch is allowed!"
     exit 1
 }
 if ($activeSwitches -eq 0) {
-    Write-Error "[e] No switches selected!"
+    Write-Error "No switches selected!"
     exit 1
 }
 
@@ -104,7 +104,7 @@ if ($activeSwitches -eq 0) {
 $nameParams = @($Name, $DisplayName, $Package)
 $nameParamsCount = $params.Where({ $_ -ne '' -and $_ -ne $null }).Count
 if ($nameParamsCount -gt 1) {
-    Write-Error "[e] Just one name parameter is allowed!"
+    Write-Error "Just one name parameter is allowed!"
     exit 1
 }
 

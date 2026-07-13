@@ -19,6 +19,7 @@ set drive=
 
 set /a verbose=0
 
+if ["%~1"]==[""] goto main
 GOTO :ParseParams
 
 :ParseParams
@@ -137,7 +138,7 @@ GOTO :ParseParams
         )
     )
     
-    net session >nul 2>&1
+    reg query "HKU\S-1-5-19" >nul 2>&1
     if %errorlevel% NEQ 0 (
         echo [e] Admin permissions required^!
         endlocal

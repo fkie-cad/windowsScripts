@@ -83,7 +83,8 @@ GOTO :ParseParams
 :main
 
     :: Admin check, seems to work without admin, though
-    fltmc >nul 2>&1 || (
+    REM fltmc >nul 2>&1 || (
+    reg query "HKU\S-1-5-19" >nul 2>&1 || (
         echo [e] Administrator privileges required.
         call
         goto mainend

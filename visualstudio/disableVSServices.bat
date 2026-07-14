@@ -104,7 +104,7 @@ GOTO :ParseParams
 
     :: Admin check
     if %regStartValue% NEQ %CHECK% (
-        fltmc >nul 2>&1 || (
+        reg query "HKU\S-1-5-19" >nul 2>&1 || (
             echo [e] Administrator privileges required.
             call
             goto mainend

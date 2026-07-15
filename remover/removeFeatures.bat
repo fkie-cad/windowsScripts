@@ -136,6 +136,8 @@ GOTO :ParseParams
     if %verbose% EQU 1 (
         echo action: %action%
     )
+    
+    set /a reboot=0
 
     if %action% EQU %ACTION_REMOVE% (
         if ["%name%"] NEQ [""] (
@@ -149,6 +151,7 @@ GOTO :ParseParams
                 echo.
             )
         )
+        set /a reboot=1
     ) else if %action% EQU %ACTION_ADD% (
         if ["%name%"] NEQ [""] (
             echo adding %name%
@@ -161,6 +164,7 @@ GOTO :ParseParams
                 echo.
             )
         )
+        set /a reboot=1
     ) else if %action% EQU %ACTION_CHECK% (
         if ["%name%"] NEQ [""] (
             echo checking %name%
@@ -181,6 +185,12 @@ GOTO :ParseParams
         goto mainend
     )
     
+    if %reboot% EQU 1 (
+        SET /P confirm="[?] Reboot now? (Y/[N])?"
+        IF /I "!confirm!" EQU "Y" (
+            shutdown /r /t 0
+        )
+    )
     
     :mainend
     if exist "%flp%" del "%flp%"
@@ -191,17 +201,17 @@ GOTO :ParseParams
 :removeF
 setlocal
     set "name=%~1"
+    set "restart=%~1"
 
     set state=
     
-
     for /f "tokens=3" %%i in ('powershell "DISM /Online /Get-Features | Select-String -Pattern "%name%$" -Context 0,2"') do (
         set state=%%i
     )
     echo state=%state%
     
     if [%state%] EQU [Enabled] (
-        DISM /Online /Disable-Feature /FeatureName:"%name%"
+        DISM /Online /Disable-Feature /FeatureName:"%name%" /NoRestart
     ) else (
         echo %state%
     )
@@ -220,7 +230,7 @@ setlocal
     )
 
     if [%state%] EQU [Disabled] (
-        DISM /Online /Enable-Feature /FeatureName:"%name%"
+        DISM /Online /Enable-Feature /FeatureName:"%name%" /NoRestart
     ) else (
         echo %state%
     )

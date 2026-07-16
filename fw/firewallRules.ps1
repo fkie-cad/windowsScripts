@@ -18,7 +18,7 @@
     Enable all rule with "XBox" in their name
 .NOTES
     Author: FKIE CAD
-    Date:   10.07.2026
+    Date:   16.07.2026
 #>
 
 Param (
@@ -70,7 +70,7 @@ $packages = @(
     "*AAD.BrokerPlugin*", # "Work or school account"
     "*AccountsControl*", # "Email and accounts"
     "*AccountsService*",
-    "*CloudExperienceHost*", # "Your account"
+    # "*CloudExperienceHost*", # "Your account"
     "*HPDesktopSupportUtilities*", # "HP Desktop Support Utilities"
     "*IntelGraphicsExperience*", # "Intel Graphics Command Center"
     "*LockApp*", # "Windows Default Lock Screen"
@@ -87,7 +87,8 @@ $names = @(
 
 $displayNames = @(
     "*Windows Camera*", # "Windows Camera"
-    "*XBox*" #  "Xbox Game UI", "XboxGameCallableUI", ".XboxIdentityProvider"
+    "*XBox*", #  "Xbox Game UI", "XboxGameCallableUI", ".XboxIdentityProvider"
+    "Your account"
 )
 
 $activeSwitches = [int][bool]$Allow + [int][bool]$Block + [int][bool]$Disable + [int][bool]$Enable  + [int][bool]$Remove  + [int][bool]$Show

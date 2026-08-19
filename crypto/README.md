@@ -1,5 +1,5 @@
 # Some crypto related scripts
-Last updated: 12.06.2023  
+Last updated: 19.08.2026  
 
 ## Contents
 - [createOpensslCert](#createopensslcert)
@@ -10,28 +10,34 @@ Last updated: 12.06.2023
 
 ## createOpensslCert
 Creates .der and .pem ssl keys and certificates in one command, 
-  i.e. public key, private key and certificate.
+  i.e. public key, private key, certificate, pfx.
 
 **Requirements**  
 Requires an openssl.exe found in the `%PATH%` or `%ProgramFiles%\Git\usr\bin\openssl.exe`.
 
 **Remarks**  
-Somehow, it throws an error, when creating a public key out of a .der private key.
-Therefor, there is no option to create .der keys directly.
-The default is to create the .pem keys and if needed, convert them to .der with the `/c` option.
+Creating a pfx out of a .der is not directly possible.
+To achieve this, temporary .pem cert and priv key are created to get the pfx if running in /d mode.
 
 
 ### Usage
 ```bash
-$ createOpensslCert.bat /n <name> [/a=<algorithm>] [/b=<bits>] [/d] [/c] [/h]
+$ createOpensslCert.bat /n <name> [/rsa|/ed25519] [/b <bits>] [/subj ^<value^>] [/pass ^<value^>|/nopass] [/d] [/c] [/t] [/h]
 ```
 **Options:**  
-* /a Algorithm: RSA|ED25519. Default: ED25519.
-* /b Bits for RSA. Default: 4096.
-* /c Check the created files.
-* /d Additionally convert to .der format.
-* /n Base name of the files.
-* /h Print this.
+* /n : Base name of the files.
+* /rsa : Create rsa key pair.
+* /ed25519, /ec : Create ed25519 key pair (default).
+* /b : Bits for RSA. Default: 4096.
+* /crt : Create self signed certificate out of the keys.
+*    /subj : Subject for certificate, e.g. "/CN=bla". Default: /CN=^<name^>.
+* /pfx : Create pfx out of the priv key and cert.
+*    /pass : Password for pfx. Suppresses prompt.
+*    /nopass : No password for pfx. Suppresses prompt.
+* /d, /der : Create .der formatted files. Default is .pem.
+* /c : Convert the created files to other type (pem=>der, der=>pem)
+* /t : Check the created files.
+* /h : Print this.
 
 
 

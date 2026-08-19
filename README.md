@@ -79,6 +79,7 @@ For questions and bug reports feel free to open an issue.
 - [setIp](#setip)
 - [setNx](#setnx)
 - [startNtProg](#startntprog)
+- [testAllFF](#testAllFF)
 - [copyright, credits & contact](#copyright,-credits-&-contact)
 
 
@@ -842,6 +843,22 @@ $ startNtProg.bat [/h]
 
 ### Remarks
 Since 25.H2 this kind of `psexec` usage seems to be blocked.
+
+
+## testAllFF
+Test if a file contains just `FF`.
+
+### Usage
+```bash
+ps> testAllFF.ps1 -Path <file> [-BufferSize <size>] [-StopAtFirst] [-Silent]
+```
+**Options:**
+- -Path The file path to check.
+- -BufferSize Size of the read buffer window.
+- -StopAtFirst Stop at first found non `FF` byte.
+- -Silent Silent run, no output, just exit code.
+
+If not run with `-Silent`, it will print the non matching bytes.
 
 
 ## copyright, credits & contact

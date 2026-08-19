@@ -202,6 +202,8 @@ GOTO :ParseParams
     )
     
     if %check% EQU 1 (
+        echo .
+        echo checking
         echo bcdedit:
         bcdedit | findstr debug
         echo.

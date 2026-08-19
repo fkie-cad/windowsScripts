@@ -23,6 +23,7 @@ set /a execute=0
 set mask="*"
 
 set /a verbose=0
+set /a isBatch=0
 
 set /a STEPPING_MODE=1
 
@@ -56,6 +57,30 @@ GOTO :ParseParams
         SHIFT
         goto reParseParams
     )
+
+    IF /i "%~1"=="/b" (
+        SET "cmd=%~2"
+        set /a isBatch=1
+        SHIFT
+        goto reParseParams
+    )
+    IF /i "%~1"=="/batch" (
+        SET "cmd=%~2"
+        set /a isBatch=1
+        SHIFT
+        goto reParseParams
+    )
+
+    IF /i "%~1"=="/c" (
+        SET "cmd=%~2"
+        SHIFT
+        goto reParseParams
+    )
+    IF /i "%~1"=="/cmd" (
+        SET "cmd=%~2"
+        SHIFT
+        goto reParseParams
+    )
     
     IF /i "%~1"=="/d" (
         SET dir=%~2
@@ -64,17 +89,6 @@ GOTO :ParseParams
     )
     IF /i "%~1"=="/dir" (
         SET dir=%~2
-        SHIFT
-        goto reParseParams
-    )
-
-    IF /i "%~1"=="/c" (
-        SET cmd="%~2"
-        SHIFT
-        goto reParseParams
-    )
-    IF /i "%~1"=="/cmd" (
-        SET cmd="%~2"
         SHIFT
         goto reParseParams
     )
@@ -144,6 +158,11 @@ GOTO :ParseParams
         echo [e] dir "%dir%" does not exist!
         exit /b -1
     )
+    
+    set pre=
+    if %isBatch% EQU 1 (
+        set "pre=call "
+    )
 
     if %r% == 0 (
         for %%p in (%dir%\%mask%) do (
@@ -156,7 +175,7 @@ GOTO :ParseParams
             echo %%p
             echo ---------------------------
             if [%cmd%] NEQ [] (
-                %cmd:~1,-1% %args1% "%%p" %args2%
+                %pre%"%cmd%" %args1% "%%p" %args2%
             ) else (
             if %execute% EQU 1 (
                 "%%p"
@@ -174,7 +193,7 @@ GOTO :ParseParams
             echo %%p
             echo ---------------------------
             if [%cmd%] NEQ [] (
-                %cmd:~1,-1% %args1% "%%p" %args2%
+                %pre%"%cmd%" %args1% "%%p" %args2%
             ) else (
             if %execute% EQU 1 (
                 "%%p"
@@ -201,7 +220,7 @@ GOTO :ParseParams
     :: endlocal
 
 :usage
-    echo Usage: %prog_name% [/d ^<path^>] [/c ^<command^>] [/a1 ^<args1^>] [/a2 ^<args2^>] [/m ^<mask^>] [/r] [/s] [/v]
+    echo Usage: %prog_name% [/d ^<path^>] [/c^|/b ^<command^>] [/a1 ^<args1^>] [/a2 ^<args2^>] [/m ^<mask^>] [/r] [/s] [/v]
     exit /B 0
     
 :help
@@ -210,6 +229,7 @@ GOTO :ParseParams
     echo Options:
     echo /d: The directory to iterate. Default ".\"
     echo /c: An optional command to execute. Will be executed as "command args1 %%file%% args2".
+    echo /b: An optional command being a batch script. Will be executed as "call command args1 %%file%% args2".
     echo /a1: Optional arguments to command. Will be executed as "command args1 %%file%% args2".
     echo /a2: Optional arguments to command. Will be executed as "command args1 %%file%% args2".
     echo /r: Iterate directories recursively.

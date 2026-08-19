@@ -30,10 +30,10 @@ $ createOpensslCert.bat /n <name> [/rsa|/ed25519] [/b <bits>] [/subj ^<value^>] 
 * /ed25519, /ec : Create ed25519 key pair (default).
 * /b : Bits for RSA. Default: 4096.
 * /crt : Create self signed certificate out of the keys.
-*    /subj : Subject for certificate, e.g. "/CN=bla". Default: /CN=^<name^>.
+    * /subj : Subject for certificate, e.g. "/CN=bla". Default: /CN=^<name^>.
 * /pfx : Create pfx out of the priv key and cert.
-*    /pass : Password for pfx. Suppresses prompt.
-*    /nopass : No password for pfx. Suppresses prompt.
+    * /pass : Password for pfx. Suppresses prompt.
+    * /nopass : No password for pfx. Suppresses prompt.
 * /d, /der : Create .der formatted files. Default is .pem.
 * /c : Convert the created files to other type (pem=>der, der=>pem)
 * /t : Check the created files.

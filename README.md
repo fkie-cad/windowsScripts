@@ -29,6 +29,7 @@ For questions and bug reports feel free to open an issue.
 - [net/](#net)
 - [pdb/](#pdb)
 - [remover/](#remover)
+- [strings/](#strings)
 - [Visual Studio/](#visual-studio)
 - [Win11/](#win11)
 - [WinDbg/](#windbg)
@@ -132,6 +133,10 @@ Some pdb scripts.
 ## Remover/
 Remove Sth. Scripts.  
 [remover/README.md](remover/README.md)
+
+## strings/
+String handling scripts
+[strings/README.md](strings/README.md)
 
 ## Visual Studio/
 Some Visual Studio related scripts.  

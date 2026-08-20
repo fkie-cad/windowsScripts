@@ -16,9 +16,8 @@ Creates .der and .pem ssl keys and certificates in one command,
 Requires an openssl.exe found in the `%PATH%` or `%ProgramFiles%\Git\usr\bin\openssl.exe`.
 
 **Remarks**  
-Creating a pfx out of a .der is not directly possible.
-To achieve this, temporary .pem cert and priv key are created to get the pfx if running in /d mode.
-
+It is not possible to create a .pfx file directly from a .der file. 
+To achieve this, a .pem certificate and a private key are temporarily created in /d mode in order to generate the .pfx file.
 
 ### Usage
 ```bash

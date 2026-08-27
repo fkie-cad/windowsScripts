@@ -1,5 +1,5 @@
 # Some useful (batch) scripts
-Last updated: 09.07.2026
+Last updated: 27.08.2026
 
 Most of the scripts are used in daily work and are well tested. 
 Some of them are less tested.
@@ -21,6 +21,7 @@ For questions and bug reports feel free to open an issue.
 - [blitzDingser/](#blitzdingser)
 - [crypto/](#crypto)
 - [disabler/](#disabler)
+- [Driver Signing Enforcement/](#dse)
 - [edge/](#edge)
 - [enabler/](#enabler)
 - [explorer/](#explorer)
@@ -101,6 +102,10 @@ Some crypto related scripts.
 ## disabler/
 Disable some stuff.  
 [disabler/README.md](disabler/README.md)
+
+## dse/
+Driver Signing Enforcement related scripts.  
+[dse/README.md](dse/README.md)
 
 ## edge/
 Some edge related scripts.  

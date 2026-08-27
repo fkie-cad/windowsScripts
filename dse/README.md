@@ -28,7 +28,14 @@ But if you are impatient, there is a way to force it.
 ***It's not the official way to do it.***  
 ***The official way is to wait the 250 hours on a sane system for the policy to be applied automatically.***  
 
+Check, if there are audited drivers on the target system using [find-windows-driver-audit-policy-events](#find-windows-driver-audit-policy-events).
+If there are events listed, the named drivers are the ones which would get blocked in enforcement mode.
+It's up to the user to decide whether these are relevant or not.
+
 That said:
+
+It has been tested on a VM and barebone system.
+Both worked fine afterwards.
 
 Problem:  
 How to get the policy?
@@ -47,10 +54,9 @@ Even if "citool" is run as "NT AUTHORITY\\SYSTEM" it does not work (0x80070005).
 Owning the files and granting full administrator access does result in the same error.
 
 You have to manually copy the files:
-1. Boot into WinRE
-    a) Settings \> Recovery \> Advanced startup 
-    or 
-    b) lock screen (WIN + L), hold shift and click restart) or
+1. Boot into WinRE Shell
+    a) Settings \> Recovery \> Advanced startup or  
+    b) lock screen (WIN + L), hold shift and click restart) or  
     c) Boot into WinPE via USB.
 2. Identify OS partition letter (it may not be C: offline):
 ```

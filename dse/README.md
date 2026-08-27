@@ -33,6 +33,8 @@ But if you are impatient, there is a way to force it.
 Check, if there are audited drivers on the target system using [find-windows-driver-audit-policy-events](#find-windows-driver-audit-policy-events).
 If there are events listed, the named drivers are the ones which would get blocked in enforcement mode.
 It's up to the user to decide whether these are relevant or not.
+Obviously this only works if the system is already running in evaluation mode.
+If not, it could first be put into evaluation mode in the same way as described below, then be checked and then be put into enforcement mode.
 
 That said:
 
@@ -85,13 +87,13 @@ $ copy <OS>:\Windows\System32\CodeIntegrity\CiPolicies\Reserved\{8F9CB695-5D48-4
       `move <OS>:\Windows\System32\CodeIntegrity\CiPolicies\Reserved\{8F9CB695-5D48-48D6-A329-7202B44607E3}.cip <OS>:\temp\`  
       The latter could be deleted, because it's also located in "Active" now.
 6. Reboot into normal Windows
-7. Verify: `$ citool -lp`  
+7. Verify: [`is-my-device-in-evaluation-mode-or-enforcement-mode`](#is-my-device-in-evaluation-mode-or-enforcement-mode)  
    expected:
     - {8F9CB695-5D48-48D6-A329-7202B44607E3} found with IsEnforced: true, IsAuthorized: true
     - {784C4414-79F4-4C32-A6A5-F0FB42A51D0D} not found anymore
 
 Small cosmetic catch if "{8F9CB695-5D48-48D6-A329-7202B44607E3}.cip" had been copied from another system:  
-The field "Platform Policy" says "false" (`$ citool -lp`).
+The field "Platform Policy" says "false".
 If an original file found on the target system itself is applied, it says "true".
 This seems to be cosmetic only and not prevent the policy from working.
 
@@ -99,7 +101,7 @@ It can be reverted the same way.
 But who would want to do that.
 
 Due to https://support.microsoft.com/en-US/Windows/Hardware/Drivers/the-windows-driver-policy  
-`CiTool.exe --remove-policy "{8F9CB695-5D48-48D6-A329-7202B44607E3}"`  
+`$ CiTool.exe --remove-policy "{8F9CB695-5D48-48D6-A329-7202B44607E3}"`  
 should also work for a removal.
 
 

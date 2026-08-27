@@ -11,7 +11,7 @@ if ( $enforcedPolicy.IsEnforced -and $enforcedPolicy.IsAuthorized ) {
     $enforcedPolicy
 }
 elseif ( $evalPolicy.IsEnforced -and $evalPolicy.IsAuthorized) {
-    Write-Host "[x] The feature is in evaluation mode" -ForegroundColor Green
+    Write-Host "[x] The feature is in evaluation mode" -ForegroundColor Blue
     $evalPolicy
 }
 else {

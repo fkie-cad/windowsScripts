@@ -10,6 +10,8 @@ All future versions of Windows 11 and Windows Server will enforce the ne
 """
 
 These scripts may help to check the current state on the system.
+They are based on:  
+https://support.microsoft.com/en-US/Windows/Hardware/Drivers/the-windows-driver-policy
 
 ## Contents
 - [activation](#activation)
@@ -55,9 +57,9 @@ Owning the files and granting full administrator access does result in the same 
 
 You have to manually copy the files:
 1. Boot into WinRE Shell
-    a) Settings \> Recovery \> Advanced startup or  
-    b) lock screen (WIN + L), hold shift and click restart) or  
-    c) Boot into WinPE via USB.
+    a. Settings \> Recovery \> Advanced startup or  
+    b. lock screen (WIN + L), hold shift and click restart) or  
+    c. Boot into WinPE via USB.
 2. Identify OS partition letter (it may not be C: offline):
 ```
 $ diskpart
@@ -83,18 +85,23 @@ $ copy <OS>:\Windows\System32\CodeIntegrity\CiPolicies\Reserved\{8F9CB695-5D48-4
       `move <OS>:\Windows\System32\CodeIntegrity\CiPolicies\Reserved\{8F9CB695-5D48-48D6-A329-7202B44607E3}.cip <OS>:\temp\`  
       The latter could be deleted, because it's also located in "Active" now.
 6. Reboot into normal Windows
-7. Verify: citool -lp  
+7. Verify: `$ citool -lp`  
    expected:
     - {8F9CB695-5D48-48D6-A329-7202B44607E3} found with IsEnforced: true, IsAuthorized: true
     - {784C4414-79F4-4C32-A6A5-F0FB42A51D0D} not found anymore
 
 Small cosmetic catch if "{8F9CB695-5D48-48D6-A329-7202B44607E3}.cip" had been copied from another system:  
-The field "Platform Policy" says "false" (`citool -lp`).
+The field "Platform Policy" says "false" (`$ citool -lp`).
 If an original file found on the target system itself is applied, it says "true".
 This seems to be cosmetic only and not prevent the policy from working.
 
 It can be reverted the same way.
 But who would want to do that.
+
+Due to https://support.microsoft.com/en-US/Windows/Hardware/Drivers/the-windows-driver-policy  
+`CiTool.exe --remove-policy "{8F9CB695-5D48-48D6-A329-7202B44607E3}"`  
+should also work for a removal.
+
 
 ## find-windows-driver-3004-events
 Lists all 3004 events.

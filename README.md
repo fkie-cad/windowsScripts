@@ -81,6 +81,7 @@ For questions and bug reports feel free to open an issue.
 - [setIp](#setip)
 - [setNx](#setnx)
 - [startNtProg](#startntprog)
+- [systemtask](#systemtask)
 - [testAllFF](#testAllFF)
 - [copyright, credits & contact](#copyright,-credits-&-contact)
 
@@ -853,6 +854,25 @@ $ startNtProg.bat [/h]
 
 ### Remarks
 Since 25.H2 this kind of `psexec` usage seems to be blocked.
+
+
+
+## systemtask
+Run a command as "NT Authority\\System" without the psexec dependency.
+It's using a scheduled task ran as system instead.
+
+### Usage
+```
+$systemtask.bat [/c <command>] [/b <file>] [/v] [/h]
+```
+**Options:**
+- /c : The simple single command to run.
+- /b : A batch file with more complex commands in it to run.
+
+**Other:**
+- /v: More verbose mode.
+- /h: Print this.
+
 
 
 ## testAllFF

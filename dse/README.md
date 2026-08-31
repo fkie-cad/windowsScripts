@@ -58,10 +58,10 @@ Even if "citool" is run as "NT AUTHORITY\\SYSTEM" it does not work (0x80070005).
 Owning the files and granting full administrator access does result in the same error.
 
 You have to manually copy the files:
-1. Boot into WinRE Shell
+1. Boot into WinRE Shell  
     a. Settings \> Recovery \> Advanced startup or  
     b. lock screen (WIN + L), hold shift and click restart) or  
-    c. Boot into WinPE via USB.
+    c. Boot into WinPE via USB.  
 2. Identify OS partition letter (it may not be C: offline):
 ```
 $ diskpart
@@ -71,7 +71,7 @@ dp> exit
 # confirm with
 $ dir <OS>:\windows # C or what ever letter it is
 ```
-3. Copy enforce .cip into Active (System32 side):
+3. Copy enforce .cip into Active (System32 side):  
       `copy <OS>:\Windows\System32\CodeIntegrity\CiPolicies\Reserved\{8F9CB695-5D48-48D6-A329-7202B44607E3}.cip <OS>:\Windows\System32\CodeIntegrity\CiPolicies\Active\`
 4. Mount ESP and copy the same enforce .cip there:
 ```
@@ -82,7 +82,7 @@ dp> assign letter U
 dp> exit
 $ copy <OS>:\Windows\System32\CodeIntegrity\CiPolicies\Reserved\{8F9CB695-5D48-48D6-A329-7202B44607E3}.cip U:\EFI\Microsoft\Boot\CiPolicies\Active\
 ```
-5. Remove the audit .cip from Active to avoid conflict and remove enforce .cip from reserved:
+5. Remove the audit .cip from Active to avoid conflict and remove enforce .cip from reserved:  
       `move <OS>:\Windows\System32\CodeIntegrity\CiPolicies\Active\{784C4414-79F4-4C32-A6A5-F0FB42A51D0D}.cip <OS>:\temp\`  
       `move <OS>:\Windows\System32\CodeIntegrity\CiPolicies\Reserved\{8F9CB695-5D48-48D6-A329-7202B44607E3}.cip <OS>:\temp\`  
       The latter could be deleted, because it's also located in "Active" now.
@@ -103,11 +103,12 @@ But who would want to do that.
 Due to https://support.microsoft.com/en-US/Windows/Hardware/Drivers/the-windows-driver-policy  
 `$ CiTool.exe --remove-policy "{8F9CB695-5D48-48D6-A329-7202B44607E3}"`  
 should also work for a removal.
+(Not tested.)
 
 
 ## find-windows-driver-3004-events
 Lists all 3004 events.
-Legacy event that flags rejected drivers due to invalid singing or allowed hashes not present on the system
+Legacy event that flags rejected drivers due to invalid singing or allowed hashes not present on the system.
 
 ### Usage
 ```bash
@@ -138,11 +139,10 @@ ps> find-windows-driver-enforced-policy-events.ps1
 
 
 ## is-my-device-in-evaluation-mode-or-enforcement-mode
-Check if the device is in evaluation or enforcement policy mode, or in such mode at all.
+Check if the device is in evaluation or enforcement policy mode, or in no such mode at all.
 
 
 ### Usage
 ```bash
 ps> is-my-device-in-evaluation-mode-or-enforcement-mode.ps1
 ```
-

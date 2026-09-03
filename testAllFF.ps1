@@ -29,7 +29,7 @@ try
 
         $qwords = [math]::Floor($read / 8)
 
-        # --- fast path: scan 8 bytes at a time ---
+        # fast path: scan 8 bytes at a time
         for ( $q = 0; $q -lt $qwords; $q++ )
         {
             $base = $q * 8

@@ -7,8 +7,14 @@ for /f "tokens=1,2" %%i in ('whoami /user ^| findstr ^S\-d*') do (
     set user_name=%%i
     set user_sid=%%j
 )
-if %errorlevel% NEQ 0 exit /b %errorlevel%
-if [%user_sid%] EQU [] exit /b %errorlevel%
+if %errorlevel% NEQ 0 (
+    echo [e] Retrieving user name failed^^!
+    exit /b %errorlevel%
+)
+if [%user_sid%] EQU [] (
+    echo [e] Retrieving user name failed^^!
+    exit /b %errorlevel%
+)
 
 
 SET /a user_name_cch=0
@@ -413,7 +419,7 @@ setlocal
 
 
 
-
+:setDWValue
 setlocal
     set "key=%~1"
     set "value=%~2"

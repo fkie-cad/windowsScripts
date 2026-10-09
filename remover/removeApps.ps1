@@ -153,6 +153,9 @@ $apps = @(
     "*Microsoft.Wallet*", # Shopping convenience meets data security with Wallet – one place to store your payment methods, passwords, and more.
     "*Microsoft.WidgetsPlatformRuntime*", # enables the functionality of widgets
     "*Microsoft.Widgets*", 
+    # "*Microsoft.Windows.CloudExperienceHost*", # NonRemovable 
+    # "*Microsoft.Windows.PeopleExperienceHost*", # NonRemovable 
+    "*MicrosoftWindows.CrossDevice*", 
     "*WebExperience*", # widgets feeder
     "*Microsoft.XboxGameCallableUI*",
     "*Microsoft.XboxSpeechToTextOverlay*",

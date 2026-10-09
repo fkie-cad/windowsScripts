@@ -60,7 +60,7 @@ Owning the files and granting full administrator access does result in the same 
 You have to manually copy the files:
 1. Boot into WinRE Shell  
     a. Settings \> Recovery \> Advanced startup or  
-    b. lock screen (WIN + L), hold shift and click restart) or  
+    b. lock screen (WIN + L), hold shift and click restart or  
     c. Boot into WinPE via USB.  
 2. Identify OS partition letter (it may not be C: offline):
 ```

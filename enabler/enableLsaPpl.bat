@@ -3,6 +3,7 @@ setlocal enabledelayedexpansion
 
 set /a enable=1
 :: Download the Local Security Authority (LSA) Protected Process Opt-out / LSAPPLConfig.efi tool files from the download center
+:: https://www.microsoft.com/en-us/download/details.aspx?id=40897 (07.10.2026)
 set toolPath=LSAPPLConfig.efi
 set toolBaseName=LSAPPLConfig.efi
 set "keyName=HKLM\SYSTEM\CurrentControlSet\Control\Lsa"
@@ -67,23 +68,23 @@ GOTO :ParseParams
             exit /B 1
         )
         
-        set guid="{0cb3b571-2f2e-4343-a879-d86a476d7215}"
-        
         reg delete "%keyName%" /V %keyValue%/f
+        
+        set guid="{0cb3b571-2f2e-4343-a879-d86a476d7215}"
         
         mountvol X: /s
 
         copy %toolPath% X:\EFI\Microsoft\Boot\%toolBaseName% /Y
 
-        bcdedit /create %guid% /d "DebugTool" /application osloader
+        bcdedit /create !guid! /d "DebugTool" /application osloader
 
-        bcdedit /set %guid% path "\EFI\Microsoft\Boot\%toolBaseName%"
+        bcdedit /set !guid! path "\EFI\Microsoft\Boot\%toolBaseName%"
 
-        bcdedit /set {bootmgr} bootsequence %guid%
+        bcdedit /set {bootmgr} bootsequence !guid!
 
-        bcdedit /set %guid% loadoptions %%1
+        bcdedit /set !guid! loadoptions %%1
 
-        bcdedit /set %guid% device partition=X:
+        bcdedit /set !guid! device partition=X:
 
         mountvol X: /d
     )

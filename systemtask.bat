@@ -106,7 +106,7 @@ GOTO :ParseParams
     REM echo %cmd% > "%RC%"
     type %RC%
     
-    schtasks /create /f /tn UrgentTask /ru SYSTEM /rl HIGHEST /sc once /st 00:00 /tr "cmd /c \"!RC!\"" >nul || (echo [!] schtasks create failed & del "!RC!" 2>nul & exit /b 1)
+    schtasks /create /f /tn UrgentTask /ru SYSTEM /rl HIGHEST /sc once /st 00:00 /tr "cmd /c \"!RC!\"" >nul || (echo [e] schtasks create failed & del "!RC!" 2>nul & exit /b 1)
     schtasks /run /tn UrgentTask
     ping -n 3 127.0.0.1 >nul
     schtasks /delete /f /tn UrgentTask >nul

@@ -469,7 +469,7 @@ setlocal
 
 
 :usage
-    echo Usage: %my_name% /n ^<name^> [/rsa^|/ed25519] [/crt] [/pfx] [/b ^<bits^>] [/subj ^<value^>] [/pass ^<value^>|/nopass] [/d] [/t] [/h]
+    echo Usage: %my_name% /n ^<name^> [/rsa^|/ed25519] [/crt] [/pfx] [/b ^<bits^>] [/subj ^<value^>] [/pass ^<value^>^|/nopass] [/d] [/t] [/h]
     
     exit /b %errorlevel%
 

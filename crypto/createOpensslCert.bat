@@ -469,7 +469,7 @@ setlocal
 
 
 :usage
-    echo Usage: %my_name% /n ^<name^> [/rsa^|/ed25519] [/crt] [/pfx] [/b ^<bits^>] [/subj ^<value^>] [/pass ^<value^>^|/nopass] [/d] [/t] [/h]
+    echo Usage: %my_name% /n ^<name^> [/rsa^|/ed25519] [/crt] [/pfx] [/b ^<bits^>] [/subj ^<value^>] [/pass ^<value^>^|/nopass] [/c] [/d] [/t] [/h]
     
     exit /b %errorlevel%
 
@@ -482,12 +482,12 @@ setlocal
     echo /ed25519, /ec : Create ed25519 key pair (default).
     echo /b : Bits for RSA. Default: %def_rsa_bits%.
     echo /crt : Create certificate out of the keys.
-    echo    /subj : Subject for certificate, e.g. "/CN=bla". Default: /CN=^<name^>.
+    echo /subj : Subject for certificate, e.g. "/CN=bla". Default: /CN=^<name^>.
     echo /pfx : Create pfx out of the priv key and cert.
-    echo    /pass : Password for pfx. Suppresses prompt.
-    echo    /nopass : No password for pfx. Suppresses prompt.
+    echo /pass : Password for pfx. Suppresses prompt.
+    echo /nopass : No password for pfx. Suppresses prompt.
     echo /d, /der : Create .der formatted files. Default is .pem.
-    echo /c : Convert the created files to other type (pem=>der, der=>pem)
+    echo /c : Convert the created files to other type (pem=^>der, der=^>pem)
     echo /t : Check the created files.
     echo /h : Print this.
     

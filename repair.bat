@@ -241,7 +241,7 @@ setlocal
     echo Targets:
     echo /w: Repair windows image. (Default)
     echo   /o: Windows image is online/running. (Default)
-    echo   /f: Windows image is offline/not running at located at ^<drive^>.
+    echo   /f: Windows image is offline/not running located at ^<drive^>.
     echo /u: Repair usb stick at ^<drive^>.
     echo.
     echo Options:

@@ -62,8 +62,10 @@ GOTO :ParseParams
         echo Unknown option : "%~1"
     )
     
+    :shiftReParseParams
+        SHIFT
     :reParseParams
-    SHIFT
+        SHIFT
     if [%1]==[] goto main
 
 GOTO :ParseParams
@@ -94,22 +96,21 @@ GOTO :ParseParams
             exit /B 0
         )
     )
-
+    
     if %dlt% == 1 set /a kll=0
-
-
+    
     if %chk% == 1 (
         call :checkProcess %target%
     )
-
+    
     if %kll% == 1 (
         call :killProcess "%target%" %pid%
     )
-
+    
     if %dlt% == 1 (
         call :deleteProcess "%target%" %pid%
     )
-
+    
     endlocal
     exit /b 0
 
@@ -175,7 +176,7 @@ GOTO :ParseParams
     ENDLOCAL
     exit /b %errorlevel%
 
-    
+
 :killEx
     SETLOCAL
         set name=%~1

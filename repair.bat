@@ -258,11 +258,11 @@ setlocal
     echo /u: Repair usb stick at ^<drive^>.
     echo.
     echo Options:
-    echo /s: DISM StartComponentCleanup. (Default)
-    echo /c: DISM CheckHealth. (Default)
-    echo /r: DISM RestoreHealth. (Default)
+    echo /s: DISM /StartComponentCleanup. (Default)
+    echo /c: DISM /CheckHealth. (Default)
+    echo /r: DISM /RestoreHealth. (Default)
     echo /d: Run chkdsk (offline only).
-    echo /n: Run sfc scaning. (Default)
+    echo /n: Run sfc /scannow. (Default)
     echo.
     echo Other:
     echo /h: Print this.

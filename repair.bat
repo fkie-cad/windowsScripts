@@ -1,3 +1,15 @@
+::
+:: DSIM /RestoreHealth
+:: This command scans the Windows component store (the WinSxS directory) 
+:: and detects corrupted component files by comparing the actual SHA-256 hashes of binary files with the reference values stored in their manifests. 
+:: If necessary, DISM downloads the original component files from the Windows Update servers over the Internet and uses them to replace the corrupted files.
+:: 
+:: sfc /scannow
+:: This command verifies the integrity of the protected system files currently in use. 
+:: If a file is missing or its hash does not match the expected value, 
+:: SFC replaces it with the corresponding version from the WinSxS component store, which serves as the reference source.
+::
+
 @echo off
 setlocal enabledelayedexpansion
 
@@ -29,54 +41,56 @@ GOTO :ParseParams
 
     IF /i "%~1"=="/c" (
         set /a check_health=1
-        goto reParseParams
+        goto skip1Param
     )
     IF /i "%~1"=="/d" (
         set /a chk_dsk=1
-        goto reParseParams
+        goto skip1Param
     )
     IF /i "%~1"=="/f" (
         set /a offline=1
         SET "drive=%~2"
-        SHIFT
-        goto reParseParams
+        goto skip2Params
     )
     IF /i "%~1"=="/n" (
         set /a sfc=1
-        goto reParseParams
+        goto skip1Param
     )
     IF /i "%~1"=="/o" (
         set /a online=1
-        goto reParseParams
+        goto skip1Param
     )
     IF /i "%~1"=="/r" (
         set /a restore_health=1
-        goto reParseParams
+        goto skip1Param
     )
     IF /i "%~1"=="/s" (
         set /a start_component_cleanup=1
-        goto reParseParams
+        goto skip1Param
     )
     IF /i "%~1"=="/u" (
         set /a usb=1
         SET "drive=%~2"
-        SHIFT
-        goto reParseParams
+        goto skip2Params
     )
     IF /i "%~1"=="/w" (
         set /a win=1
-        goto reParseParams
+        goto skip1Param
     )
     
     IF /i "%~1"=="/v" (
         SET /a verbose=1
-        goto reParseParams
+        goto skip1Param
     ) ELSE (
-        echo Unknown option : "%~1"
+        echo [e] Unknown option : "%~1"
+        echo.
+        goto usage
     )
    
     
-    :reParseParams
+    :skip2Params
+    SHIFT
+    :skip1Param
     SHIFT
     if [%1]==[] goto main
 
@@ -160,7 +174,6 @@ GOTO :ParseParams
         exit /b %ERRORLEVEL%
     )
     
-    
     if %verbose% EQU 1 echo finished with code : %ERRORLEVEL%
     endlocal
     exit /b %ERRORLEVEL%
@@ -169,38 +182,34 @@ GOTO :ParseParams
 :windowsImageOnline
 setlocal
     REM chkdsk c: /r /scan /perf
-
-    if %sfc% EQU 1 (
-        sfc /scannow
-    )
-
+    
     if %start_component_cleanup% EQU 1 (
         DISM /Online /Cleanup-Image /StartComponentCleanup
     )
     
     if %check_health% EQU 1 (
-        dism /online /cleanup-image /checkhealth
+        DISM /Online /Cleanup-Image /checkhealth
     )
     
     if %restore_health% EQU 1 (
-        dism /online /cleanup-image /restorehealth
+        DISM /Online /Cleanup-Image /restorehealth
     )
-
+    
+    if %sfc% EQU 1 (
+        sfc /scannow
+    )
+    
     endlocal
     exit /b %errorlevel%
 
 :windowsImageOffline
 setlocal
     set "drive=%~1"
-
+    
     if %chk_dsk% EQU 1 (
         chkdsk %drive%: /r /scan /perf
     )
-
-    if %sfc% EQU 1 (
-        sfc /scannow /offbootdir=%drive%:\ /offwindir=%drive%:\windows
-    )
-
+    
     if %start_component_cleanup% EQU 1 (
         DISM /image:%drive%:\ /cleanup-image /StartComponentCleanup
     )
@@ -212,7 +221,11 @@ setlocal
     if %restore_health% EQU 1 (
         DISM /image:%drive%:\ /cleanup-image /restorehealth
     )
-
+    
+    if %sfc% EQU 1 (
+        sfc /scannow /offbootdir=%drive%:\ /offwindir=%drive%:\windows
+    )
+    
     endlocal
     exit /b %errorlevel%
 
@@ -221,11 +234,11 @@ setlocal
 :usbDisk
 setlocal
     set "drive=%~1"
-
+    
     chkdsk /v %drive%
     chkdsk /scan %drive%
     chkdsk /offlinescanandfix %drive%
-
+    
     endlocal
     exit /b %errorlevel%
 

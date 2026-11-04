@@ -6,6 +6,7 @@ Scripts to disable some optional unwanted stuff.
 - [disableAutomaticRestartSignOn](#disableAutomaticRestartSignOn)
 - [disableCoInstallers](#disablecoinstallers)
 - [disableCopilot](#disablecopilot)
+- [disableDeviceCompanionAppAutoDownload](#disabledevicecompanionappautodownload)
 - [disableErrorReporting](#disableerrorreporting)
 - [disableIpV6](#disableipv6)
     - [ps1](#ps1)
@@ -52,6 +53,33 @@ At least some of it.
 $ disableCopilot.bat
 ```
 
+
+
+
+## disableDeviceCompanionAppAutoDownload
+
+Windows may automatically download device companion apps, custom icons, and metadata from manufacturers when new hardware is connected to the computer.
+Additionally it may automatically download drivers for the devices.
+
+This scripts disables the auto download of apps by default.
+Blocking of driver download/updates for these devices is selectable too.
+They may be really required by the device, though.
+
+```bash
+$ disableDeviceCompanionAppAutoDownload.bat [/c|/d|/e] [/app] [/drv] [/v] [/h]
+```
+**Targets:**
+- /app: Disable auto companion app downloads/updates for devices. (default)
+- /drv: Disable auto driver downloads/updates for devices.
+
+**Actions:**
+- /c : Check the reg status. (default)
+- /d : Disable the feature.
+- /e : Enable the feature.
+
+**Other:**
+- /v: More verbose.
+- /h: Print this.
 
 
 ## disableErrorReporting

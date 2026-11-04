@@ -184,19 +184,27 @@ setlocal
     REM chkdsk c: /r /scan /perf
     
     if %start_component_cleanup% EQU 1 (
+        echo running DISM /StartComponentCleanup
         DISM /Online /Cleanup-Image /StartComponentCleanup
+        echo .
     )
     
     if %check_health% EQU 1 (
-        DISM /Online /Cleanup-Image /checkhealth
+        echo running DISM /CheckHealth
+        DISM /Online /Cleanup-Image /CheckHealth
+        echo .
     )
     
     if %restore_health% EQU 1 (
-        DISM /Online /Cleanup-Image /restorehealth
+        echo running DISM /RestoreHealth
+        DISM /Online /Cleanup-Image /RestoreHealth
+        echo .
     )
     
     if %sfc% EQU 1 (
+        echo running sfc /scannow
         sfc /scannow
+        echo .
     )
     
     endlocal
@@ -211,19 +219,27 @@ setlocal
     )
     
     if %start_component_cleanup% EQU 1 (
+        echo running DISM /StartComponentCleanup
         DISM /image:%drive%:\ /cleanup-image /StartComponentCleanup
+        echo .
     )
     
     if %check_health% EQU 1 (
-        DISM /image:%drive%:\ /cleanup-image /checkhealth
+        echo running DISM /CheckHealth
+        DISM /image:%drive%:\ /cleanup-image /CheckHealth
+        echo .
     )
     
     if %restore_health% EQU 1 (
-        DISM /image:%drive%:\ /cleanup-image /restorehealth
+        echo running DISM /RestoreHealth
+        DISM /image:%drive%:\ /cleanup-image /RestoreHealth
+        echo .
     )
     
     if %sfc% EQU 1 (
+        echo running sfc /scannow
         sfc /scannow /offbootdir=%drive%:\ /offwindir=%drive%:\windows
+        echo .
     )
     
     endlocal

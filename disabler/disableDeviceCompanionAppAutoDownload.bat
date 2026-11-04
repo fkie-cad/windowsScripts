@@ -1,6 +1,8 @@
 ::
 :: Disable automatic device companion app downloads and device driver downloads.
 ::
+:: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-deviceinstallation
+::
 @echo off
 setlocal
 

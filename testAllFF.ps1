@@ -9,6 +9,7 @@ param(
 
     [switch]$Silent
 )
+Set-StrictMode -Version Latest
 
 if (-not (Test-Path -LiteralPath $Path))
 {

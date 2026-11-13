@@ -46,18 +46,15 @@ GOTO :ParseParams
 
     IF "%~1"=="/ul" (
         SET usbLetter=%2
-        SHIFT
-        goto reParseParams
+        goto reParseParams2
     )
     IF "%~1"=="/f" (
         SET format=%~2
-        SHIFT
-        goto reParseParams
+        goto reParseParams2
     )
     IF "%~1"=="/if" (
         SET "inFile=%~f2"
-        SHIFT
-        goto reParseParams
+        goto reParseParams2
     )
     
     IF "%~1"=="/mount" (
@@ -85,6 +82,8 @@ GOTO :ParseParams
         goto help
     )
     
+    :reParseParams2
+    SHIFT
     :reParseParams
     SHIFT
     if [%1]==[] goto main

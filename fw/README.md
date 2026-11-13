@@ -14,12 +14,16 @@ Last updated: 11.07.2025
 ## DisableAllConnections
 
 Disable all inbound and outbound connections.
+Disable beeing notified if someone wants to listen, i.e. disable the ~allow connection~ popup.
+Disallow unicast response to multicast.
 Delete all current rules.
 
+The default behaviour can be unset with their corresponding switches.
+
 ```
-ps> .\disableAllConnections.ps1
+ps> .\disableAllConnections.ps1 [-AllowInbound] [-AllowOutbound] [-NotifyOnListen] [-AllowUnicastResponseToMulticast] [-LogFileName <path>] [-KeepRules]
 or
-$ disableAllConnections.bat
+$ disableAllConnections.bat [/aib] [/aob] [nol] [/aur] [/lfn ^<path^>] [/kcr] [/v]
 ```
 
 ## FirewallRules

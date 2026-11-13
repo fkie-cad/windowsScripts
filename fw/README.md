@@ -5,10 +5,22 @@ Last updated: 11.07.2025
 
 
 ## Contents
-- [FirewallRules](#FirewallRules)
+- [DisableAllConnections](#disableallconnections)
+- [FirewallRules](#firewallrules)
 - [Toggle Icmp](#toggle-icmp)
 
 
+
+## DisableAllConnections
+
+Disable all inbound and outbound connections.
+Delete all current rules.
+
+```
+ps> .\disableAllConnections.ps1
+or
+$ disableAllConnections.bat
+```
 
 ## FirewallRules
 
@@ -26,7 +38,7 @@ If no name is given, some default names will be used.
 This can be checked by `FirewallRules.ps1 -Show`
 
 ```bash
-ps> FirewallRules.ps1 [-Allow|-Block|-Disable|-Enable|-Remove|-Show] [-Name|-DisplayName|-Package]
+ps> .\FirewallRules.ps1 [-Allow|-Block|-Disable|-Enable|-Remove|-Show] [-Name|-DisplayName|-Package]
 ```
 
 ### Options

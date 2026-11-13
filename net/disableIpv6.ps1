@@ -19,10 +19,11 @@
 #>
 
 Param (
-    [Parameter(Mandatory=$false, Position=0)]
-    [ValidateNotNull()]
-    [string]$Mode="disable",
-    [Parameter(Mandatory=$false, Position=1)]
+    [switch]$Disable,
+    [switch]$Enable,
+    [switch]$Check,
+    [switch]$List,
+    [Parameter(Mandatory=$false)]
     [ValidateNotNull()]
     [string]$Name="*"
 )
@@ -31,19 +32,19 @@ Param (
 Write-Host "Mode: $Mode"
 Write-Host "Name: $Name"
 
-if ( $Mode -eq "e" -or $Mode -eq "enable" )
+if ( $Enable )
 {
     Write-Host "enabling adapters $Name"
     Enable-NetAdapterBinding -Name "$Name" -ComponentID ms_tcpip6
     Get-NetAdapterBinding | Where-Object ComponentID -EQ 'ms_tcpip6'
 }
-elseif ( $Mode -eq "d" -or $Mode -eq "disable" )
+elseif ( $Disable )
 {
     Write-Host "disabling adapters: $Name"
     Disable-NetAdapterBinding -Name "$Name" -ComponentID ms_tcpip6
     Get-NetAdapterBinding | Where-Object ComponentID -EQ 'ms_tcpip6'
 }
-elseif ( $Mode -eq "l" -or $Mode -eq "list" )
+elseif ( $Check -or $List )
 {
     Get-NetAdapterBinding | Where-Object ComponentID -EQ 'ms_tcpip6'
 }

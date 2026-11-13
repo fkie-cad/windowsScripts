@@ -4,7 +4,6 @@ setlocal enabledelayedexpansion
 set my_name=%~n0%~x0
 set my_dir="%~dp0"
 set "my_dir=%my_dir:~1,-2%"
-if [%1]==[] goto usage
 
 set /a aib=0
 set /a aob=0
@@ -15,9 +14,9 @@ set /a kcr=0
 
 GOTO :ParseParams
 
+if ["%~1"]==[""] goto main
 :ParseParams
 
-    REM IF "%~1"=="" GOTO Main
     if [%1]==[/?] goto help
     if [%1]==[/h] goto help
     if [%1]==[/help] goto help
